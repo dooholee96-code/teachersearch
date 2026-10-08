@@ -1,0 +1,46 @@
+name: 미술 티오 알리미
+
+on:
+  schedule:
+    # GitHub 예약 실행은 UTC 기준입니다 (한국 시간 = UTC + 9시간)
+    - cron: "0 23 * * *"  # 한국 매일 08:00
+    - cron: "0 12 * * *"  # 한국 매일 21:00
+  workflow_dispatch: {}         # Actions 탭에서 수동 실행
+
+permissions:
+  contents: write               # seen.json(이미 본 글 목록) 저장용
+
+concurrency:
+  group: art-tio-monitor
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: 게시판 확인
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          NEIS_API_KEY: ${{ secrets.NEIS_API_KEY }}
+        run: python monitor.py
+
+      - name: 본 글 목록 저장
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add seen.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "seen.json 갱신"
+          git pull --rebase --autostash
+          git push
