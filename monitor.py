@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""전북 미술 교사 티오 알리미
+"""전북·대전·충남 미술 교사 티오 알리미
 
-전북특별자치도교육청 게시판 4곳을 읽어서 미술 관련 새 글을 텔레그램으로 보냅니다.
+전북특별자치도교육청 게시판 4곳과 세 지역의 교육청·교육지원청·사립 중·고 누리집을 읽어서
+미술 관련 새 글을 텔레그램으로 보냅니다.
 
   1) 기간제교사 인력풀 > 채용공고         과목/분야에 '미술'이 있으면 알림
   2) 기간제교사 인력풀 > 채용계획 사전공개  제목·첨부파일명에 '미술'이 있으면 알림
@@ -9,7 +10,11 @@
   3) 도교육청 > 중등임용시험 게시판         새 글은 모두 알림 (공립 + 사립 위탁 채용)
   4) 도교육청 > 고시/공고                  '미술' 또는 중등·교사 임용 관련 글만 알림
                                           (임용시험 시행계획 공고가 여기에도 실림)
-  5) 전북 사립 중·고 홈페이지 (하루 1번)    첫 화면과 '채용' 메뉴에서 미술 채용 글을 찾음
+  5) 교육청·교육지원청 누리집 (매번)        전북 교육지원청 14곳, 대전교육청·교육지원청 2곳(학교지원센터 포함),
+                                          충남교육청·교육지원청 14곳. 첫 화면과 채용·구인·임용·고시 메뉴에서
+                                          미술 채용 글, 과목 없는 신규교사 채용 글, 중등 임용시험 글을 찾음
+  6) 전북·대전·충남 사립 중·고 홈페이지 (하루 1번)
+                                          첫 화면과 '채용' 메뉴에서 미술 채용 글을 찾음
                                           학교 목록은 나이스 교육정보 개방포털에서 자동으로 받음
 
 게시판마다 주소를 여러 개 두고(인력풀 사이트 → 교육청 본사이트), 앞 주소가 안 열리면 다음 주소로 넘어갑니다.
@@ -23,6 +28,7 @@
   python monitor.py                  실제 실행 (알림 발송 + seen.json 저장)
   python monitor.py --dry-run        알림 내용만 화면에 출력하고 저장하지 않음
   python monitor.py --force-schools  오늘 이미 확인했어도 사립학교 홈페이지를 다시 확인
+  python monitor.py --no-offices     교육청·교육지원청 누리집 확인은 건너뜀
 """
 from __future__ import annotations
 
@@ -113,16 +119,56 @@ GOSI_EXAM_RE = re.compile(r"임용")
 GOSI_TEACHER_RE = re.compile(r"중등|교사|교원")
 GOSI_EXCLUDE_RE = re.compile(r"초등|유치원|특수학교")
 
-# 사립 중·고 홈페이지
+# 사립 중·고 홈페이지 + 교육청·교육지원청 누리집
 NEIS_URL = "https://open.neis.go.kr/hub/schoolInfo"
-NEIS_OFFICE_CODE = "P10"          # 전북특별자치도교육청
+NEIS_OFFICES = {"P10": "전북", "G10": "대전", "N10": "충남"}   # 나이스 시도교육청 코드 → 지역 이름 (감시 지역)
+NEIS_OFFICE_CODE = "P10"          # 예전 이름 (호환용)
 SCHOOL_KINDS = {"중학교", "고등학교"}
 SCHOOL_LIST_REFRESH_DAYS = 7      # 학교 목록(폐교·통합 반영)을 며칠마다 새로 받을지
-SCHOOL_WORKERS = 6                # 동시에 여는 홈페이지 수
-SCHOOL_MAX_BOARDS = 3             # 학교마다 따라 들어갈 '채용' 메뉴 수
-SCHOOL_SCAN_BUDGET_SEC = 600      # 홈페이지 확인에 쓸 최대 시간. 넘기면 남은 학교는 건너뜀 (Actions 제한시간 보호)
-SCHOOL_HTTP_TIMEOUT = 12          # 학교 홈페이지 한 번 요청에 기다리는 시간(초)
-MAX_SEEN_SCHOOL = 3000
+SITE_WORKERS = 8                  # 동시에 여는 누리집 수
+SITE_SCAN_BUDGET_SEC = 720        # 한 묶음(학교 전체 / 교육청 전체)을 훑는 데 쓸 최대 시간. 넘기면 남은 곳은 건너뜀
+SITE_HTTP_TIMEOUT = 12            # 누리집 한 번 요청에 기다리는 시간(초)
+MAX_SEEN_SCHOOL = 5000
+
+
+def _offices(region: str, kind_name: str, entries: list[tuple[str, str]]) -> list[dict]:
+    return [
+        {"code": f"office:{urlparse(url).netloc}{urlparse(url).path.rstrip('/')}", "name": f"{name}{kind_name}",
+         "region": region, "url": url, "kind": "office"}
+        for name, url in entries
+    ]
+
+
+# 교육청·교육지원청 누리집. 학교 홈페이지와 같은 방식으로 첫 화면과 채용·구인·임용·고시 메뉴를 훑는다.
+# 주소는 2026-10 웹 검색으로 확인한 것. 매 실행(아침·저녁)마다 확인한다.
+OFFICE_SITES = (
+    _offices("전북", "교육지원청", [
+        ("전주", "https://office.jbedu.kr/jeonjuedu/"), ("군산", "https://office.jbedu.kr/jbgse/"),
+        ("익산", "https://office.jbedu.kr/jbise/"), ("정읍", "https://office.jbedu.kr/jbjue/"),
+        ("남원", "https://office.jbedu.kr/jbnwe/"), ("김제", "https://office.jbedu.kr/jbgje/"),
+        ("완주", "https://office.jbedu.kr/jbwje/"), ("진안", "https://office.jbedu.kr/jbjae/"),
+        ("무주", "https://office.jbedu.kr/jbmje/"), ("장수", "https://office.jbedu.kr/jbjse/"),
+        ("임실", "https://office.jbedu.kr/jbime/"), ("순창", "https://office.jbedu.kr/jbsce/"),
+        ("고창", "https://office.jbedu.kr/gce/"), ("부안", "https://office.jbedu.kr/jbbae/"),
+    ])
+    + _offices("대전", "", [
+        ("대전광역시교육청", "https://www.dje.go.kr/main.do"),
+        ("대전동부교육지원청", "https://www.djdbe.go.kr/home/main.do"),
+        ("대전동부교육지원청 학교지원센터", "https://www.djdbe.go.kr/ssc/home/main.do"),
+        ("대전서부교육지원청", "https://www.djsbe.go.kr/home/main.do"),
+        ("대전서부교육지원청 학교지원센터", "https://www.djsbe.go.kr/ssc/home/main.do"),
+    ])
+    + _offices("충남", "", [("충청남도교육청", "https://www.cne.go.kr/")])
+    + _offices("충남", "교육지원청", [
+        ("천안", "https://www.cncae.go.kr/"), ("공주", "https://www.cngje.go.kr/"),
+        ("보령", "https://www.cnbre.go.kr/"), ("아산", "https://www.cnased.go.kr/"),
+        ("서산", "https://www.cnssed.go.kr/"), ("논산계룡", "https://www.cnnse.go.kr/"),
+        ("당진", "https://www.cndje.go.kr/"), ("금산", "https://www.cngse.go.kr/"),
+        ("부여", "https://www.cnbye.go.kr/"), ("서천", "https://www.cnsce.go.kr/"),
+        ("청양", "https://www.cncyed.go.kr/"), ("홍성", "https://www.cnhsed.go.kr/"),
+        ("예산", "https://www.cnyse.go.kr/"), ("태안", "https://www.cntae.go.kr/"),
+    ])
+)
 
 SECONDARY_RE = re.compile(r"중학교|고등학교|중등|여중|여고|고교|중·고|중고등")
 SUBJECT_WORDS = (
@@ -334,7 +380,7 @@ def format_message(board_key: str, row: dict, kind: str) -> str:
     return f'{head}\n{body}\n<a href="{e(row["url"], quote=True)}">공고 열기</a>'
 
 
-# ─────────────────────────── 사립 중·고 홈페이지 ───────────────────────────
+# ─────────────────────────── 누리집 훑기 (사립 중·고, 교육지원청, 대전·충남 교육청) ───────────────────────────
 HIRE_STRONG_RE = re.compile(r"채용|공개전형|초빙|임용")
 HIRE_WEAK_RE = re.compile(r"모집|공고")
 STAFF_RE = re.compile(r"교사|교원|강사|기간제|계약제")
@@ -343,9 +389,16 @@ TEACHER_RE = re.compile(r"교사|교원")
 JS_REDIRECT_RE = re.compile(
     r"location(?:\.href)?\s*=\s*['\"]([^'\"]+)['\"]|location\.replace\(\s*['\"]([^'\"]+)['\"]"
 )
+# 어떤 메뉴를 따라 들어갈지. 학교는 '채용'만, 교육(지원)청은 채용·구인·기간제·임용·고시 메뉴까지
+MENU_RE = {
+    "school": re.compile(r"채용"),
+    "office": re.compile(r"채용|구인|기간제|임용|고시"),
+}
+MENU_PRIORITY = (re.compile(r"중등"), re.compile(r"교사|교원|기간제|채용"))  # 앞에 있는 말이 든 메뉴를 먼저 연다
+MAX_MENUS = {"school": 3, "office": 6}
 
 
-def get_html(url: str, timeout: int = SCHOOL_HTTP_TIMEOUT) -> tuple[str, str]:
+def get_html(url: str, timeout: int = SITE_HTTP_TIMEOUT) -> tuple[str, str]:
     headers = dict(SESSION.headers)
     try:
         resp = requests.get(url, headers=headers, timeout=timeout)
@@ -365,33 +418,37 @@ def neis_get(params: dict) -> dict:
 
 
 def fetch_school_list(api_key: str) -> list[dict]:
-    """나이스 교육정보 개방포털에서 전북 사립 중·고 목록과 홈페이지 주소를 받는다."""
-    schools, page = [], 1
-    while True:
-        data = neis_get({
-            "KEY": api_key, "Type": "json", "pIndex": page, "pSize": 1000,
-            "ATPT_OFCDC_SC_CODE": NEIS_OFFICE_CODE, "FOND_SC_NM": "사립",
-        })
-        if "schoolInfo" not in data:
-            result = data.get("RESULT", {})
-            if result.get("CODE") == "INFO-200" and page > 1:
+    """나이스 교육정보 개방포털에서 감시 지역의 사립 중·고 목록과 홈페이지 주소를 받는다."""
+    schools = []
+    for office_code, region in NEIS_OFFICES.items():
+        page = 1
+        while True:
+            data = neis_get({
+                "KEY": api_key, "Type": "json", "pIndex": page, "pSize": 1000,
+                "ATPT_OFCDC_SC_CODE": office_code, "FOND_SC_NM": "사립",
+            })
+            if "schoolInfo" not in data:
+                result = data.get("RESULT", {})
+                if result.get("CODE") == "INFO-200":
+                    break  # 더 없음 (첫 페이지부터 없으면 그 지역엔 해당 학교가 없는 것)
+                raise RuntimeError(f"나이스 응답 오류({region}) {result.get('CODE')}: {result.get('MESSAGE')}")
+            rows = data["schoolInfo"][1]["row"]
+            for r in rows:
+                if r.get("FOND_SC_NM") == "사립" and r.get("SCHUL_KND_SC_NM") in SCHOOL_KINDS:
+                    schools.append({
+                        "code": r.get("SD_SCHUL_CODE", ""),
+                        "name": r.get("SCHUL_NM", ""),
+                        "kind": r.get("SCHUL_KND_SC_NM", ""),
+                        "region": region,
+                        "url": (r.get("HMPG_ADRES") or "").strip(),
+                    })
+            if len(rows) < 1000:
                 break
-            raise RuntimeError(f"나이스 응답 오류 {result.get('CODE')}: {result.get('MESSAGE')}")
-        rows = data["schoolInfo"][1]["row"]
-        for r in rows:
-            if r.get("FOND_SC_NM") == "사립" and r.get("SCHUL_KND_SC_NM") in SCHOOL_KINDS:
-                schools.append({
-                    "code": r.get("SD_SCHUL_CODE", ""),
-                    "name": r.get("SCHUL_NM", ""),
-                    "kind": r.get("SCHUL_KND_SC_NM", ""),
-                    "url": (r.get("HMPG_ADRES") or "").strip(),
-                })
-        if len(rows) < 1000:
-            break
-        page += 1
+            page += 1
     if not schools:
         raise RuntimeError("나이스에서 사립 중·고를 한 곳도 받지 못함")
-    return sorted(schools, key=lambda x: (x["kind"], x["name"]))
+    order = list(NEIS_OFFICES.values())
+    return sorted(schools, key=lambda x: (order.index(x["region"]), x["kind"], x["name"]))
 
 
 def fix_url(url: str) -> str:
@@ -427,7 +484,7 @@ def load_home(start_url: str) -> list[tuple[str, BeautifulSoup]]:
     return pages
 
 
-def school_items(page_url: str, soup: BeautifulSoup) -> list[dict]:
+def site_items(page_url: str, soup: BeautifulSoup) -> list[dict]:
     items = []
     for a in soup.find_all("a", href=True):
         title = norm(a.get_text(" ")) or norm(a.get("title", ""))
@@ -443,87 +500,132 @@ def school_items(page_url: str, soup: BeautifulSoup) -> list[dict]:
     return items
 
 
-def hiring_menus(page_url: str, soup: BeautifulSoup) -> list[str]:
+def same_site(host_a: str, host_b: str) -> bool:
+    """www.dje.go.kr 와 dje.go.kr, office.jbedu.kr 와 school.jbedu.kr 처럼 같은 기관의 주소인지."""
+    def base(host: str) -> str:
+        parts = host.lower().split(".")
+        n = 3 if len(parts) >= 3 and parts[-2] in ("go", "or", "ac", "co", "ne", "hs", "ms", "es", "sc", "pe") else 2
+        return ".".join(parts[-n:])
+    return base(host_a) == base(host_b)
+
+
+def hiring_menus(page_url: str, soup: BeautifulSoup, kind: str = "school") -> list[str]:
     host = urlparse(page_url).netloc
-    urls = []
+    menu_re, limit = MENU_RE[kind], MAX_MENUS[kind]
+    found: list[tuple[int, str]] = []
     for a in soup.find_all("a", href=True):
         text, href = norm(a.get_text(" ")), a["href"].strip()
-        if "채용" not in text or len(text) > 20 or href.startswith(("#", "javascript:")):
+        if not menu_re.search(text) or len(text) > 20 or href.startswith(("#", "javascript:")):
             continue
         url = urljoin(page_url, href)
-        if urlparse(url).netloc == host and "/view/" not in url and url not in urls:
-            urls.append(url)
-    return urls[:SCHOOL_MAX_BOARDS]
+        if not same_site(urlparse(url).netloc, host) or "/view/" in url or url in (u for _, u in found):
+            continue
+        rank = next((i for i, rx in enumerate(MENU_PRIORITY) if rx.search(text)), len(MENU_PRIORITY))
+        found.append((rank, url))
+    found.sort(key=lambda x: x[0])  # 안정 정렬이라 같은 순위 안에서는 페이지 순서 유지
+    return [u for _, u in found][:limit]
 
 
-def scan_school(school: dict, deadline: float | None = None) -> dict:
-    url = fix_url(school["url"])
+def scan_site(site: dict, deadline: float | None = None) -> dict:
+    """누리집 하나를 읽는다. site: {"code","name","region","url","kind"} (kind: school | office)"""
+    url = fix_url(site["url"])
+    kind = site.get("kind", "school")
     if not url:
-        return {"school": school, "status": "no_url", "items": [], "boards": 0}
+        return {"site": site, "status": "no_url", "items": [], "boards": 0}
     if deadline is not None and time.monotonic() > deadline:
-        return {"school": school, "status": "skipped", "items": [], "boards": 0}
+        return {"site": site, "status": "skipped", "items": [], "boards": 0}
     try:
         pages = load_home(url)
         items = []
         menus: list[str] = []
         for page_url, soup in pages:
-            items += school_items(page_url, soup)
-            menus += [m for m in hiring_menus(page_url, soup) if m not in menus]
+            items += site_items(page_url, soup)
+            menus += [m for m in hiring_menus(page_url, soup, kind) if m not in menus]
         boards = 0
-        for menu_url in menus[:SCHOOL_MAX_BOARDS]:
+        for menu_url in menus[:MAX_MENUS[kind]]:
             try:
                 board_url, text = get_html(menu_url)
-                items += school_items(board_url, BeautifulSoup(text, "html.parser"))
+                items += site_items(board_url, BeautifulSoup(text, "html.parser"))
                 boards += 1
             except Exception:  # noqa: BLE001  메뉴 하나 실패는 무시
                 pass
-        return {"school": school, "status": "ok", "items": items, "boards": boards}
+        return {"site": site, "status": "ok", "items": items, "boards": boards}
     except Exception as exc:  # noqa: BLE001
-        return {"school": school, "status": "fail", "items": [], "boards": 0, "error": str(exc)[:120]}
+        return {"site": site, "status": "fail", "items": [], "boards": 0, "error": short_error(exc)}
 
 
 def is_hiring(title: str) -> bool:
     return bool(HIRE_STRONG_RE.search(title) or (HIRE_WEAK_RE.search(title) and STAFF_RE.search(title)))
 
 
-def classify_school_title(title: str) -> str | None:
+def classify_site_title(title: str, kind: str = "school") -> str | None:
+    """누리집 글 제목 판정. match: 미술 채용 / unspecified: 과목 없는 신규교사 채용 / exam: 중등 임용시험 글(교육청만)"""
     if not is_hiring(title):
         return None
     if any(k in title for k in KEYWORDS):
         return "match"
     if REGULAR_RE.search(title) and TEACHER_RE.search(title) and not any(w in title for w in SUBJECT_WORDS):
         return "unspecified"
+    if kind == "office" and GOSI_EXAM_RE.search(title) and GOSI_TEACHER_RE.search(title):
+        if GOSI_EXCLUDE_RE.search(title) and not SECONDARY_RE.search(title):
+            return None
+        if re.search(r"임용후보자|임용시험|임용 시험|선정경쟁|시행계획|사전 ?예고|시행 ?공고", title):
+            return "exam"
     return None
 
 
-def format_school_message(kind: str, title: str, url: str, names: list[str]) -> str:
+classify_school_title = classify_site_title  # 예전 이름
+
+
+def site_label(site: dict) -> str:
+    return f"[{site['region']}] {site['name']}"
+
+
+def format_site_message(kind: str, title: str, url: str, names: list[str], site_kind: str = "school") -> str:
     e = html.escape
+    where = "사립학교 홈페이지" if site_kind == "school" else "교육(지원)청 누리집"
+    icon = "🏫" if site_kind == "school" else "🏢"
     if kind == "match":
-        head = "🏫🎨 <b>사립학교 홈페이지 미술 채용 글</b>"
+        head = f"{icon}🎨 <b>{where} 미술 채용 글</b>"
+    elif kind == "exam":
+        head = f"{icon}📢 <b>{where} 중등 임용시험 글</b>"
     else:
-        head = "🏫🟡 <b>사립학교 신규교사 채용 글</b> — 과목 미기재, 미술 있는지 확인"
+        head = f"{icon}🟡 <b>{where} 신규교사 채용 글</b> — 과목 미기재, 미술 있는지 확인"
     return f'{head}\n{e(" · ".join(names))}\n{e(title)}\n<a href="{e(url, quote=True)}">글 열기</a>'
 
 
-def run_school_scan(api_key: str, state: dict, today: date) -> tuple[list[str], str, str | None, bool]:
-    """사립학교 홈페이지를 확인하고 (알림 목록, 상태 한 줄, 첫 확인 요약, 정상 여부)를 돌려준다."""
+format_school_message = format_site_message  # 예전 이름
+
+
+def load_school_list(api_key: str, state: dict, today: date) -> list[dict]:
+    """사립 중·고 목록. 일주일에 한 번 나이스에서 새로 받고, 실패하면 저장된 목록을 쓴다."""
     cache = state.get("schools", {})
-    fresh = cache.get("updated") and (
-        today - date.fromisoformat(cache["updated"])
-    ).days < SCHOOL_LIST_REFRESH_DAYS
+    regions = list(NEIS_OFFICES.values())
+    fresh = (
+        cache.get("updated")
+        and cache.get("regions") == regions  # 감시 지역이 바뀌면 바로 새로 받음
+        and (today - date.fromisoformat(cache["updated"])).days < SCHOOL_LIST_REFRESH_DAYS
+    )
     schools = cache.get("list", [])
     if not fresh:
         try:
             schools = fetch_school_list(api_key)
-            state["schools"] = {"updated": today.isoformat(), "list": schools}
+            state["schools"] = {"updated": today.isoformat(), "regions": regions, "list": schools}
         except Exception as exc:  # noqa: BLE001
             if not schools:
                 raise
             print(f"[사립학교 목록] 새로 받기 실패, 저장된 목록 사용: {exc}", file=sys.stderr)
+    for s in schools:
+        s.setdefault("region", "전북")
+        s.setdefault("kind", "")
+    return schools
 
-    deadline = time.monotonic() + SCHOOL_SCAN_BUDGET_SEC
-    with ThreadPoolExecutor(max_workers=SCHOOL_WORKERS) as pool:
-        results = list(pool.map(lambda s: scan_school(s, deadline), schools))
+
+def run_site_scan(sites: list[dict], site_kind: str, state: dict, today: date) -> dict:
+    """누리집 목록을 훑고 결과를 돌려준다: alerts, ok/failed/no_url/skipped 목록, with_board 수, healthy."""
+    deadline = time.monotonic() + SITE_SCAN_BUDGET_SEC
+    with ThreadPoolExecutor(max_workers=SITE_WORKERS) as pool:
+        results = list(pool.map(lambda s: scan_site({**s, "kind": site_kind}, deadline), sites))
 
     seen = set(state["seen"].get("school", []))
     scanned_before = set(state.get("schools_scanned", []))
@@ -533,21 +635,21 @@ def run_school_scan(api_key: str, state: dict, today: date) -> tuple[list[str], 
     for res in results:
         if res["status"] != "ok":
             continue
-        school = res["school"]
-        first_time = school["code"] not in scanned_before
+        site = res["site"]
+        first_time = site["code"] not in scanned_before
         for item in res["items"]:
             if item["id"] in seen:
                 continue
-            kind = classify_school_title(item["title"])
+            kind = classify_site_title(item["title"], site_kind)
             if not kind:
                 continue
             newly_seen.append(item["id"])
-            if first_time and (kind != "match" or not any(y in item["title"] for y in year_marks)):
-                continue  # 처음 보는 학교는 올해·내년 미술 채용 글만 알림 (옛 글 폭탄 방지)
+            if first_time and (kind == "unspecified" or not any(y in item["title"] for y in year_marks)):
+                continue  # 처음 보는 누리집은 올해·내년 글만 알림 (옛 글 폭탄 방지)
             entry = found.setdefault(item["id"], {**item, "kind": kind, "names": []})
-            if school["name"] not in entry["names"]:
-                entry["names"].append(school["name"])
-        scanned_before.add(school["code"])
+            if site_label(site) not in entry["names"]:
+                entry["names"].append(site_label(site))
+        scanned_before.add(site["code"])
 
     state["schools_scanned"] = sorted(scanned_before)
     state["seen"]["school"] = list(dict.fromkeys(newly_seen + state["seen"].get("school", [])))[:MAX_SEEN_SCHOOL]
@@ -556,39 +658,83 @@ def run_school_scan(api_key: str, state: dict, today: date) -> tuple[list[str], 
     failed = [r for r in results if r["status"] == "fail"]
     no_url = [r for r in results if r["status"] == "no_url"]
     skipped = [r for r in results if r["status"] == "skipped"]
-    with_board = sum(1 for r in ok if r["boards"])
+    label = "사립학교" if site_kind == "school" else "교육청"
     for r in failed:
-        print(f"[사립학교] {r['school']['name']} 접속 실패: {r.get('error')}", file=sys.stderr)
+        print(f"[{label}] {site_label(r['site'])} 접속 실패: {r.get('error')}", file=sys.stderr)
     for r in no_url:
-        print(f"[사립학교] {r['school']['name']} 홈페이지 주소 없음", file=sys.stderr)
+        print(f"[{label}] {site_label(r['site'])} 홈페이지 주소 없음", file=sys.stderr)
     if skipped:
-        print(f"[사립학교] 시간 부족으로 {len(skipped)}곳 건너뜀", file=sys.stderr)
+        print(f"[{label}] 시간 부족으로 {len(skipped)}곳 건너뜀", file=sys.stderr)
+    return {
+        "alerts": [
+            format_site_message(v["kind"], v["title"], v["url"], v["names"], site_kind) for v in found.values()
+        ],
+        "ok": ok, "failed": failed, "no_url": no_url, "skipped": skipped,
+        "with_board": sum(1 for r in ok if r["boards"]),
+        "healthy": len(ok) >= max(1, len(sites) // 2) and not skipped,
+    }
 
-    healthy = len(ok) >= max(1, len(schools) // 2) and not skipped
-    status = f"사립 중·고 홈페이지: {len(schools)}곳 중 {len(ok)}곳 확인 (채용 메뉴 {with_board}곳)"
+
+def region_counts(sites: list[dict]) -> str:
+    counts: dict[str, int] = {}
+    for s in sites:
+        counts[s["region"]] = counts.get(s["region"], 0) + 1
+    return ", ".join(f"{r} {n}" for r, n in counts.items())
+
+
+def run_school_scan(api_key: str, state: dict, today: date) -> tuple[list[str], str, str | None, bool]:
+    """사립학교 홈페이지를 확인하고 (알림 목록, 상태 한 줄, 첫 확인 요약, 정상 여부)를 돌려준다."""
+    schools = load_school_list(api_key, state, today)
+    r = run_site_scan(schools, "school", state, today)
+    ok, failed, no_url, skipped = r["ok"], r["failed"], r["no_url"], r["skipped"]
+
+    status = f"사립 중·고 홈페이지: {len(schools)}곳 중 {len(ok)}곳 확인 (채용 메뉴 {r['with_board']}곳)"
     if skipped:
         status += f" — 시간 부족으로 {len(skipped)}곳 건너뜀"
-    elif not healthy:
+    elif not r["healthy"]:
         status += " — 절반 넘게 접속 실패"
 
     summary = None
-    if not state.get("school_summary_sent"):
+    if state.get("school_summary_regions") != list(NEIS_OFFICES.values()):  # 처음이거나 감시 지역이 바뀌었을 때
         state["school_summary_sent"] = today.isoformat()
+        state["school_summary_regions"] = list(NEIS_OFFICES.values())
         middle = sum(1 for s in schools if s["kind"] == "중학교")
-        names = ", ".join(r["school"]["name"] for r in failed[:15]) + (" 외" if len(failed) > 15 else "")
+        names = ", ".join(site_label(x["site"]) for x in failed[:15]) + (" 외" if len(failed) > 15 else "")
         summary = (
             "🏫 <b>사립 중·고 홈페이지 첫 확인</b>\n"
-            f"대상 {len(schools)}곳 (중 {middle}, 고 {len(schools) - middle})\n"
-            f"정상 {len(ok)}곳 · 채용 메뉴 찾음 {with_board}곳\n"
+            f"대상 {len(schools)}곳 (중 {middle}, 고 {len(schools) - middle}; {region_counts(schools)})\n"
+            f"정상 {len(ok)}곳 · 채용 메뉴 찾음 {r['with_board']}곳\n"
             f"접속 실패 {len(failed)}곳" + (f": {html.escape(names)}" if failed else "") + "\n"
             f"홈페이지 주소 없음 {len(no_url)}곳\n"
             + (f"시간 부족으로 건너뜀 {len(skipped)}곳\n" if skipped else "")
             + "이후로는 매일 아침 한 번 확인합니다."
         )
-    if healthy:
+    if r["healthy"]:
         state["school_scan_date"] = today.isoformat()  # 실패가 많으면 저녁에 다시 시도
-    alerts = [format_school_message(v["kind"], v["title"], v["url"], v["names"]) for v in found.values()]
-    return alerts, status, summary, healthy
+    return r["alerts"], status, summary, r["healthy"]
+
+
+def run_office_scan(state: dict, today: date) -> tuple[list[str], str, str | None, bool]:
+    """교육청·교육지원청 누리집을 확인하고 (알림 목록, 상태 한 줄, 첫 확인 요약, 정상 여부)를 돌려준다."""
+    r = run_site_scan(OFFICE_SITES, "office", state, today)
+    ok, failed, skipped = r["ok"], r["failed"], r["skipped"]
+    status = f"교육청·교육지원청 누리집: {len(OFFICE_SITES)}곳 중 {len(ok)}곳 확인 (채용 메뉴 {r['with_board']}곳)"
+    if skipped:
+        status += f" — 시간 부족으로 {len(skipped)}곳 건너뜀"
+    elif not r["healthy"]:
+        status += " — 절반 넘게 접속 실패"
+    summary = None
+    if not state.get("office_summary_sent"):
+        state["office_summary_sent"] = today.isoformat()
+        names = ", ".join(site_label(x["site"]) for x in failed[:15]) + (" 외" if len(failed) > 15 else "")
+        summary = (
+            "🏢 <b>교육청·교육지원청 누리집 첫 확인</b>\n"
+            f"대상 {len(OFFICE_SITES)}곳 ({region_counts(OFFICE_SITES)})\n"
+            f"정상 {len(ok)}곳 · 채용 메뉴 찾음 {r['with_board']}곳\n"
+            f"접속 실패 {len(failed)}곳" + (f": {html.escape(names)}" if failed else "") + "\n"
+            "이후로는 매번(아침·저녁) 확인합니다."
+        )
+    return r["alerts"], status, summary, r["healthy"]
 
 
 # ─────────────────────────── 알림·상태 ───────────────────────────
@@ -680,28 +826,36 @@ def main() -> int:
         older_ids = [i for i in dict.fromkeys(state["seen"].get(key, [])) if i not in current_set]
         state["seen"][key] = (current_ids + older_ids)[:MAX_SEEN_PER_BOARD]
 
-    # 사립 중·고 홈페이지 (하루 한 번)
-    school_alerts: list[str] = []
-    school_summary = None
+    # 교육청·교육지원청 누리집 (매번) + 사립 중·고 홈페이지 (하루 한 번)
+    summaries: list[str] = []
+
+    def run_scan(label: str, key: str, runner) -> None:
+        try:
+            scan_alerts, scan_status, scan_summary, healthy = runner()
+            if scan_summary:
+                summaries.append(scan_summary)
+            alerts.extend(scan_alerts)
+            if not healthy:
+                raise RuntimeError(scan_status.split(": ", 1)[-1])
+            state["fails"][key] = 0
+            status_lines.append(f"✅ {scan_status}")
+        except Exception as exc:  # noqa: BLE001
+            state["fails"][key] = state["fails"].get(key, 0) + 1
+            status_lines.append(f"❌ {label}: {exc}")
+            if state["fails"][key] >= FAILS_BEFORE_ALERT:
+                errors.append(f"{label} {state['fails'][key]}회 연속 실패: {exc}")
+            print(f"[{label}] 실패: {exc}", file=sys.stderr)
+
+    if "--no-offices" not in sys.argv:
+        run_scan("교육청·교육지원청 누리집", "office", lambda: run_office_scan(state, today))
+
     neis_key = os.environ.get("NEIS_API_KEY", "").strip()
     if not neis_key:
         status_lines.append("⏸ 사립 중·고 홈페이지: NEIS_API_KEY 없음(건너뜀)")
     elif state.get("school_scan_date") == today.isoformat() and "--force-schools" not in sys.argv:
         status_lines.append("⏭ 사립 중·고 홈페이지: 오늘 이미 확인함")
     else:
-        try:
-            school_alerts, school_status, school_summary, healthy = run_school_scan(neis_key, state, today)
-            if not healthy:
-                raise RuntimeError(school_status.split(": ", 1)[-1])
-            state["fails"]["school"] = 0
-            status_lines.append(f"✅ {school_status}")
-        except Exception as exc:  # noqa: BLE001
-            state["fails"]["school"] = state["fails"].get("school", 0) + 1
-            status_lines.append(f"❌ 사립 중·고 홈페이지: {exc}")
-            if state["fails"]["school"] >= FAILS_BEFORE_ALERT:
-                errors.append(f"사립 중·고 홈페이지 {state['fails']['school']}회 연속 실패: {exc}")
-            print(f"[사립 중·고 홈페이지] 실패: {exc}", file=sys.stderr)
-    alerts.extend(school_alerts)
+        run_scan("사립 중·고 홈페이지", "school", lambda: run_school_scan(neis_key, state, today))
 
     outgoing: list[str] = []
     if is_initial:
@@ -712,8 +866,7 @@ def main() -> int:
             + f"\n키워드: {html.escape(', '.join(KEYWORDS))}"
             + f"\n최근 {FIRST_RUN_LOOKBACK_DAYS}일 안의 관련 글 {len(alerts)}건을 이어서 보냅니다."
         )
-    if school_summary:
-        outgoing.append(school_summary)
+    outgoing.extend(summaries)
     outgoing.extend(alerts)
 
     if errors:

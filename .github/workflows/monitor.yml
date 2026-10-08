@@ -17,7 +17,7 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 25           # 사립학교 홈페이지 확인은 monitor.py 안에서 10분을 넘기면 스스로 멈춤
+    timeout-minutes: 40           # 누리집 확인(교육청 묶음, 학교 묶음)은 monitor.py 안에서 각각 12분을 넘기면 스스로 멈춤
     steps:
       - uses: actions/checkout@v4
 

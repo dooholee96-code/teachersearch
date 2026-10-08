@@ -109,8 +109,10 @@ class Harness:
     def __init__(self, monkeypatch, tmp_path):
         self.pages: dict[str, str] = {}   # 교육청 게시판: URL 일부 → HTML
         self.sites: dict = {}             # 학교 홈페이지: URL 앞부분 → HTML | (최종URL, HTML) | 예외
-        self.neis_rows: list[dict] = []
+        self.neis_rows: list[dict] = []   # 전북(P10) 사립학교
+        self.neis_other: dict[str, list[dict]] = {}  # 다른 지역: 교육청 코드 → 학교들
         self.neis_calls = 0
+        self.offices = False              # True 면 교육청·교육지원청 누리집도 확인
         self.sent: list[str] = []
         self.state_file = tmp_path / "seen.json"
 
@@ -158,7 +160,9 @@ class Harness:
 
     def _neis(self, params):
         self.neis_calls += 1
-        rows = self.neis_rows
+        rows = self.neis_rows if params["ATPT_OFCDC_SC_CODE"] == "P10" else self.neis_other.get(params["ATPT_OFCDC_SC_CODE"], [])
+        if not rows:
+            return {"RESULT": {"CODE": "INFO-200", "MESSAGE": "해당하는 데이터가 없습니다."}}
         return {"schoolInfo": [{"head": [{"list_total_count": len(rows)}, {"RESULT": {"CODE": "INFO-000"}}]}, {"row": rows}]}
 
     def enable_schools(self):
@@ -166,6 +170,8 @@ class Harness:
 
     def run(self, *args):
         self.sent.clear()
+        if not self.offices:
+            args = ("--no-offices", *args)
         self.monkeypatch.setattr(monitor.sys, "argv", ["monitor.py", *args])
         assert monitor.main() == 0
         return list(self.sent)
@@ -419,17 +425,17 @@ def test_school_first_scan(h):
     sent = h.run()
 
     summary = next(m for m in sent if "사립 중·고 홈페이지 첫 확인" in m)
-    assert "대상 6곳 (중 3, 고 3)" in summary
-    assert "정상 4곳" in summary and "접속 실패 1곳: 접속실패고등학교" in summary and "주소 없음 1곳" in summary
+    assert "대상 6곳 (중 3, 고 3; 전북 6)" in summary
+    assert "정상 4곳" in summary and "접속 실패 1곳: [전북] 접속실패고등학교" in summary and "주소 없음 1곳" in summary
 
     school = [m for m in sent if m.startswith("🏫🎨") or m.startswith("🏫🟡")]
     assert len(school) == 2
     joined = "\n".join(school)
-    assert "우석고등학교 · 우석중학교" in joined          # 같은 글은 한 번만, 학교 이름은 합쳐서
+    assert "[전북] 우석고등학교 · [전북] 우석중학교" in joined   # 같은 글은 한 번만, 학교 이름은 합쳐서
     assert "2027학년도 미술 교사 채용 공고" in joined
     assert "2027학년도 미술과 기간제 교원 채용 공고" in joined  # 옛날식 사이트도 따라감
     assert "2024학년도" not in joined and "동아리" not in joined
-    assert h.neis_calls == 1
+    assert h.neis_calls == 3  # 전북·대전·충남 한 번씩
 
 
 def test_school_scan_runs_once_a_day_and_reports_new_posts(h):
@@ -449,7 +455,7 @@ def test_school_scan_runs_once_a_day_and_reports_new_posts(h):
     assert len(sent) == 2
     assert sent[0].startswith("🏫🎨") and "미술 시간강사 모집 공고" in sent[0]
     assert sent[1].startswith("🏫🟡") and "원광중학교" in sent[1]
-    assert h.neis_calls == 1  # 학교 목록은 일주일 동안 저장본 사용
+    assert h.neis_calls == 3  # 학교 목록은 일주일 동안 저장본 사용
 
 
 def test_school_majority_failure_still_alerts_and_retries(h):
@@ -470,7 +476,7 @@ def test_school_majority_failure_still_alerts_and_retries(h):
 
 def test_school_scan_stops_when_time_budget_is_over(h, monkeypatch):
     setup_schools(h)
-    monkeypatch.setattr(monitor, "SCHOOL_SCAN_BUDGET_SEC", -1)  # 시작하자마자 시간 초과
+    monkeypatch.setattr(monitor, "SITE_SCAN_BUDGET_SEC", -1)  # 시작하자마자 시간 초과
 
     sent = h.run()
 
@@ -499,3 +505,131 @@ def test_without_neis_key_school_scan_is_skipped(h):
     sent = h.run()
     assert "NEIS_API_KEY 없음" in sent[0]
     assert "schools" not in h.state()
+
+
+# ─────────────────────────── 교육청·교육지원청 누리집, 대전·충남 ───────────────────────────
+def office_home(base, menus):
+    """교육지원청 첫 화면. menus: (메뉴 이름, 경로)"""
+    nav = "".join(
+        f'<li><a href="{path if path.startswith("http") else base + path}">{name}</a></li>' for name, path in menus
+    )
+    nav += "".join(f'<li><a href="{base}/M{i}/index.do">메뉴{i}</a></li>' for i in range(12))
+    return f"<html><body><ul>{nav}</ul><p>교육지원청에 오신 것을 환영합니다</p></body></html>"
+
+
+def office_board(base, posts):
+    rows = "".join(f'<tr><td><a href="{base}/view/{pid}">{t}</a></td><td>2026.10.01</td></tr>' for pid, t in posts)
+    return f"<html><body><table>{rows}</table></body></html>"
+
+
+TEST_OFFICES = [
+    {"code": "office:office.jbedu.kr/jeonjuedu", "name": "전주교육지원청", "region": "전북",
+     "url": "https://office.jbedu.kr/jeonjuedu/", "kind": "office"},
+    {"code": "office:www.dje.go.kr", "name": "대전광역시교육청", "region": "대전",
+     "url": "https://www.dje.go.kr/main.do", "kind": "office"},
+    {"code": "office:www.cncae.go.kr", "name": "천안교육지원청", "region": "충남",
+     "url": "https://www.cncae.go.kr/", "kind": "office"},
+]
+
+
+def setup_offices(h, monkeypatch):
+    h.offices = True
+    monkeypatch.setattr(monitor, "OFFICE_SITES", TEST_OFFICES)
+    jj = "https://office.jbedu.kr/jeonjuedu"
+    h.sites[jj + "/M01050902"] = office_board(jj + "/M01050902", [
+        (11, "2026학년도 전주○○중학교 기간제교사 채용 공고(미술)"),
+        (10, "2026학년도 전주△△고등학교 기간제교사 채용 공고(국어)"),
+        (9, "2025학년도 전주□□중학교 기간제교사(미술) 채용 공고"),   # 작년 글 → 처음엔 제외
+    ])
+    h.sites[jj + "/M01050901"] = office_board(jj + "/M01050901", [(5, "2026학년도 전주◇◇초등학교 기간제교사 채용 공고(미술)")])
+    h.sites[jj + "/M0105090303"] = office_board(jj + "/M0105090303", [])
+    h.sites[jj] = office_home(jj, [
+        ("학교채용공고(유/초등)", "/M01050901/index.do"), ("학교채용공고(중등)", "/M01050902/index.do"),
+        ("기간제교사(중등)", "/M0105090303/index.do"), ("미술관 안내", "/M0199/index.do"),
+    ])
+    dj = "https://www.dje.go.kr"
+    h.sites[dj + "/board/gosi"] = office_board(dj + "/board/gosi", [
+        (3, "2027학년도 대전광역시 공·사립 중등학교교사 임용후보자 선정경쟁시험 시행계획 공고"),
+        (2, "2027학년도 대전광역시 공립 유치원·초등학교 교사 임용후보자 선정경쟁시험 시행계획 공고"),
+        (1, "학교용지 매각 입찰 공고"),
+    ])
+    h.sites[dj + "/board/gigan"] = office_board(dj + "/board/gigan", [(7, "우송고등학교 2026학년도 기간제교원(수학) 채용 공고")])
+    h.sites[dj + "/main.do"] = office_home(dj, [("고시·공고", "/board/gosi"), ("기간제교사", "/board/gigan"), ("학교인력 채용공고", "/board/gigan")])
+    h.sites["https://www.cncae.go.kr"] = RuntimeError("Connection timed out")
+
+
+def test_office_scan_reports_art_and_exam_posts_with_region(h, monkeypatch):
+    setup_offices(h, monkeypatch)
+    sent = h.run()
+
+    summary = next(m for m in sent if "교육청·교육지원청 누리집 첫 확인" in m)
+    assert "대상 3곳 (전북 1, 대전 1, 충남 1)" in summary
+    assert "정상 2곳" in summary and "접속 실패 1곳: [충남] 천안교육지원청" in summary
+
+    office = [m for m in sent if m.startswith(("🏢🎨", "🏢📢", "🏢🟡"))]
+    assert len(office) == 3
+    art = [m for m in office if "🎨" in m]
+    assert all("[전북] 전주교육지원청" in m for m in art)
+    assert any("전주○○중학교" in m for m in art) and any("전주◇◇초등학교" in m for m in art)  # 초등 미술 글도 일단 알림
+    exam = next(m for m in office if "📢" in m)
+    assert "[대전] 대전광역시교육청" in exam and "공·사립 중등학교교사 임용후보자" in exam
+    joined = "\n".join(sent)
+    assert "2025학년도" not in joined and "유치원·초등학교" not in joined and "국어" not in joined and "수학" not in joined
+
+    # 이후 실행에서는 새 글만. 교육청 누리집은 저녁에도 확인한다 (학교는 하루 1번)
+    assert h.run() == []
+    jj = "https://office.jbedu.kr/jeonjuedu"
+    h.sites[jj + "/M01050902"] = office_board(jj + "/M01050902", [(12, "2026학년도 2학기 전주☆☆고 미술 시간강사 채용 공고")])
+    again = h.run()
+    assert len(again) == 1 and "미술 시간강사" in again[0] and again[0].startswith("🏢🎨")
+
+
+def test_office_menus_prefer_secondary_and_hiring_menus_and_stay_on_same_site(h):
+    from bs4 import BeautifulSoup
+    base = "https://office.jbedu.kr/jeonjuedu"
+    page = office_home(base, [
+        ("고시공고", "/a"), ("학교채용공고(유/초등)", "/b"), ("학교채용공고(중등)", "/c"),
+        ("구인구직", "/d"), ("채용 외부 사이트", "https://edurecruit.go.kr/x"), ("학교찾기", "https://school.jbedu.kr/find"),
+    ])
+    menus = monitor.hiring_menus(base + "/", BeautifulSoup(page, "html.parser"), "office")
+    assert menus[0] == base + "/c" and base + "/b" in menus and base + "/a" in menus
+    assert "edurecruit" not in " ".join(menus)
+    assert monitor.same_site("www.dje.go.kr", "dje.go.kr")
+    assert monitor.same_site("office.jbedu.kr", "school.jbedu.kr")
+    assert not monitor.same_site("www.dje.go.kr", "www.cne.go.kr")
+
+
+@pytest.mark.parametrize("title, kind, expected", [
+    ("2027학년도 충청남도 공립 중등학교 교사 임용후보자 선정경쟁시험 시행계획 공고", "office", "exam"),
+    ("2027학년도 공립 유치원·초등학교 교사 임용후보자 선정경쟁시험 시행계획 공고", "office", None),
+    ("2027학년도 중등학교교사 임용시험 사전 예고", "office", "exam"),
+    ("2026년 교육공무원 임용 관련 서류 안내", "office", None),            # 시험 공고가 아님
+    ("2027학년도 중등학교교사 임용후보자 선정경쟁시험 시행계획 공고", "school", None),  # 학교 홈페이지에선 보지 않음
+    ("음봉중학교 기간제 교원(미술) 채용 공고", "office", "match"),
+])
+def test_classify_site_title_office(title, kind, expected):
+    assert monitor.classify_site_title(title, kind) == expected
+
+
+def test_school_list_covers_daejeon_and_chungnam_and_refreshes_when_regions_change(h):
+    setup_schools(h)
+    h.neis_other["G10"] = [neis_row("우송고등학교", "고등학교", "d1", "http://woosong.hs.kr")]
+    h.neis_other["N10"] = [neis_row("천안○○고등학교", "고등학교", "c1", "http://cheonan.hs.kr")]
+    h.sites["http://woosong.hs.kr"] = platform_home("woosong", [(1, "2027학년도 미술 교사 채용 공고")])
+    h.sites["http://cheonan.hs.kr"] = platform_home("cheonan", [(1, "2027학년도 신규교사 채용 공고")])
+
+    sent = h.run()
+    summary = next(m for m in sent if "사립 중·고 홈페이지 첫 확인" in m)
+    assert "대상 8곳 (중 3, 고 5; 전북 6, 대전 1, 충남 1)" in summary
+    assert any("[대전] 우송고등학교" in m and "🏫🎨" in m for m in sent)
+    assert not any("천안○○고등학교" in m for m in sent)  # 과목 미기재 글은 처음 볼 땐 보내지 않음
+    assert h.state()["schools"]["regions"] == ["전북", "대전", "충남"]
+
+    # 예전 버전(전북만)에서 저장한 목록은 감시 지역이 달라졌으니 일주일을 기다리지 않고 바로 새로 받는다
+    state = h.state()
+    state["schools"] = {"updated": "2026-09-29", "list": [s for s in state["schools"]["list"] if s["region"] == "전북"]}
+    h.state_file.write_text(json.dumps(state, ensure_ascii=False), encoding="utf-8")
+    calls_before = h.neis_calls
+    h.run("--force-schools")
+    assert h.neis_calls == calls_before + 3
+    assert len(h.state()["schools"]["list"]) == 8
