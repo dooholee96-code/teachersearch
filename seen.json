@@ -319,6 +319,47 @@
    "1175672"
   ],
   "school": [
+   "26e21872548c310e",
+   "015a1b2e58e05154",
+   "5e45da46fcc43499",
+   "cf6a2c9275cc69dd",
+   "dd066214b377f803",
+   "d1cf88d3305e4ff8",
+   "b6b99fcc35d31962",
+   "6bde582c67cb3297",
+   "370f901478cba268",
+   "c65c66025d1cef25",
+   "543d8c61875d1c03",
+   "00f5cc1ca389fa02",
+   "0122000c9a6c0fef",
+   "53729464b3b30081",
+   "c1495674442fe671",
+   "d752f7da97bd0bb9",
+   "b3e91acb2d7d669e",
+   "ad6bdcb3ca018214",
+   "771a325254f326bc",
+   "903244aab1a2c15f",
+   "58b6547cfc08686f",
+   "f2913b889b24b134",
+   "8e67f27931516ca4",
+   "3dd8e67562bdf681",
+   "554ad453b650c8ec",
+   "45c026ef38984135",
+   "11c8c7d447b1f909",
+   "7883af925882e714",
+   "2cb83a3586e89b2b",
+   "352ad8d947523c82",
+   "e1a20ea5c0466bb7",
+   "79166d402682b145",
+   "f6e47192c5fc3ef9",
+   "b8e5166e5f2e55c2",
+   "76513ec18b5506c3",
+   "3b7c567d9baa05f6",
+   "e1b244cb526fee51",
+   "9c440e0cccba1e5e",
+   "6c02c4fe866fbcc4",
+   "e0ff798125ab479e",
+   "d46d6eb08b34e67b",
    "e4227f3729b052e2",
    "40e28e026c38bf08",
    "156afa1cd8994796",
@@ -373,9 +414,180 @@
   "preplan": 0,
   "exam": 0,
   "gosi": 0,
-  "office": 0
+  "office": 0,
+  "school": 0
  },
  "schools_scanned": [
+  "7430046",
+  "7430049",
+  "7430051",
+  "7430052",
+  "7430053",
+  "7430056",
+  "7430057",
+  "7430059",
+  "7430060",
+  "7430061",
+  "7430062",
+  "7430064",
+  "7430065",
+  "7430066",
+  "7430067",
+  "7430083",
+  "7430133",
+  "7430138",
+  "7430140",
+  "7430240",
+  "7430242",
+  "7430244",
+  "7430256",
+  "7430324",
+  "7430325",
+  "7430326",
+  "7430329",
+  "7441018",
+  "7441028",
+  "7441032",
+  "7441034",
+  "7441037",
+  "7441039",
+  "7441041",
+  "7441046",
+  "7441263",
+  "7441264",
+  "7441266",
+  "7441277",
+  "7451022",
+  "7451035",
+  "7451052",
+  "7451053",
+  "8140080",
+  "8140082",
+  "8140085",
+  "8140086",
+  "8140087",
+  "8140088",
+  "8140089",
+  "8140090",
+  "8140091",
+  "8140093",
+  "8140094",
+  "8140095",
+  "8140096",
+  "8140098",
+  "8140100",
+  "8140101",
+  "8140104",
+  "8140107",
+  "8140108",
+  "8140152",
+  "8140160",
+  "8140196",
+  "8140197",
+  "8140209",
+  "8140270",
+  "8140271",
+  "8140344",
+  "8140358",
+  "8140360",
+  "8140366",
+  "8140461",
+  "8140500",
+  "8140501",
+  "8140509",
+  "8151025",
+  "8151027",
+  "8151029",
+  "8151030",
+  "8151236",
+  "8151265",
+  "8161016",
+  "8161017",
+  "8161019",
+  "8171016",
+  "8181014",
+  "8181015",
+  "8181180",
+  "8191010",
+  "8191015",
+  "8191016",
+  "8191017",
+  "8191019",
+  "8222014",
+  "8222015",
+  "8222016",
+  "8222018",
+  "8222115",
+  "8231014",
+  "8231015",
+  "8231016",
+  "8241010",
+  "8241011",
+  "8241012",
+  "8251009",
+  "8251010",
+  "8261013",
+  "8261015",
+  "8271011",
+  "8271012",
+  "8271013",
+  "8271014",
+  "8291012",
+  "8291013",
+  "8291014",
+  "8291015",
+  "8291016",
+  "8321090",
+  "8321095",
+  "8321098",
+  "8321100",
+  "8321105",
+  "8321116",
+  "8321117",
+  "8321118",
+  "8321125",
+  "8321126",
+  "8321129",
+  "8321130",
+  "8321133",
+  "8321135",
+  "8321141",
+  "8321143",
+  "8321146",
+  "8321156",
+  "8321157",
+  "8321161",
+  "8321164",
+  "8321172",
+  "8321173",
+  "8321175",
+  "8321180",
+  "8321185",
+  "8321196",
+  "8321200",
+  "8321237",
+  "8321270",
+  "8332227",
+  "8332228",
+  "8332230",
+  "8332234",
+  "8332235",
+  "8342145",
+  "8342146",
+  "8352158",
+  "8352160",
+  "8352161",
+  "8352165",
+  "8362091",
+  "8362093",
+  "8362096",
+  "8382092",
+  "8392085",
+  "8452059",
+  "8452060",
+  "8452061",
+  "8462060",
+  "8462061",
   "office:office.jbedu.kr/gce",
   "office:office.jbedu.kr/jbbae",
   "office:office.jbedu.kr/jbgje",
@@ -444,5 +656,1860 @@
    "deadline": null,
    "note": ""
   }
- ]
+ ],
+ "schools": {
+  "updated": "2026-10-09",
+  "regions": [
+   "전북",
+   "대전",
+   "충남"
+  ],
+  "list": [
+   {
+    "code": "8321199",
+    "name": "강호항공고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://kangho.hs.kr"
+   },
+   {
+    "code": "8321200",
+    "name": "고창북고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "gochangbuk.hs.kr"
+   },
+   {
+    "code": "8321118",
+    "name": "군산영광여자고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/higlory/"
+   },
+   {
+    "code": "8321115",
+    "name": "군산제일고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://ksjeil.hs.kr"
+   },
+   {
+    "code": "8321116",
+    "name": "군산중앙고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/gs-jungang/"
+   },
+   {
+    "code": "8321117",
+    "name": "군산중앙여자고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "gunsan.hs.kr"
+   },
+   {
+    "code": "8321236",
+    "name": "글로벌학산고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.h-s.hs.kr"
+   },
+   {
+    "code": "8321162",
+    "name": "김제서고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://kimjeseo.hs.kr"
+   },
+   {
+    "code": "8321125",
+    "name": "남성고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/namsung"
+   },
+   {
+    "code": "8321155",
+    "name": "남원국악예술고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "www.nwit.hs.kr"
+   },
+   {
+    "code": "8321275",
+    "name": "남원서진고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://seojin.hs.kr"
+   },
+   {
+    "code": "8321156",
+    "name": "남원제일고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://school.jbedu.kr/nfirst"
+   },
+   {
+    "code": "8321163",
+    "name": "덕암고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "www.deogamgo.hs.kr"
+   },
+   {
+    "code": "8321164",
+    "name": "덕암정보고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.deogam.hs.kr"
+   },
+   {
+    "code": "8321161",
+    "name": "동국대학교사범대학부속금산고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/ksch"
+   },
+   {
+    "code": "8321089",
+    "name": "동암고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.dongam.hs.kr"
+   },
+   {
+    "code": "8321165",
+    "name": "만경고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://mankyung.hs.kr"
+   },
+   {
+    "code": "8321166",
+    "name": "만경여자고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.mangyeong-g.hs.kr/"
+   },
+   {
+    "code": "8321140",
+    "name": "배영고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.baeyoung.hs.kr"
+   },
+   {
+    "code": "8321208",
+    "name": "백산고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.backsan.hs.kr"
+   },
+   {
+    "code": "8321238",
+    "name": "백화고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://baekhwa.hs.kr"
+   },
+   {
+    "code": "8321209",
+    "name": "부안여자고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "www.nangju.hs.kr"
+   },
+   {
+    "code": "8321090",
+    "name": "상산고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.jb-sangsan.hs.kr/"
+   },
+   {
+    "code": "8321141",
+    "name": "서영여자고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.seoyoung.hs.kr"
+   },
+   {
+    "code": "8321157",
+    "name": "성원고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.seongwon.hs.kr/"
+   },
+   {
+    "code": "8321126",
+    "name": "성일고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.seongil.hs.kr"
+   },
+   {
+    "code": "8321172",
+    "name": "세인고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.seine.hs.kr"
+   },
+   {
+    "code": "8321196",
+    "name": "순창고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://sunchang.hs.kr"
+   },
+   {
+    "code": "8321142",
+    "name": "신태인고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.sintaein.hs.kr"
+   },
+   {
+    "code": "8321092",
+    "name": "완산고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://wansango.hs.kr"
+   },
+   {
+    "code": "8321093",
+    "name": "완산여자고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://wansan.hs.kr"
+   },
+   {
+    "code": "8321173",
+    "name": "완주고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://wanju.hs.kr"
+   },
+   {
+    "code": "8321143",
+    "name": "왕신여자고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.wsh.hs.kr"
+   },
+   {
+    "code": "8321094",
+    "name": "우석고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.woosuk.hs.kr"
+   },
+   {
+    "code": "8321127",
+    "name": "원광고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.wonkwang.hs.kr"
+   },
+   {
+    "code": "8321129",
+    "name": "원광보건고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "school.jbedu.kr/wkh"
+   },
+   {
+    "code": "8321128",
+    "name": "원광여자고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.wonkwang-gh.hs.kr/"
+   },
+   {
+    "code": "8321095",
+    "name": "유일여자고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/yuil/"
+   },
+   {
+    "code": "8321130",
+    "name": "이리남성여자고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/namsungg/"
+   },
+   {
+    "code": "8321131",
+    "name": "이일여자고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.21.hs.kr"
+   },
+   {
+    "code": "8321132",
+    "name": "익산고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.iksan.hs.kr"
+   },
+   {
+    "code": "8321144",
+    "name": "인상고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.insang.hs.kr"
+   },
+   {
+    "code": "8321237",
+    "name": "자유고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/jayu_hs"
+   },
+   {
+    "code": "8321096",
+    "name": "전북여자고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/jbg"
+   },
+   {
+    "code": "8321270",
+    "name": "전북인공지능고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/jbaihs"
+   },
+   {
+    "code": "8321133",
+    "name": "전북제일고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://jbjeil.hs.kr"
+   },
+   {
+    "code": "8321097",
+    "name": "전일고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.jeonil.hs.kr"
+   },
+   {
+    "code": "8321098",
+    "name": "전주근영여자고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/geunyoung"
+   },
+   {
+    "code": "8321099",
+    "name": "전주기전여자고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "kijun.hs.kr"
+   },
+   {
+    "code": "8321091",
+    "name": "전주대학교사범대학부설고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.jjbugo.hs.kr"
+   },
+   {
+    "code": "8321100",
+    "name": "전주성심여자고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.sungsim.hs.kr"
+   },
+   {
+    "code": "8321101",
+    "name": "전주신흥고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "jsh.hs.kr"
+   },
+   {
+    "code": "8321102",
+    "name": "전주영생고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "www.youngsaeng.hs.kr"
+   },
+   {
+    "code": "8321174",
+    "name": "전주예술고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.fineart.hs.kr"
+   },
+   {
+    "code": "8321103",
+    "name": "전주중앙여자고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://jungang.hs.kr"
+   },
+   {
+    "code": "8321104",
+    "name": "전주한일고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.hanilgo.hs.kr/"
+   },
+   {
+    "code": "8321105",
+    "name": "전주해성고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/jhs"
+   },
+   {
+    "code": "8321145",
+    "name": "정주고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://jb-chongju.hs.kr"
+   },
+   {
+    "code": "8321167",
+    "name": "지평선고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/jipyeongseon-h"
+   },
+   {
+    "code": "8321134",
+    "name": "진경여자고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "school.jbedu.kr/jingyeong/"
+   },
+   {
+    "code": "8321146",
+    "name": "태인고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.taein.hs.kr"
+   },
+   {
+    "code": "8321185",
+    "name": "푸른꿈고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.purunkum.hs.kr"
+   },
+   {
+    "code": "8321175",
+    "name": "한국게임과학고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/game"
+   },
+   {
+    "code": "8321190",
+    "name": "한국마사고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://www.koreamasa.hs.kr"
+   },
+   {
+    "code": "8321180",
+    "name": "한국한방고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/khb"
+   },
+   {
+    "code": "8321135",
+    "name": "함열여자고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/hygchs"
+   },
+   {
+    "code": "8321148",
+    "name": "호남고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "www.honam.hs.kr"
+   },
+   {
+    "code": "8321106",
+    "name": "호남제일고등학교",
+    "kind": "고등학교",
+    "region": "전북",
+    "url": "http://school.jbedu.kr/no1"
+   },
+   {
+    "code": "8452062",
+    "name": "고창남중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "www.gochangnam.ms.kr"
+   },
+   {
+    "code": "8452061",
+    "name": "고창북중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://gochangbuk.ms.kr"
+   },
+   {
+    "code": "8342145",
+    "name": "군산대성중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://gd.ms.kr"
+   },
+   {
+    "code": "8342146",
+    "name": "군산영광중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/glory"
+   },
+   {
+    "code": "8342148",
+    "name": "군산제일중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://ksjeil.ms.kr/"
+   },
+   {
+    "code": "8342147",
+    "name": "군산중앙중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "school.jbedu.kr/kunsanja"
+   },
+   {
+    "code": "8382087",
+    "name": "금성중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "jb-gumsung.ms.kr"
+   },
+   {
+    "code": "8352158",
+    "name": "남성중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "jb-namsung.ms.kr"
+   },
+   {
+    "code": "8462058",
+    "name": "낭주중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/nangju-m"
+   },
+   {
+    "code": "8382088",
+    "name": "덕암중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://www.deogam.ms.kr"
+   },
+   {
+    "code": "8382091",
+    "name": "동국대학교사범대학부속금산중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/kumsan"
+   },
+   {
+    "code": "8382089",
+    "name": "만경여자중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://oksan.ms.kr"
+   },
+   {
+    "code": "8382090",
+    "name": "만경중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://mangyeong.ms.kr"
+   },
+   {
+    "code": "8362091",
+    "name": "배영중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "www.baeyoung.ms.kr"
+   },
+   {
+    "code": "8462060",
+    "name": "백산중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/whitesan/"
+   },
+   {
+    "code": "8462061",
+    "name": "변산서중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://bss.ms.kr"
+   },
+   {
+    "code": "8462059",
+    "name": "삼남중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://www.samnam.ms.kr/"
+   },
+   {
+    "code": "8392083",
+    "name": "삼우중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "www.samwu.ms.kr"
+   },
+   {
+    "code": "8442041",
+    "name": "순창북중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://www.sucbuk.ms.kr"
+   },
+   {
+    "code": "8362094",
+    "name": "신태인중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://www.sintaein.ms.kr"
+   },
+   {
+    "code": "8452060",
+    "name": "영선중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://www.ysite.ms.kr/"
+   },
+   {
+    "code": "8332233",
+    "name": "완산중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://www.wansan.ms.kr"
+   },
+   {
+    "code": "8362095",
+    "name": "왕신여자중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "www.wangsin.ms.kr"
+   },
+   {
+    "code": "8372073",
+    "name": "용북중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://yongbuk.ms.kr"
+   },
+   {
+    "code": "8352162",
+    "name": "원광여자중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/wonkwang"
+   },
+   {
+    "code": "8352160",
+    "name": "원광중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/wk"
+   },
+   {
+    "code": "8352161",
+    "name": "이리남성여자중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://namsung-g.ms.kr"
+   },
+   {
+    "code": "8352159",
+    "name": "이리중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://irijung.ms.kr"
+   },
+   {
+    "code": "8352163",
+    "name": "이일여자중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "www.i-il.ms.kr"
+   },
+   {
+    "code": "8362096",
+    "name": "이평중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/ipyeong"
+   },
+   {
+    "code": "8352165",
+    "name": "익산중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/iksan-m"
+   },
+   {
+    "code": "8452059",
+    "name": "자유중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/jayu"
+   },
+   {
+    "code": "8332227",
+    "name": "전북중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://jeonbuk.ms.kr"
+   },
+   {
+    "code": "8332228",
+    "name": "전주근영중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://geunyeong.ms.kr"
+   },
+   {
+    "code": "8332229",
+    "name": "전주기전중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "kijeon.ms.kr"
+   },
+   {
+    "code": "8332230",
+    "name": "전주덕진중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/deokjin"
+   },
+   {
+    "code": "8332231",
+    "name": "전주성심여자중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "www.seongsim.ms.kr"
+   },
+   {
+    "code": "8332232",
+    "name": "전주신흥중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://www.jb-shinheung.ms.kr"
+   },
+   {
+    "code": "8392085",
+    "name": "전주예술중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://www.fineart.ms.kr"
+   },
+   {
+    "code": "8332234",
+    "name": "전주해성중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "school.jbedu.kr/hsm"
+   },
+   {
+    "code": "8332235",
+    "name": "전주효문중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/hyomoon-m"
+   },
+   {
+    "code": "8382092",
+    "name": "지평선중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/jipyeongseon-m"
+   },
+   {
+    "code": "8352167",
+    "name": "진경여자중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://jingyeong.ms.kr"
+   },
+   {
+    "code": "8362097",
+    "name": "태인중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://taein.ms.kr"
+   },
+   {
+    "code": "8362092",
+    "name": "학산중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://haksan.ms.kr/"
+   },
+   {
+    "code": "8352164",
+    "name": "함열여자중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://hamyol60.ms.kr"
+   },
+   {
+    "code": "8362093",
+    "name": "호남중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "https://school.jbedu.kr/honam"
+   },
+   {
+    "code": "8392084",
+    "name": "화산중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://jb-hs.ms.kr"
+   },
+   {
+    "code": "8352166",
+    "name": "황등중학교",
+    "kind": "중학교",
+    "region": "전북",
+    "url": "http://hdms.ms.kr"
+   },
+   {
+    "code": "7430324",
+    "name": "계룡디지텍고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://krdhs.djsch.kr"
+   },
+   {
+    "code": "7430046",
+    "name": "남대전고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://ndjhs.djsch.kr/"
+   },
+   {
+    "code": "7430325",
+    "name": "대전대성고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://daeseong.hs.kr/"
+   },
+   {
+    "code": "7430326",
+    "name": "대전대성여자고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://dsghs.djsch.kr"
+   },
+   {
+    "code": "7430048",
+    "name": "대전대신고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "dshs.kr"
+   },
+   {
+    "code": "7430049",
+    "name": "대전동산고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://djdongsanhs.djsch.kr"
+   },
+   {
+    "code": "7430329",
+    "name": "대전생활과학고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://djpshs.djsch.kr"
+   },
+   {
+    "code": "7430051",
+    "name": "대전성모여자고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://seongmohs.djsch.kr"
+   },
+   {
+    "code": "7430133",
+    "name": "대전신일여자고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://shinilhs.djsch.kr"
+   },
+   {
+    "code": "7430083",
+    "name": "대전여자상업고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "aramhs.djsch.kr"
+   },
+   {
+    "code": "7430053",
+    "name": "대전예술고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://daejeonartshs.djsch.kr/"
+   },
+   {
+    "code": "7430240",
+    "name": "대전이문고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://imunhs.djsch.kr"
+   },
+   {
+    "code": "7430242",
+    "name": "대전제일고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "jeilhs.djsch.kr"
+   },
+   {
+    "code": "7430052",
+    "name": "대전중앙고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://djjahs.djsch.kr"
+   },
+   {
+    "code": "7430138",
+    "name": "대전한빛고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://hanviths.djsch.kr"
+   },
+   {
+    "code": "7430244",
+    "name": "동방고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://dbhs.djsch.kr"
+   },
+   {
+    "code": "7430256",
+    "name": "동아마이스터고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://dongahs.djsch.kr"
+   },
+   {
+    "code": "7430056",
+    "name": "명석고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://mshs.djsch.kr/"
+   },
+   {
+    "code": "7430057",
+    "name": "보문고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://bomoonhs.djsch.kr"
+   },
+   {
+    "code": "7430059",
+    "name": "서대전고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://sdjhs.djsch.kr"
+   },
+   {
+    "code": "7430060",
+    "name": "서대전여자고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://seodaejeonhs.djsch.kr"
+   },
+   {
+    "code": "7430061",
+    "name": "서일고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://seoilhs.djsch.kr"
+   },
+   {
+    "code": "7430062",
+    "name": "서일여자고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "https://seoil-ghs.djsch.kr/"
+   },
+   {
+    "code": "7430140",
+    "name": "우송고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://wshs.djsch.kr"
+   },
+   {
+    "code": "7430064",
+    "name": "유성여자고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://yuseongghs.djsch.kr"
+   },
+   {
+    "code": "7430065",
+    "name": "중일고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://jungilhs.djsch.kr"
+   },
+   {
+    "code": "7430066",
+    "name": "청란여자고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "https://chranhs.djsch.kr"
+   },
+   {
+    "code": "7430067",
+    "name": "호수돈여자고등학교",
+    "kind": "고등학교",
+    "region": "대전",
+    "url": "http://holstonhs.djsch.kr"
+   },
+   {
+    "code": "7441266",
+    "name": "대전경덕중학교",
+    "kind": "중학교",
+    "region": "대전",
+    "url": "http://gdms.djsch.kr"
+   },
+   {
+    "code": "7441263",
+    "name": "대전대성여자중학교",
+    "kind": "중학교",
+    "region": "대전",
+    "url": "http://dsgms.djsch.kr/main.do"
+   },
+   {
+    "code": "7441264",
+    "name": "대전대성중학교",
+    "kind": "중학교",
+    "region": "대전",
+    "url": "http://dsmms.djsch.kr"
+   },
+   {
+    "code": "7451022",
+    "name": "대전대신중학교",
+    "kind": "중학교",
+    "region": "대전",
+    "url": "http://djdsms.djsch.kr/"
+   },
+   {
+    "code": "7441018",
+    "name": "대전동산중학교",
+    "kind": "중학교",
+    "region": "대전",
+    "url": "http://djdongsanms.djsch.kr"
+   },
+   {
+    "code": "7451035",
+    "name": "대전삼육중학교",
+    "kind": "중학교",
+    "region": "대전",
+    "url": "http://djsahmyookms.djsch.kr"
+   },
+   {
+    "code": "7441277",
+    "name": "대전신일중학교",
+    "kind": "중학교",
+    "region": "대전",
+    "url": "http://shinilms.djsch.kr/"
+   },
+   {
+    "code": "7441028",
+    "name": "대전중앙중학교",
+    "kind": "중학교",
+    "region": "대전",
+    "url": "http://jungangms.djsch.kr"
+   },
+   {
+    "code": "7441032",
+    "name": "동명중학교",
+    "kind": "중학교",
+    "region": "대전",
+    "url": "http://dongmyungms.djsch.kr"
+   },
+   {
+    "code": "7451052",
+    "name": "동방여자중학교",
+    "kind": "중학교",
+    "region": "대전",
+    "url": "https://dongbangms.djsch.kr"
+   },
+   {
+    "code": "7441034",
+    "name": "보문중학교",
+    "kind": "중학교",
+    "region": "대전",
+    "url": "http://bomoonms.djsch.kr"
+   },
+   {
+    "code": "7451053",
+    "name": "성덕중학교",
+    "kind": "중학교",
+    "region": "대전",
+    "url": "http://sungdukms.djsch.kr"
+   },
+   {
+    "code": "7441037",
+    "name": "신탄진중학교",
+    "kind": "중학교",
+    "region": "대전",
+    "url": "http://stjms.djsch.kr/"
+   },
+   {
+    "code": "7441039",
+    "name": "우송중학교",
+    "kind": "중학교",
+    "region": "대전",
+    "url": "http://woosongms.djsch.kr"
+   },
+   {
+    "code": "7441041",
+    "name": "청란여자중학교",
+    "kind": "중학교",
+    "region": "대전",
+    "url": "http://cheongranms.djsch.kr"
+   },
+   {
+    "code": "7441046",
+    "name": "호수돈여자중학교",
+    "kind": "중학교",
+    "region": "대전",
+    "url": "https://holstonms.djsch.kr/"
+   },
+   {
+    "code": "8140360",
+    "name": "건양대학교병설건양고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://konyang.cnehs.kr"
+   },
+   {
+    "code": "8140080",
+    "name": "공주금성여자고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "ksgh.cnehs.kr"
+   },
+   {
+    "code": "8140082",
+    "name": "공주영명고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://ymhigh.cnehs.kr/main.do"
+   },
+   {
+    "code": "8140196",
+    "name": "공주정보고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "kjis.cnehs.kr"
+   },
+   {
+    "code": "8140085",
+    "name": "논산대건고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "nonsandaegeon.cnehs.kr"
+   },
+   {
+    "code": "8140152",
+    "name": "논산여자상업고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://www.nonsan-gch.cnehs.kr"
+   },
+   {
+    "code": "8140086",
+    "name": "대흥고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://daeheung.cnehs.kr"
+   },
+   {
+    "code": "8140087",
+    "name": "복자여자고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://bokja.caehs.kr"
+   },
+   {
+    "code": "8140270",
+    "name": "북일고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "www.bugil.hs.kr"
+   },
+   {
+    "code": "8140271",
+    "name": "북일여자고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://www.bigs.hs.kr"
+   },
+   {
+    "code": "8140501",
+    "name": "비전고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://vision.cnehs.kr"
+   },
+   {
+    "code": "8140088",
+    "name": "삽교고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://sapgyo.cnehs.kr"
+   },
+   {
+    "code": "8140089",
+    "name": "서령고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://seoryeong.cnehs.kr"
+   },
+   {
+    "code": "8140090",
+    "name": "서야고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://seo-ya.cnehs.kr"
+   },
+   {
+    "code": "8140209",
+    "name": "서일고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://www.seoilgo.cnehs.kr/"
+   },
+   {
+    "code": "8140091",
+    "name": "서해삼육고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://seohae36.cnehs.kr"
+   },
+   {
+    "code": "8140093",
+    "name": "송악고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://songak.cnehs.kr"
+   },
+   {
+    "code": "8140094",
+    "name": "신평고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://sp.cnehs.kr"
+   },
+   {
+    "code": "8140095",
+    "name": "쌘뽈여자고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://stpaul.cnehs.kr"
+   },
+   {
+    "code": "8140096",
+    "name": "아산고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://www.asan.cnehs.kr"
+   },
+   {
+    "code": "8140098",
+    "name": "연무고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://yeonmu.cnehs.kr"
+   },
+   {
+    "code": "8140100",
+    "name": "예산고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://yesan.cnehs.kr"
+   },
+   {
+    "code": "8140344",
+    "name": "예산예화여자고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "www.yehwa.cnehs.kr"
+   },
+   {
+    "code": "8140101",
+    "name": "장항고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://janghang.cnehs.kr"
+   },
+   {
+    "code": "8140104",
+    "name": "천안고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://cheonan.caehs.kr"
+   },
+   {
+    "code": "8140358",
+    "name": "천안상업고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://sanggo.caehs.kr"
+   },
+   {
+    "code": "8140160",
+    "name": "천안여자상업고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://cays.caehs.kr"
+   },
+   {
+    "code": "8140366",
+    "name": "충남삼성고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://www.cnsa.hs.kr/"
+   },
+   {
+    "code": "8140197",
+    "name": "태안여자고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://tg.cnehs.kr"
+   },
+   {
+    "code": "8140461",
+    "name": "한국K-POP고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://k-pophs.cnehs.kr"
+   },
+   {
+    "code": "8140509",
+    "name": "한국미래문화고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://kfch.cnehs.kr/"
+   },
+   {
+    "code": "8140500",
+    "name": "한올고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://www.hanol.cnehs.kr"
+   },
+   {
+    "code": "8140107",
+    "name": "한일고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://www.hanilgo.cnehs.kr"
+   },
+   {
+    "code": "8140108",
+    "name": "호서고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://hoseo.cnehs.kr"
+   },
+   {
+    "code": "8140109",
+    "name": "홍주고등학교",
+    "kind": "고등학교",
+    "region": "충남",
+    "url": "http://hongju.cnehs.kr"
+   },
+   {
+    "code": "8222115",
+    "name": "건양대학교병설건양중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "konyang.cnems.kr"
+   },
+   {
+    "code": "8161016",
+    "name": "경천중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://kyongchon.cnems.kr"
+   },
+   {
+    "code": "8161017",
+    "name": "공주북중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://www.kongju-bj.cnems.kr"
+   },
+   {
+    "code": "8161019",
+    "name": "공주영명중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://kjym.cnems.kr"
+   },
+   {
+    "code": "8271011",
+    "name": "광시중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://www.gwangsi.cnems.kr"
+   },
+   {
+    "code": "8151025",
+    "name": "광풍중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://gwangpung.caems.kr"
+   },
+   {
+    "code": "8222014",
+    "name": "기민중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://kimin.cnems.kr/"
+   },
+   {
+    "code": "8222015",
+    "name": "논산대건중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "www.daegeon.cnems.kr"
+   },
+   {
+    "code": "8171016",
+    "name": "대명중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://daemyong.cnems.kr"
+   },
+   {
+    "code": "8191015",
+    "name": "대산중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://taesan.cnems.kr"
+   },
+   {
+    "code": "8191016",
+    "name": "대철중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://daecheol.cnems.kr"
+   },
+   {
+    "code": "8271012",
+    "name": "대흥중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://dae-heung.cnems.kr"
+   },
+   {
+    "code": "8241010",
+    "name": "동강중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://www.donggang.cnems.kr"
+   },
+   {
+    "code": "8251009",
+    "name": "동영중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://www.dongyoung.cnems.kr"
+   },
+   {
+    "code": "8181014",
+    "name": "둔포중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://dunpo.cnems.kr"
+   },
+   {
+    "code": "8231014",
+    "name": "백제중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://baekje.cnems.kr"
+   },
+   {
+    "code": "8151027",
+    "name": "복자여자중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://www.bokja.caems.kr"
+   },
+   {
+    "code": "8191017",
+    "name": "서령중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://seoryeong.cnems.kr"
+   },
+   {
+    "code": "8241011",
+    "name": "서림여자중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://www.seorim-g.cnems.kr/"
+   },
+   {
+    "code": "8291012",
+    "name": "서야중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://seoya.cnems.kr"
+   },
+   {
+    "code": "8191010",
+    "name": "서일중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://seo-il.cnems.kr/"
+   },
+   {
+    "code": "8261013",
+    "name": "서해삼육중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://seohae36.cnems.kr"
+   },
+   {
+    "code": "8291013",
+    "name": "석문중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://www.sokmun.cnems.kr"
+   },
+   {
+    "code": "8291014",
+    "name": "송악중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://songak.cnems.kr"
+   },
+   {
+    "code": "8271013",
+    "name": "신양중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://shin-yang.cnems.kr"
+   },
+   {
+    "code": "8291015",
+    "name": "신평중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://shinpyeong.cnems.kr"
+   },
+   {
+    "code": "8222016",
+    "name": "쌘뽈여자중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://www.sp.cnems.kr"
+   },
+   {
+    "code": "8181015",
+    "name": "아산중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://www.asan.cnems.kr"
+   },
+   {
+    "code": "8222018",
+    "name": "연무여자중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://www.yunmu.cnems.kr"
+   },
+   {
+    "code": "8231015",
+    "name": "외산중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "www.oesan.cnems.kr"
+   },
+   {
+    "code": "8231016",
+    "name": "용강중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://yongkang.cnems.kr"
+   },
+   {
+    "code": "8271014",
+    "name": "임성중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://imsung.cnems.kr"
+   },
+   {
+    "code": "8151029",
+    "name": "천성중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://csc.caems.kr"
+   },
+   {
+    "code": "8151265",
+    "name": "천안계광중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://gg.caems.kr"
+   },
+   {
+    "code": "8151236",
+    "name": "천안동성중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://dong-seong.caems.kr"
+   },
+   {
+    "code": "8151030",
+    "name": "천안서여자중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://www.casg.caems.kr"
+   },
+   {
+    "code": "8251010",
+    "name": "청신여자중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "cycsg.cnems.kr"
+   },
+   {
+    "code": "8241012",
+    "name": "판교중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://www.pan-gyo.cnems.kr"
+   },
+   {
+    "code": "8191019",
+    "name": "팔봉중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://palbong-m.cnems.kr"
+   },
+   {
+    "code": "8181180",
+    "name": "한올중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://hanol.cnems.kr/main.do"
+   },
+   {
+    "code": "8291016",
+    "name": "호서중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "http://hoseo.cnems.kr"
+   },
+   {
+    "code": "8261015",
+    "name": "홍주중학교",
+    "kind": "중학교",
+    "region": "충남",
+    "url": "hongju.cnems.kr"
+   }
+  ]
+ },
+ "school_ok": [
+  "7430046",
+  "7430049",
+  "7430051",
+  "7430052",
+  "7430053",
+  "7430056",
+  "7430057",
+  "7430059",
+  "7430060",
+  "7430061",
+  "7430062",
+  "7430064",
+  "7430065",
+  "7430066",
+  "7430067",
+  "7430083",
+  "7430133",
+  "7430138",
+  "7430140",
+  "7430240",
+  "7430242",
+  "7430244",
+  "7430256",
+  "7430324",
+  "7430325",
+  "7430326",
+  "7430329",
+  "7441018",
+  "7441028",
+  "7441032",
+  "7441034",
+  "7441037",
+  "7441039",
+  "7441041",
+  "7441046",
+  "7441263",
+  "7441264",
+  "7441266",
+  "7441277",
+  "7451022",
+  "7451035",
+  "7451052",
+  "7451053",
+  "8140080",
+  "8140082",
+  "8140085",
+  "8140086",
+  "8140087",
+  "8140088",
+  "8140089",
+  "8140090",
+  "8140091",
+  "8140093",
+  "8140094",
+  "8140095",
+  "8140096",
+  "8140098",
+  "8140100",
+  "8140101",
+  "8140104",
+  "8140107",
+  "8140108",
+  "8140152",
+  "8140160",
+  "8140196",
+  "8140197",
+  "8140209",
+  "8140270",
+  "8140271",
+  "8140344",
+  "8140358",
+  "8140360",
+  "8140366",
+  "8140461",
+  "8140500",
+  "8140501",
+  "8140509",
+  "8151025",
+  "8151027",
+  "8151029",
+  "8151030",
+  "8151236",
+  "8151265",
+  "8161016",
+  "8161017",
+  "8161019",
+  "8171016",
+  "8181014",
+  "8181015",
+  "8181180",
+  "8191010",
+  "8191015",
+  "8191016",
+  "8191017",
+  "8191019",
+  "8222014",
+  "8222015",
+  "8222016",
+  "8222018",
+  "8222115",
+  "8231014",
+  "8231015",
+  "8231016",
+  "8241010",
+  "8241011",
+  "8241012",
+  "8251009",
+  "8251010",
+  "8261013",
+  "8261015",
+  "8271011",
+  "8271012",
+  "8271013",
+  "8271014",
+  "8291012",
+  "8291013",
+  "8291014",
+  "8291015",
+  "8291016",
+  "8321090",
+  "8321095",
+  "8321098",
+  "8321100",
+  "8321105",
+  "8321116",
+  "8321117",
+  "8321118",
+  "8321125",
+  "8321126",
+  "8321129",
+  "8321130",
+  "8321133",
+  "8321135",
+  "8321141",
+  "8321143",
+  "8321146",
+  "8321156",
+  "8321157",
+  "8321161",
+  "8321164",
+  "8321172",
+  "8321173",
+  "8321175",
+  "8321180",
+  "8321185",
+  "8321196",
+  "8321200",
+  "8321237",
+  "8321270",
+  "8332227",
+  "8332228",
+  "8332230",
+  "8332234",
+  "8332235",
+  "8342145",
+  "8342146",
+  "8352158",
+  "8352160",
+  "8352161",
+  "8352165",
+  "8362091",
+  "8362093",
+  "8362096",
+  "8382092",
+  "8392085",
+  "8452059",
+  "8452060",
+  "8452061",
+  "8462060",
+  "8462061"
+ ],
+ "school_summary_sent": "2026-10-09",
+ "school_summary_regions": [
+  "전북",
+  "대전",
+  "충남"
+ ],
+ "school_scan_date": "2026-10-09"
 }
