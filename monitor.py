@@ -21,16 +21,14 @@
 제목에 과목이 없는 교사 채용 글은 글을 열어 본문과 첨부파일(hwp·hwpx·pdf·docx·xlsx)에서 과목을 찾습니다.
 '미술'이 있으면 🎨, 다른 과목이 분명하면 알리지 않고, 읽지 못하면 🟡(직접 확인)로 보냅니다.
 
-환경변수 (이메일·텔레그램 중 하나 이상)
-  EMAIL_FROM          보내는 Gmail 주소
-  EMAIL_APP_PASSWORD  Gmail 앱 비밀번호 (16자리)
-  EMAIL_TO            받을 주소 (여러 개면 쉼표로 구분)
-  TELEGRAM_BOT_TOKEN  텔레그램 봇 토큰 (선택)
-  TELEGRAM_CHAT_ID    받을 채팅 ID (여러 개면 쉼표로 구분, 선택)
-  NEIS_API_KEY        나이스 교육정보 개방포털 인증키 (없으면 사립학교 홈페이지는 건너뜀)
-  WEB_PAGE_URL        현황판 웹페이지 주소 (GitHub Actions 안에서는 자동으로 만듦)
+결과는 현황판 웹페이지(docs/index.html, GitHub Pages)로 본다. 실행이 끝나면 docs/data.json 을 새로 써서
+페이지가 최신 공고를 보여 준다. 텔레그램을 설정하면 새 글 알림도 보낸다 (선택).
 
-실행이 끝나면 docs/data.json 을 새로 써서 현황판 웹페이지(docs/index.html, GitHub Pages)가 최신 공고를 보여 준다.
+환경변수 (모두 선택)
+  NEIS_API_KEY        나이스 교육정보 개방포털 인증키 (없으면 사립학교 홈페이지는 건너뜀)
+  TELEGRAM_BOT_TOKEN  텔레그램 봇 토큰
+  TELEGRAM_CHAT_ID    받을 채팅 ID (여러 개면 쉼표로 구분)
+  WEB_PAGE_URL        현황판 웹페이지 주소 (GitHub Actions 안에서는 자동으로 만듦)
 
 실행
   python monitor.py                  실제 실행 (알림 발송 + seen.json 저장)
@@ -45,10 +43,8 @@ import html
 import json
 import os
 import re
-import smtplib
 import sys
 import time
-from email.message import EmailMessage
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -1095,78 +1091,7 @@ def update_board(token: str, chat_ids: list[str], text: str, state: dict) -> Non
     state["board_digest"] = digest
 
 
-# ─────────────────────────── 이메일 · 웹페이지 ───────────────────────────
-def email_config() -> dict | None:
-    """EMAIL_FROM / EMAIL_APP_PASSWORD / EMAIL_TO 가 다 있으면 이메일 설정을 돌려준다."""
-    sender = os.environ.get("EMAIL_FROM", "").strip()
-    password = os.environ.get("EMAIL_APP_PASSWORD", "").replace(" ", "").strip()
-    to = [x.strip() for x in os.environ.get("EMAIL_TO", "").split(",") if x.strip()]
-    if not (sender and password and to):
-        return None
-    return {
-        "from": sender, "password": password, "to": to,
-        "host": os.environ.get("EMAIL_SMTP_HOST", "smtp.gmail.com").strip() or "smtp.gmail.com",
-        "port": int(os.environ.get("EMAIL_SMTP_PORT", "465") or 465),
-    }
-
-
-def telegram_to_html(msg: str) -> str:
-    """텔레그램용 메시지(간단한 HTML + 줄바꿈)를 이메일 본문 조각으로."""
-    return msg.replace("\n", "<br>\n")
-
-
-def html_to_text(fragment: str) -> str:
-    text = re.sub(r"<br\s*/?>\n?", "\n", fragment)
-    text = re.sub(r'<a href="([^"]+)">([^<]*)</a>', r"\2 (\1)", text)
-    return html.unescape(re.sub(r"<[^>]+>", "", text))
-
-
-def email_subject(alerts: list[str], outgoing: list[str], now: datetime) -> str:
-    if any("알리미 시작" in m for m in outgoing):
-        return f"[미술 티오] 알리미 시작 · 새 글 {len(alerts)}건 ({now:%m/%d})"
-    if alerts:
-        first = html_to_text(alerts[0]).split("\n")
-        head = first[0].replace("<b>", "").strip()
-        more = f" 외 {len(alerts) - 1}건" if len(alerts) > 1 else ""
-        return f"[미술 티오] {head}{more} ({now:%m/%d})"
-    if any("점검 필요" in m for m in outgoing):
-        return f"[미술 티오] ⚠️ 알리미 점검 필요 ({now:%m/%d})"
-    return f"[미술 티오] 알림 ({now:%m/%d})"
-
-
-def send_email(cfg: dict, subject: str, messages: list[str], board: str, page_url: str) -> None:
-    """이번 실행의 메시지를 메일 한 통으로 보낸다. 맨 아래에 현황판을 붙인다."""
-    parts = "".join(
-        f'<div style="padding:12px 14px;margin:0 0 12px;border:1px solid #ddd;border-radius:10px;'
-        f'font:15px/1.5 -apple-system,\'Apple SD Gothic Neo\',\'Malgun Gothic\',sans-serif">{telegram_to_html(m)}</div>'
-        for m in messages
-    )
-    link = f'<p style="font:14px sans-serif"><a href="{html.escape(page_url, quote=True)}">📱 현황판 웹페이지 열기</a></p>' if page_url else ""
-    body_html = (
-        f"<html><body style=\"margin:0;padding:12px;background:#fafafa\">{parts}{link}"
-        f'<div style="padding:12px 14px;margin:16px 0 0;background:#f1f3f5;border-radius:10px;font:14px/1.5 sans-serif;color:#333">'
-        f"{telegram_to_html(board)}</div></body></html>"
-    )
-    body_text = "\n\n".join(html_to_text(m) for m in messages) + (f"\n\n현황판 웹페이지: {page_url}" if page_url else "") + "\n\n" + html_to_text(board)
-    msg = EmailMessage()
-    msg["Subject"] = subject
-    msg["From"] = f"미술 티오 알리미 <{cfg['from']}>"
-    msg["To"] = ", ".join(cfg["to"])
-    msg.set_content(body_text)
-    msg.add_alternative(body_html, subtype="html")
-    last_error: Exception | None = None
-    for attempt in range(2):
-        try:
-            with smtplib.SMTP_SSL(cfg["host"], cfg["port"], timeout=30) as server:
-                server.login(cfg["from"], cfg["password"])
-                server.send_message(msg)
-            return
-        except (smtplib.SMTPException, OSError) as exc:
-            last_error = exc
-            time.sleep(3)
-    raise RuntimeError(f"이메일 전송 실패: {last_error}")
-
-
+# ─────────────────────────── 현황판 웹페이지 ───────────────────────────
 def web_page_url() -> str:
     """GitHub Pages 주소. Actions 안에서는 저장소 이름으로 만들고, 아니면 WEB_PAGE_URL 환경변수를 쓴다."""
     explicit = os.environ.get("WEB_PAGE_URL", "").strip()
@@ -1245,12 +1170,7 @@ def main() -> int:
     dry_run = "--dry-run" in sys.argv
     token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
     chat_ids = [c.strip() for c in os.environ.get("TELEGRAM_CHAT_ID", "").split(",") if c.strip()]
-    use_telegram = bool(token and chat_ids)
-    email = email_config()
-    if not dry_run and not use_telegram and not email:
-        print("알림 받을 곳이 없습니다. EMAIL_FROM / EMAIL_APP_PASSWORD / EMAIL_TO (또는 텔레그램 토큰·채팅 ID)를 "
-              "설정하세요. 테스트는 --dry-run 으로 실행하세요.")
-        return 1
+    use_telegram = bool(token and chat_ids)  # 텔레그램은 선택. 없으면 현황판 웹페이지만 갱신한다
     page_url = web_page_url()
 
     now = datetime.now(KST)
@@ -1370,21 +1290,21 @@ def main() -> int:
         print("\n(--dry-run: 발송·저장 안 함)")
         return 0
 
-    try:
-        if use_telegram:
+    if use_telegram:
+        try:
             for msg in outgoing:
                 send_telegram(token, chat_ids, msg)
-        if email and outgoing:
-            send_email(email, email_subject(alerts, outgoing, now), outgoing, board, page_url)
-    except Exception as exc:  # noqa: BLE001
-        # 발송에 실패하면 상태를 저장하지 않아 다음 실행 때 다시 보낸다.
-        print(exc, file=sys.stderr)
-        return 1
-    if use_telegram:
+        except Exception as exc:  # noqa: BLE001
+            # 발송에 실패하면 상태를 저장하지 않아 다음 실행 때 다시 보낸다.
+            print(exc, file=sys.stderr)
+            return 1
         try:
             update_board(token, chat_ids, board, state)
         except Exception as exc:  # noqa: BLE001  현황판은 다음 실행 때 다시 쓰면 되니 알림 상태는 저장한다
             print(exc, file=sys.stderr)
+    else:
+        for msg in outgoing:
+            print("\n----- 알림 (텔레그램 미설정, 로그에만 남김) -----\n" + msg)
 
     write_web_data(state, now, status_lines)
     save_state(state)

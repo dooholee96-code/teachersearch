@@ -8,7 +8,7 @@ on:
   workflow_dispatch:            # Actions 탭에서 수동 실행
     inputs:
       dry_run:
-        description: "확인만 하기 (알림을 보내지 않고 결과만 로그에 출력, 비밀값 없어도 됨)"
+        description: "확인만 하기 (저장·알림 없이 결과만 로그에 출력)"
         type: boolean
         default: false
 
@@ -35,9 +35,6 @@ jobs:
 
       - name: 게시판 확인
         env:
-          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
-          EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
-          EMAIL_TO: ${{ secrets.EMAIL_TO }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           NEIS_API_KEY: ${{ secrets.NEIS_API_KEY }}

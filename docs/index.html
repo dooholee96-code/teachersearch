@@ -62,6 +62,7 @@
   .title { font-size: 16px; font-weight: 600; line-height: 1.4; word-break: keep-all; overflow-wrap: anywhere; }
   .note { font-size: 13px; color: var(--muted); margin-top: 4px; }
   .deadline { color: var(--accent); font-weight: 600; }
+  .new { background: var(--accent); color: #fff; border-radius: 6px; padding: 0 6px; font-size: 12px; font-weight: 700; }
   .empty { color: var(--muted); font-size: 14px; padding: 8px 2px; }
   details { margin-top: 24px; }
   summary { cursor: pointer; color: var(--muted); font-size: 14px; }
@@ -92,7 +93,7 @@
 
   <footer>
     미술 공고는 접수 마감일까지(마감일을 모르면 30일), 확인 필요 글은 14일, 임용 글은 30일 동안 보입니다.<br>
-    매일 아침 8시·저녁 9시에 새로 고쳐집니다. 홈 화면에 추가해 두면 앱처럼 열립니다.
+    매일 아침 8시·저녁 9시에 새로 고쳐지고, 그날 처음 찾은 글에는 '새 글' 표시가 붙습니다. 홈 화면에 추가해 두면 앱처럼 열립니다.
   </footer>
 </main>
 
@@ -114,9 +115,10 @@
 
   function card(e) {
     var cls = "card " + e.kind + (e.alive ? "" : " dead");
+    var isNew = e.alive && state.data && (state.data.updated || "").slice(0, 10) === e.seen;  // 이번 실행 날짜에 처음 본 글
     var when = e.deadline ? '<span class="deadline">~' + md(e.deadline) + ' 접수</span>' : '<span>' + md(e.seen) + '</span>';
     return '<a class="' + cls + '" href="' + esc(e.url) + '" target="_blank" rel="noopener">' +
-      '<div class="meta"><span class="region">[' + esc(e.region) + ']</span><span>' + esc(e.source) + '</span>' + when + '</div>' +
+      '<div class="meta">' + (isNew ? '<span class="new">새 글</span>' : '') + '<span class="region">[' + esc(e.region) + ']</span><span>' + esc(e.source) + '</span>' + when + '</div>' +
       '<div class="title">' + esc(e.title) + '</div>' +
       (e.note ? '<div class="note">' + esc(e.note) + '</div>' : '') + '</a>';
   }
