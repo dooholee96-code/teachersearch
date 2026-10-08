@@ -543,7 +543,12 @@ def scan_site(site: dict, deadline: float | None = None) -> dict:
     if deadline is not None and time.monotonic() > deadline:
         return {"site": site, "status": "skipped", "items": [], "boards": 0}
     try:
-        pages = load_home(url)
+        try:
+            pages = load_home(url)
+        except requests.exceptions.Timeout:
+            if not url.startswith("https://"):
+                raise
+            pages = load_home("http://" + url[len("https://"):])  # https가 막힌 곳은 http로 한 번 더
         items = []
         menus: list[str] = []
         for page_url, soup in pages:

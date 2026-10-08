@@ -1004,3 +1004,14 @@ def test_site_health_uses_previously_reachable_sites_as_baseline(h, monkeypatch)
     h.sites["https://office.jbedu.kr/jeonjuedu"] = RuntimeError("down")
     h.run()
     assert h.state()["fails"]["office"] == 1          # 읽히던 곳이 다 죽으면 비정상
+
+
+def test_site_scan_retries_with_http_when_https_times_out(h, monkeypatch):
+    import requests
+    setup_offices(h, monkeypatch)
+    h.sites["https://www.cncae.go.kr"] = requests.exceptions.Timeout("443 막힘")
+    h.sites["http://www.cncae.go.kr"] = office_home("http://www.cncae.go.kr", [("채용정보", "/recruit")])
+    h.sites["http://www.cncae.go.kr/recruit"] = office_board("http://www.cncae.go.kr/recruit", [(1, "2026학년도 천안A중학교 기간제교사(미술) 채용 공고")])
+    sent = h.run()
+    assert any("천안A중학교" in m and "[충남] 천안교육지원청" in m for m in sent)
+    assert "접속 실패 0곳" in next(m for m in sent if "누리집 첫 확인" in m)
