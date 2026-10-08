@@ -100,6 +100,34 @@ def school_board(code, posts):
     return f"<html><body><table>{rows}</table></body></html>"
 
 
+def detail_page(body, attachments):
+    """글 상세 페이지. attachments: (파일 이름, 다운로드 URL)"""
+    nav = "".join(f'<li><a href="/m{i}">메뉴{i}</a></li>' for i in range(8)) + '<li><a href="/art">미술부</a></li>'
+    files = "".join(f'<li><a href="{u}" title="{n} 다운로드">{n}</a></li>' for n, u in attachments)
+    return (
+        f"<html><body><nav><ul>{nav}</ul></nav><div class='view'><h3>제목</h3><div class='cont'><p>{body}</p></div>"
+        f"<ul class='file'>{files}</ul></div><footer>전북특별자치도교육청</footer></body></html>"
+    )
+
+
+def make_zip(parts: dict) -> bytes:
+    import io
+    import zipfile
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as z:
+        for name, content in parts.items():
+            z.writestr(name, content)
+    return buf.getvalue()
+
+
+def make_hwpx(text):
+    return make_zip({"Contents/section0.xml": f"<hs:sec><hp:p><hp:run><hp:t>{text}</hp:t></hp:run></hp:p></hs:sec>"})
+
+
+def make_docx(text):
+    return make_zip({"word/document.xml": f"<w:document><w:body><w:p><w:r><w:t>{text}</w:t></w:r></w:p></w:body></w:document>"})
+
+
 def neis_row(name, kind, code, url, fond="사립"):
     return {"FOND_SC_NM": fond, "SCHUL_KND_SC_NM": kind, "SCHUL_NM": name, "SD_SCHUL_CODE": code, "HMPG_ADRES": url}
 
@@ -109,6 +137,7 @@ class Harness:
     def __init__(self, monkeypatch, tmp_path):
         self.pages: dict[str, str] = {}   # 교육청 게시판: URL 일부 → HTML
         self.sites: dict = {}             # 학교 홈페이지: URL 앞부분 → HTML | (최종URL, HTML) | 예외
+        self.files: dict = {}             # 첨부파일: URL → bytes | 예외
         self.neis_rows: list[dict] = []   # 전북(P10) 사립학교
         self.neis_other: dict[str, list[dict]] = {}  # 다른 지역: 교육청 코드 → 학교들
         self.neis_calls = 0
@@ -126,6 +155,7 @@ class Harness:
         monkeypatch.setattr(monitor.time, "sleep", lambda s: None)
         monkeypatch.setattr(monitor, "fetch", self._fetch)
         monkeypatch.setattr(monitor, "get_html", self._get_html)
+        monkeypatch.setattr(monitor, "get_bytes", self._get_bytes)
         monkeypatch.setattr(monitor, "neis_get", self._neis)
         monkeypatch.setattr(monitor, "send_telegram", lambda token, chats, msg: self.sent.append(msg))
         monkeypatch.setenv("TELEGRAM_BOT_TOKEN", "test-token")
@@ -151,12 +181,21 @@ class Harness:
         return page
 
     def _get_html(self, url, timeout=15):
-        for prefix, value in self.sites.items():
-            if url.startswith(prefix):
-                if isinstance(value, Exception):
-                    raise value
-                return value if isinstance(value, tuple) else (url, value)
-        raise RuntimeError(f"404 {url}")
+        prefixes = sorted((p for p in self.sites if url.startswith(p)), key=len, reverse=True)  # 긴 주소 우선
+        if not prefixes:
+            raise RuntimeError(f"404 {url}")
+        value = self.sites[prefixes[0]]
+        if isinstance(value, Exception):
+            raise value
+        return value if isinstance(value, tuple) else (url, value)
+
+    def _get_bytes(self, url, timeout=15):
+        if url not in self.files:
+            raise RuntimeError(f"404 {url}")
+        value = self.files[url]
+        if isinstance(value, Exception):
+            raise value
+        return url.rsplit("/", 1)[-1], value
 
     def _neis(self, params):
         self.neis_calls += 1
@@ -450,11 +489,12 @@ def test_school_scan_runs_once_a_day_and_reports_new_posts(h):
     h.sites["https://school.jbedu.kr/wonkwangms"] = platform_home(
         "wonkwangms", [(9, "2027학년도 신규교사 채용 공고"), (10, "2027학년도 교원 신규채용 공개전형(영어)")]
     )
+    h.sites["https://school.jbedu.kr/wonkwangms/M010301/view/9.do"] = detail_page("자세한 내용은 학교로 문의 바랍니다.", [])
     sent = h.run("--force-schools")
 
     assert len(sent) == 2
     assert sent[0].startswith("🏫🎨") and "미술 시간강사 모집 공고" in sent[0]
-    assert sent[1].startswith("🏫🟡") and "원광중학교" in sent[1]
+    assert sent[1].startswith("🏫🟡") and "원광중학교" in sent[1] and "과목이 적혀 있지 않음" in sent[1]
     assert h.neis_calls == 3  # 학교 목록은 일주일 동안 저장본 사용
 
 
@@ -633,3 +673,164 @@ def test_school_list_covers_daejeon_and_chungnam_and_refreshes_when_regions_chan
     h.run("--force-schools")
     assert h.neis_calls == calls_before + 3
     assert len(h.state()["schools"]["list"]) == 8
+
+
+# ─────────────────────────── 글 본문·첨부파일 확인 ───────────────────────────
+@pytest.mark.parametrize("title, expected", [
+    ("2026학년도 2학기 ○○고등학교 교원 채용 공고", True),
+    ("2026학년도 기간제교사 채용 공고", True),
+    ("○○중학교 기간제교사 채용 공고(국어)", False),        # 과목 있음
+    ("○○중학교 미술 기간제교사 채용 공고", False),          # 미술 → 바로 알림
+    ("2026년 교육공무직원(조리실무사) 채용 공고", False),    # 교사 아님
+    ("○○초등학교 기간제교사 채용 공고", False),             # 초등
+    ("학교운영위원회 위원 모집 공고", False),
+])
+def test_needs_detail(title, expected):
+    assert monitor.needs_detail(title) == expected
+
+
+@pytest.mark.parametrize("text, expected", [
+    ("담당 과목: 국어 / 채용 인원 1명", True),
+    ("2026학년도 기간제교사(영어) 채용", True),
+    ("수학과 기간제교사 1명", True),
+    ("사회 1명, 과학 2명 모집", True),
+    ("개인정보 수집·이용 동의서, 담당: 교육정보과, 진로상담부 제출", False),  # 흔한 안내문
+    ("사회과학 도서 구입", False),
+    ("기간제교사 채용 공고. 자세한 내용은 붙임 참조", False),
+])
+def test_subject_strict_regex(text, expected):
+    assert bool(monitor.SUBJECT_STRICT_RE.search(text)) == expected
+
+
+def test_hwp_section_parsing_handles_control_chars_and_compression():
+    import zlib
+
+    def para(text):
+        payload = text.encode("utf-16-le")
+        header = (67 | (len(payload) << 20)).to_bytes(4, "little")  # tag 67 = HWPTAG_PARA_TEXT
+        return header + payload
+
+    other = (66 | (6 << 20)).to_bytes(4, "little") + b"\x00" * 6
+    inline = (1).to_bytes(2, "little") + b"\x00" * 14          # 확장 제어문자(8글자) → 무시
+    text = "담당 과목: 미술" + chr(13) + "채용 인원 1명"
+    section = other + para("표 머리") + (67 | (16 << 20)).to_bytes(4, "little") + inline + para(text)
+    got = monitor.hwp_section_text(section)
+    assert "담당 과목: 미술\n채용 인원 1명" in got and "표 머리" in got
+
+    class FakeOle:
+        def __init__(self, flags, sections):
+            self.flags, self.sections = flags, sections
+
+        def exists(self, name):
+            return name == "FileHeader"
+
+        def listdir(self):
+            return [["BodyText", f"Section{i}"] for i in range(len(self.sections))] + [["DocInfo"]]
+
+        def openstream(self, entry):
+            import io
+            if entry == "FileHeader":
+                return io.BytesIO(b"HWP Document File".ljust(36, b"\x00") + self.flags.to_bytes(4, "little"))
+            return io.BytesIO(self.sections[int(entry[1][7:])])
+
+    compressed = zlib.compress(section)[2:-4]  # raw deflate
+    monkey = pytest.MonkeyPatch()
+    monkey.setattr(monitor, "hwp_text", monitor.hwp_text)
+    import olefile
+    monkey.setattr(olefile, "isOleFile", lambda data: True)
+    monkey.setattr(olefile, "OleFileIO", lambda data: FakeOle(1, [compressed]))
+    assert "미술" in monitor.hwp_text(b"\xd0\xcf\x11\xe0fake")
+    monkey.setattr(olefile, "OleFileIO", lambda data: FakeOle(1 | 2, [compressed]))
+    assert monitor.hwp_text(b"\xd0\xcf\x11\xe0fake") is None  # 암호 문서
+    monkey.undo()
+
+
+def test_extract_text_detects_file_type_by_content():
+    assert "미술" in monitor.extract_text(make_hwpx("담당 과목: 미술"))
+    assert "국어과" in monitor.extract_text(make_docx("국어과 기간제교사"))
+    xlsx = make_zip({"xl/sharedStrings.xml": "<sst><si><t>과목</t></si><si><t>음악</t></si></sst>", "xl/worksheets/sheet1.xml": "<x/>"})
+    assert "음악" in monitor.extract_text(xlsx)
+    import io
+    from pypdf import PdfWriter
+    from pypdf.generic import DecodedStreamObject, DictionaryObject, NameObject
+    w = PdfWriter()
+    page = w.add_blank_page(200, 200)
+    stream = DecodedStreamObject()
+    stream.set_data(b"BT /F1 12 Tf 10 100 Td (ART TEACHER 2027) Tj ET")
+    page[NameObject("/Contents")] = w._add_object(stream)
+    font = DictionaryObject({NameObject("/Type"): NameObject("/Font"), NameObject("/Subtype"): NameObject("/Type1"),
+                             NameObject("/BaseFont"): NameObject("/Helvetica")})
+    page[NameObject("/Resources")] = DictionaryObject({NameObject("/Font"): DictionaryObject({NameObject("/F1"): w._add_object(font)})})
+    buf = io.BytesIO()
+    w.write(buf)
+    pdf = buf.getvalue()
+    assert "ART TEACHER" in monitor.extract_text(pdf)
+    assert monitor.extract_text(b"\x89PNG\r\n\x1a\n....") is None   # 그림
+    assert monitor.extract_text(b"PK\x03\x04 broken") is None         # 깨진 압축 파일
+    assert monitor.extract_text(b"") is None
+
+
+def test_main_text_skips_menus_and_attachment_links_are_found():
+    from bs4 import BeautifulSoup
+    page = detail_page("기간제교사 채용 안내문입니다. 붙임 참조.", [("공고문(미술).hwp", "/download?f=1"), ("지원서.hwpx", "/download?f=2")])
+    soup = BeautifulSoup(page, "html.parser")
+    text = monitor.main_text(soup)
+    assert "채용 안내문" in text and "미술부" not in text
+    links = monitor.attachment_links("https://school.jbedu.kr/x/view/1", soup)
+    assert links == [("공고문(미술).hwp", "https://school.jbedu.kr/download?f=1"), ("지원서.hwpx", "https://school.jbedu.kr/download?f=2")]
+
+
+def test_office_posts_without_subject_are_resolved_from_attachments(h, monkeypatch):
+    setup_offices(h, monkeypatch)
+    h.run()  # 첫 확인 (옛 글 정리)
+
+    jj = "https://office.jbedu.kr/jeonjuedu"
+    posts = [
+        (21, "2026학년도 2학기 전주A고등학교 교원 채용 공고"),          # hwpx 첨부에 미술 → 🎨
+        (22, "2026학년도 전주B중학교 기간제교사 채용 공고"),             # docx 첨부에 국어과 → 조용히 넘김
+        (23, "2026학년도 전주C고등학교 기간제교사 채용 공고"),           # 첨부가 그림 → 🟡
+        (24, "2026학년도 전주D중학교 기간제교원 채용 공고"),             # 본문에 미술 → 🎨 (첨부 안 읽음)
+        (25, "2026학년도 전주E고등학교 기간제교사 채용 공고"),           # 글이 안 열림 → 🟡
+        (26, "2026학년도 전주F중학교 기간제교사 채용 공고(영어)"),       # 제목에 과목 → 열지 않음
+    ]
+    h.sites[jj + "/M01050902"] = office_board(jj + "/M01050902", posts)
+    v = jj + "/M01050902/view/"
+    h.sites[v + "21"] = detail_page("붙임 공고문 참조", [("공고문.hwpx", jj + "/down/21")])
+    h.files[jj + "/down/21"] = make_hwpx("모집 분야: 미술 1명 (2026.9.1.~2027.2.28.)")
+    h.sites[v + "22"] = detail_page("붙임 참조", [("공고문.docx", jj + "/down/22")])
+    h.files[jj + "/down/22"] = make_docx("담당 과목: 국어 / 채용 인원 1명")
+    h.sites[v + "23"] = detail_page("붙임 참조", [("공고문.png", jj + "/down/23")])
+    h.files[jj + "/down/23"] = b"\x89PNG\r\n\x1a\n...."
+    h.sites[v + "24"] = detail_page("미술 교과 기간제교사 1명을 모집합니다.", [("공고문.hwp", jj + "/down/24")])
+    h.sites[v + "25"] = RuntimeError("Connection timed out")
+
+    sent = h.run()
+
+    assert len(sent) == 4, sent
+    a = next(m for m in sent if "전주A고등학교" in m)
+    assert a.startswith("🏢🎨") and "첨부 「공고문.hwpx」에 미술" in a
+    assert not any("전주B중학교" in m for m in sent)
+    c = next(m for m in sent if "전주C고등학교" in m)
+    assert c.startswith("🏢🟡") and "읽지 못함" in c
+    d = next(m for m in sent if "전주D중학교" in m)
+    assert d.startswith("🏢🎨") and "본문에 미술" in d
+    e = next(m for m in sent if "전주E고등학교" in m)
+    assert e.startswith("🏢🟡") and "글을 열지 못함" in e
+    assert not any("전주F중학교" in m for m in sent)
+    assert h.run() == []  # 두 번 보내지 않고, 넘긴 글도 다시 열지 않음
+
+
+def test_preplan_unspecified_rows_are_resolved_from_detail_page(h):
+    h.run()
+    h.pages["BBS_0000053"] = preplan_page([
+        (3, "남원A고등학교 기간제교원 채용계획 사전공개", "채용계획.hwpx", "남원A고등학교", "26.10.01", "p3"),
+        (2, "남원B중학교 기간제교원 채용계획 사전공개", "채용계획.hwpx", "남원B중학교", "26.10.01", "p2"),
+    ])
+    for sid, text in (("p3", "과목: 미술, 기간: 2026.11.1.~"), ("p2", "과목: 체육, 기간: 2026.11.1.~")):
+        view = f"https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000053&menuCd=X&paging=ok&startPage=1&searchOperation=AND&dataSid={sid}"
+        h.sites[view] = detail_page("붙임 참조", [("채용계획.hwpx", f"https://www.jbe.go.kr/board/download.jbe?dataSid={sid}")])
+        h.files[f"https://www.jbe.go.kr/board/download.jbe?dataSid={sid}"] = make_hwpx(text)
+
+    sent = h.run()
+    assert len(sent) == 1
+    assert sent[0].startswith("🎨") and "남원A고등학교" in sent[0] and "첨부 「채용계획.hwpx」에 미술" in sent[0]

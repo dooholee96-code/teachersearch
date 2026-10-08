@@ -5,7 +5,7 @@ GitHub Actions가 하루 두 번 `monitor.py`를 실행하고, 새로 찾은 글
 
 ## 파일
 
-- `monitor.py` — 수집·판정·알림 전부. 외부 의존성은 `requests`, `beautifulsoup4` 두 개뿐
+- `monitor.py` — 수집·판정·알림 전부. 외부 의존성은 `requests`, `beautifulsoup4`, `olefile`(hwp), `pypdf`(pdf)
 - `.github/workflows/monitor.yml` — 매일 08:00·21:00(KST) 실행, 실행 뒤 `seen.json`을 커밋
 - `seen.json` — 이미 본 글 목록과 상태. Actions가 만들고 커밋한다 (`.gitignore`에 넣지 말 것)
 - `tests/test_monitor.py` — 가짜 페이지로 만든 테스트. `python -m pytest -q`
@@ -26,6 +26,7 @@ GitHub Actions가 하루 두 번 `monitor.py`를 실행하고, 새로 찾은 글
 - 누리집(`school`/`office`)은 같은 코드(`scan_site`, `run_site_scan`)로 읽는다. 지역 표시는 `[전북] 이름` 형식(`site_label`). `seen.school`과 `schools_scanned`를 두 종류가 같이 쓴다(글 id는 URL 해시라 충돌 없음)
 - 사립 학교 목록은 나이스 `schoolInfo` API(`NEIS_OFFICES`: 전북 P10, 대전 G10, 충남 N10, `FOND_SC_NM=사립`)에서 받아 7일간 `seen.json`에 캐시. 캐시의 `regions`가 `NEIS_OFFICES`와 다르면 바로 새로 받음. 해당 학교가 없는 지역은 INFO-200 → 건너뜀
 - 누리집 확인은 묶음마다 `SITE_SCAN_BUDGET_SEC`(12분)을 넘기면 남은 곳을 건너뛰고 비정상으로 처리(학교는 저녁에 재시도). Actions 제한시간(40분) 안에 끝내기 위함. `--no-offices`로 교육청 묶음을 끌 수 있음(테스트 하네스 기본값)
+- 글 열어 보기(`needs_detail` → `resolve_by_detail`): 제목에 교사·교원·기간제 채용이 있는데 과목이 없는 새 글(누리집 글, 사전공개 🟡 글)은 상세 페이지를 열어 `main_text`(링크 5개 이하인 가장 긴 블록)와 첨부파일을 본다. 첨부는 내용으로 종류를 알아내 hwp(`olefile`+레코드 파싱, 암호·배포용은 못 읽음)·hwpx/docx/xlsx/pptx(zip XML)·pdf(`pypdf`)를 읽는다. '미술' → match, `SUBJECT_STRICT_RE`로 다른 과목이 분명하고 못 읽은 첨부가 없으면 None(조용히 넘김), 그 외 unspecified(🟡 + 이유). 한 번에 `MAX_DETAILS_PER_RUN`(40)건까지. 처음 보는 누리집의 글은 열지 않음
 - 첫 실행: 최근 14일 안의 글만 알림 (채용공고는 접수 마감 전인 것만). 처음 보는 학교는 올해·내년 미술 글만 알림
 - 같은 출처가 2번 연속 실패하면 ⚠️ 경고, 12시간에 한 번만
 - 텔레그램 429/5xx는 `retry_after`만큼 기다렸다가 재시도, 메시지 사이 1초 간격. 그래도 실패하면 `seen.json`을 저장하지 않아 다음 실행 때 다시 보냄

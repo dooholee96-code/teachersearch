@@ -18,6 +18,8 @@
                                           학교 목록은 나이스 교육정보 개방포털에서 자동으로 받음
 
 게시판마다 주소를 여러 개 두고(인력풀 사이트 → 교육청 본사이트), 앞 주소가 안 열리면 다음 주소로 넘어갑니다.
+제목에 과목이 없는 교사 채용 글은 글을 열어 본문과 첨부파일(hwp·hwpx·pdf·docx·xlsx)에서 과목을 찾습니다.
+'미술'이 있으면 🎨, 다른 과목이 분명하면 알리지 않고, 읽지 못하면 🟡(직접 확인)로 보냅니다.
 
 환경변수
   TELEGRAM_BOT_TOKEN  텔레그램 봇 토큰
@@ -354,7 +356,7 @@ def is_recent(board_key: str, row: dict, kind: str, today: date) -> bool:
     return max(found) >= today - timedelta(days=FIRST_RUN_LOOKBACK_DAYS)
 
 
-def format_message(board_key: str, row: dict, kind: str) -> str:
+def format_message(board_key: str, row: dict, kind: str, note: str = "") -> str:
     e = html.escape
     if board_key == "recruit":
         period = next((c for c in row["cells"] if DATE_FULL_RE.search(c)), "")
@@ -369,7 +371,7 @@ def format_message(board_key: str, row: dict, kind: str) -> str:
             head = "🎨 <b>미술 채용계획 사전공개</b> (보통 7일 뒤 본공고)"
         else:
             head = "🟡 <b>과목 미기재 중등 사전공개</b> — 첨부에 미술 있는지 확인"
-        body = f"{e(row['title'])}\n작성: {e(cell(row, 2))} {e(cell(row, 3))}"
+        body = f"{e(row['title'])}\n작성: {e(cell(row, 2))} {e(cell(row, 3))}" + (f"\n({e(note)})" if note else "")
     else:
         where = "중등임용시험 게시판 새 글" if board_key == "exam" else "고시/공고 임용 관련 글"
         head = f"📢 <b>{where}</b>"
@@ -496,7 +498,8 @@ def site_items(page_url: str, soup: BeautifulSoup) -> list[dict]:
         else:
             link = urljoin(page_url, href)
             key = link
-        items.append({"id": hashlib.sha1(key.encode()).hexdigest()[:16], "title": title, "url": link})
+        items.append({"id": hashlib.sha1(key.encode()).hexdigest()[:16], "title": title, "url": link,
+                      "detail": link != page_url})
     return items
 
 
@@ -581,7 +584,8 @@ def site_label(site: dict) -> str:
     return f"[{site['region']}] {site['name']}"
 
 
-def format_site_message(kind: str, title: str, url: str, names: list[str], site_kind: str = "school") -> str:
+def format_site_message(kind: str, title: str, url: str, names: list[str], site_kind: str = "school",
+                        note: str = "") -> str:
     e = html.escape
     where = "사립학교 홈페이지" if site_kind == "school" else "교육(지원)청 누리집"
     icon = "🏫" if site_kind == "school" else "🏢"
@@ -590,8 +594,9 @@ def format_site_message(kind: str, title: str, url: str, names: list[str], site_
     elif kind == "exam":
         head = f"{icon}📢 <b>{where} 중등 임용시험 글</b>"
     else:
-        head = f"{icon}🟡 <b>{where} 신규교사 채용 글</b> — 과목 미기재, 미술 있는지 확인"
-    return f'{head}\n{e(" · ".join(names))}\n{e(title)}\n<a href="{e(url, quote=True)}">글 열기</a>'
+        head = f"{icon}🟡 <b>{where} 교사 채용 글</b> — 과목 미기재, 미술 있는지 확인"
+    body = f'{e(" · ".join(names))}\n{e(title)}' + (f"\n({e(note)})" if note else "")
+    return f'{head}\n{body}\n<a href="{e(url, quote=True)}">글 열기</a>'
 
 
 format_school_message = format_site_message  # 예전 이름
@@ -641,15 +646,24 @@ def run_site_scan(sites: list[dict], site_kind: str, state: dict, today: date) -
             if item["id"] in seen:
                 continue
             kind = classify_site_title(item["title"], site_kind)
+            if (kind in (None, "unspecified")) and item.get("detail") and needs_detail(item["title"]):
+                kind = "detail"  # 제목만으로 과목을 모름 → 글을 열어 본다 (아래)
             if not kind:
                 continue
             newly_seen.append(item["id"])
-            if first_time and (kind == "unspecified" or not any(y in item["title"] for y in year_marks)):
+            if first_time and (kind in ("unspecified", "detail") or not any(y in item["title"] for y in year_marks)):
                 continue  # 처음 보는 누리집은 올해·내년 글만 알림 (옛 글 폭탄 방지)
-            entry = found.setdefault(item["id"], {**item, "kind": kind, "names": []})
+            entry = found.setdefault(item["id"], {**item, "kind": kind, "names": [], "note": ""})
             if site_label(site) not in entry["names"]:
                 entry["names"].append(site_label(site))
         scanned_before.add(site["code"])
+
+    pending = [v for v in found.values() if v["kind"] == "detail"]
+    if pending:
+        resolved = resolve_many([v["url"] for v in pending])
+        for v in pending:
+            v["kind"], v["note"] = resolved[v["url"]]
+    found = {k: v for k, v in found.items() if v["kind"]}
 
     state["schools_scanned"] = sorted(scanned_before)
     state["seen"]["school"] = list(dict.fromkeys(newly_seen + state["seen"].get("school", [])))[:MAX_SEEN_SCHOOL]
@@ -667,7 +681,8 @@ def run_site_scan(sites: list[dict], site_kind: str, state: dict, today: date) -
         print(f"[{label}] 시간 부족으로 {len(skipped)}곳 건너뜀", file=sys.stderr)
     return {
         "alerts": [
-            format_site_message(v["kind"], v["title"], v["url"], v["names"], site_kind) for v in found.values()
+            format_site_message(v["kind"], v["title"], v["url"], v["names"], site_kind, v.get("note", ""))
+            for v in found.values()
         ],
         "ok": ok, "failed": failed, "no_url": no_url, "skipped": skipped,
         "with_board": sum(1 for r in ok if r["boards"]),
@@ -735,6 +750,254 @@ def run_office_scan(state: dict, today: date) -> tuple[list[str], str, str | Non
             "이후로는 매번(아침·저녁) 확인합니다."
         )
     return r["alerts"], status, summary, r["healthy"]
+
+
+# ─────────────────────────── 글 본문·첨부파일 확인 ───────────────────────────
+# 제목에 과목이 없는 교사 채용 글은 글을 열어 본문과 첨부파일(hwp·hwpx·pdf·docx·xlsx)에서 과목을 찾는다.
+#   '미술'이 나오면 🎨, 다른 과목이 분명하면 알리지 않고, 못 읽거나 알 수 없으면 🟡로 보낸다.
+MAX_DETAILS_PER_RUN = 40          # 한 번 실행에 열어 볼 글 수 (넘으면 🟡로 보냄)
+MAX_ATTACHMENTS = 3               # 글마다 읽을 첨부파일 수
+MAX_ATTACHMENT_BYTES = 8_000_000  # 이보다 큰 파일은 읽지 않음
+DOC_EXT_RE = re.compile(r"\.(hwpx?|pdf|docx?|xlsx?|pptx?|zip|jpe?g|png|gif|tiff?|bmp)(?=$|[?#\s])", re.I)
+ATTACH_HREF_RE = re.compile(r"download|filedown|file_down|/down/|attach|atch|/files?/|upload|getfile|fileid|filesid", re.I)
+NOT_TEACHER_RE = re.compile(r"공무직|조리|행정|시설|돌봄|방과후|초등|유치원|특수학교|자원봉사|지킴이")
+_SUBJECTS = "|".join(sorted((w for w in SUBJECT_WORDS if w != "담임"), key=len, reverse=True))
+# 본문·첨부에서 '다른 과목이 분명하다'고 볼 표현. 안내문의 흔한 말('개인정보', '교육정보과')에 걸리지 않게 앞뒤를 제한한다.
+SUBJECT_STRICT_RE = re.compile(
+    rf"(?<![가-힣])(?:{_SUBJECTS})\s*(?:과(?![가-힣])|교사|교원|기간제|강사|전담|\d+\s*명)"
+    rf"|[(\[/·,]\s*(?:{_SUBJECTS})\s*[)\]/·,]"
+    rf"|(?:과목|교과|분야|전공)\s*[:：]?\s*(?:{_SUBJECTS})(?![가-힣])"
+)
+
+
+def needs_detail(title: str) -> bool:
+    """제목만으로는 과목을 알 수 없는 교사 채용 글인지."""
+    return bool(
+        is_hiring(title) and STAFF_RE.search(title)
+        and not any(k in title for k in KEYWORDS)
+        and not any(w in title for w in SUBJECT_WORDS)
+        and not NOT_TEACHER_RE.search(title)
+    )
+
+
+def main_text(soup: BeautifulSoup) -> str:
+    """글 상세 페이지에서 메뉴·머리글을 빼고 본문으로 보이는 덩어리를 고른다 (링크가 적고 글이 긴 블록)."""
+    for t in soup.find_all(["script", "style", "nav", "header", "footer", "aside"]):
+        t.decompose()
+    best, best_len = None, 0
+    for block in soup.find_all(["article", "section", "div", "td"]):
+        if len(block.find_all("a")) > 5:
+            continue
+        text = norm(block.get_text(" "))
+        if len(text) > best_len:
+            best, best_len = text, len(text)
+    return best if best is not None else norm(soup.get_text(" "))
+
+
+def attachment_links(page_url: str, soup: BeautifulSoup) -> list[tuple[str, str]]:
+    found: list[tuple[str, str]] = []
+    for a in soup.find_all("a", href=True):
+        href = a["href"].strip()
+        if not href or href.startswith(("#", "javascript:", "mailto:")):
+            continue
+        label = norm(a.get_text(" ")) or norm(a.get("title", ""))
+        if not (DOC_EXT_RE.search(label) or DOC_EXT_RE.search(href) or ATTACH_HREF_RE.search(href)):
+            continue
+        url = urljoin(page_url, href)
+        if any(url == u for _, u in found):
+            continue
+        name = re.sub(r"\s*(다운로드|내려받기|새창으로 열림|문서보기)\s*", " ", label).strip() or url.rsplit("/", 1)[-1]
+        found.append((name, url))
+    return found
+
+
+def read_detail(url: str) -> dict:
+    final_url, text = get_html(url)
+    soup = BeautifulSoup(text, "html.parser")
+    attachments = attachment_links(final_url, soup)
+    return {"text": main_text(soup), "attachments": attachments}
+
+
+def get_bytes(url: str, timeout: int = SITE_HTTP_TIMEOUT) -> tuple[str, bytes]:
+    """첨부파일을 내려받아 (파일 이름, 내용)을 돌려준다. 너무 크면 빈 내용."""
+    headers = dict(SESSION.headers)
+    try:
+        resp = requests.get(url, headers=headers, timeout=timeout, stream=True)
+    except requests.exceptions.SSLError:
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        resp = requests.get(url, headers=headers, timeout=timeout, stream=True, verify=False)
+    resp.raise_for_status()
+    name = ""
+    m = re.search(r"filename\*?=(?:UTF-8'')?\"?([^\";]+)", resp.headers.get("Content-Disposition", ""), re.I)
+    if m:
+        from urllib.parse import unquote
+        name = unquote(m.group(1)).strip()
+    chunks, total = [], 0
+    for chunk in resp.iter_content(65536):
+        total += len(chunk)
+        if total > MAX_ATTACHMENT_BYTES:
+            return name, b""
+        chunks.append(chunk)
+    return name, b"".join(chunks)
+
+
+def xml_text(xml: bytes | str) -> str:
+    if isinstance(xml, bytes):
+        xml = xml.decode("utf-8", "ignore")
+    return norm(html.unescape(re.sub(r"<[^>]+>", " ", xml)))
+
+
+def zip_text(data: bytes) -> str | None:
+    import io
+    import zipfile
+    try:
+        with zipfile.ZipFile(io.BytesIO(data)) as z:
+            names = z.namelist()
+            if any(n.startswith("Contents/section") for n in names):          # hwpx
+                parts = sorted(n for n in names if n.startswith("Contents/section") and n.endswith(".xml"))
+            elif "word/document.xml" in names:                                 # docx
+                parts = ["word/document.xml"] + [n for n in names if re.match(r"word/(header|footer)\d*\.xml", n)]
+            elif any(n.startswith("xl/") for n in names):                      # xlsx
+                parts = [n for n in names if n == "xl/sharedStrings.xml" or n.startswith("xl/worksheets/sheet")]
+            elif any(n.startswith("ppt/slides/slide") for n in names):         # pptx
+                parts = sorted(n for n in names if re.match(r"ppt/slides/slide\d+\.xml", n))
+            else:
+                return None
+            return "\n".join(xml_text(z.read(n)) for n in parts)
+    except (zipfile.BadZipFile, KeyError):
+        return None
+
+
+def hwp_para_text(b: bytes) -> str:
+    """HWP 문단 텍스트(UTF-16LE + 제어문자)에서 글자만 꺼낸다."""
+    out, i, n = [], 0, len(b) // 2
+    while i < n:
+        c = int.from_bytes(b[2 * i:2 * i + 2], "little")
+        if c in (10, 13):
+            out.append("\n")
+        elif 1 <= c <= 23:
+            i += 7  # 표·그림 같은 확장 제어문자는 8글자를 차지한다
+        elif c < 32:
+            out.append(" ")
+        else:
+            out.append(chr(c))
+        i += 1
+    return "".join(out)
+
+
+def hwp_section_text(raw: bytes) -> str:
+    """HWP BodyText 섹션(압축 푼 상태)의 레코드를 훑어 문단 텍스트를 모은다."""
+    out, pos = [], 0
+    while pos + 4 <= len(raw):
+        header = int.from_bytes(raw[pos:pos + 4], "little")
+        pos += 4
+        tag, size = header & 0x3FF, (header >> 20) & 0xFFF
+        if size == 0xFFF:
+            size = int.from_bytes(raw[pos:pos + 4], "little")
+            pos += 4
+        if tag == 67:  # HWPTAG_PARA_TEXT
+            out.append(hwp_para_text(raw[pos:pos + size]))
+        pos += size
+    return "\n".join(out)
+
+
+def hwp_text(data: bytes) -> str | None:
+    """한글(HWP 5.0) 파일 본문. 암호·배포용 문서는 못 읽는다(None)."""
+    import zlib
+
+    import olefile
+    if not olefile.isOleFile(data):
+        return None
+    ole = olefile.OleFileIO(data)
+    if not ole.exists("FileHeader"):
+        return None  # doc·xls 같은 다른 OLE 파일
+    flags = int.from_bytes(ole.openstream("FileHeader").read()[36:40], "little")
+    if flags & 2 or flags & 4:
+        return None  # 암호화 / 배포용
+    sections = sorted(
+        (e for e in ole.listdir() if len(e) == 2 and e[0] == "BodyText" and e[1].startswith("Section")),
+        key=lambda e: int(re.sub(r"\D", "", e[1]) or 0),
+    )
+    texts = []
+    for entry in sections:
+        raw = ole.openstream(entry).read()
+        if flags & 1:
+            raw = zlib.decompress(raw, -15)
+        texts.append(hwp_section_text(raw))
+    return "\n".join(texts)
+
+
+def pdf_text(data: bytes) -> str | None:
+    import io
+    try:
+        from pypdf import PdfReader
+    except ImportError:
+        return None
+    reader = PdfReader(io.BytesIO(data))
+    if reader.is_encrypted:
+        return None
+    return "\n".join((page.extract_text() or "") for page in reader.pages[:10])
+
+
+def extract_text(data: bytes) -> str | None:
+    """첨부파일 내용에서 글자를 꺼낸다. 파일 종류는 내용으로 알아낸다. 못 읽으면 None."""
+    if not data:
+        return None
+    try:
+        if data[:4] == b"\xd0\xcf\x11\xe0":
+            return hwp_text(data)
+        if data[:2] == b"PK":
+            return zip_text(data)
+        if data[:5] == b"%PDF-":
+            return pdf_text(data)
+    except Exception as exc:  # noqa: BLE001  깨진 파일 등
+        print(f"[첨부파일] 읽기 실패: {short_error(exc)}", file=sys.stderr)
+    return None
+
+
+def resolve_by_detail(url: str) -> tuple[str | None, str]:
+    """글을 열어 (판정, 설명)을 돌려준다. 판정: match / None(다른 과목) / unspecified(알 수 없음)."""
+    try:
+        page = read_detail(url)
+    except Exception as exc:  # noqa: BLE001
+        return "unspecified", f"글을 열지 못함({short_error(exc)}) — 직접 확인"
+    names = " ".join(n for n, _ in page["attachments"])
+    if any(k in page["text"] for k in KEYWORDS):
+        return "match", "본문에 미술"
+    if any(k in names for k in KEYWORDS):
+        return "match", "첨부파일 이름에 미술"
+    texts, unread = [page["text"]], []
+    for name, aurl in page["attachments"][:MAX_ATTACHMENTS]:
+        try:
+            real_name, data = get_bytes(aurl)
+            text = extract_text(data)
+        except Exception:  # noqa: BLE001
+            text = None
+        if text is None:
+            unread.append(name)
+            continue
+        if any(k in text for k in KEYWORDS):
+            return "match", f"첨부 「{name}」에 미술"
+        texts.append(text)
+    found = SUBJECT_STRICT_RE.search(" ".join(texts))
+    if found and not unread:
+        return None, f"다른 과목({norm(found.group(0))})"
+    if unread:
+        return "unspecified", f"첨부 「{unread[0]}」를 읽지 못함 — 직접 확인"
+    if not page["attachments"]:
+        return "unspecified", "과목이 적혀 있지 않음 — 직접 확인"
+    return "unspecified", "첨부에서 과목을 찾지 못함 — 직접 확인"
+
+
+def resolve_many(urls: list[str]) -> dict[str, tuple[str | None, str]]:
+    """여러 글을 한꺼번에 연다. 한도(MAX_DETAILS_PER_RUN)를 넘는 글은 🟡로 둔다."""
+    urls = list(dict.fromkeys(urls))
+    todo, rest = urls[:MAX_DETAILS_PER_RUN], urls[MAX_DETAILS_PER_RUN:]
+    with ThreadPoolExecutor(max_workers=SITE_WORKERS) as pool:
+        results = dict(zip(todo, pool.map(resolve_by_detail, todo)))
+    for u in rest:
+        results[u] = ("unspecified", "확인할 글이 많아 열어 보지 못함 — 직접 확인")
+    return results
 
 
 # ─────────────────────────── 알림·상태 ───────────────────────────
@@ -815,12 +1078,20 @@ def main() -> int:
         state["fails"][key] = 0
         status_lines.append(f"✅ {board['name']}: 글 {len(rows)}건 읽음{note}")
         seen = set(state["seen"].get(key, []))
+        candidates = []
         for row in reversed(rows):  # 오래된 글부터 보내기
             if row["id"] in seen:
                 continue
             kind = classify(key, row)
             if kind and (not first_run or is_recent(key, row, kind, today)):
-                alerts.append(format_message(key, row, kind))
+                candidates.append([row, kind, ""])
+        # 과목이 안 적힌 사전공개 글은 글을 열어 본문·첨부파일에서 과목을 찾는다
+        to_open = [c for c in candidates if key == "preplan" and c[1] == "unspecified"]
+        if to_open:
+            resolved = resolve_many([c[0]["url"] for c in to_open])
+            for c in to_open:
+                c[1], c[2] = resolved[c[0]["url"]]
+        alerts.extend(format_message(key, row, kind, note) for row, kind, note in candidates if kind)
         current_ids = [r["id"] for r in rows]
         current_set = set(current_ids)
         older_ids = [i for i in dict.fromkeys(state["seen"].get(key, [])) if i not in current_set]
