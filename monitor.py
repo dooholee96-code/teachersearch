@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 """전북 미술 교사 티오 알리미
 
-전북특별자치도교육청 게시판 3곳을 읽어서 미술 관련 새 글을 텔레그램으로 보냅니다.
+전북특별자치도교육청 게시판 4곳을 읽어서 미술 관련 새 글을 텔레그램으로 보냅니다.
 
   1) 기간제교사 인력풀 > 채용공고         과목/분야에 '미술'이 있으면 알림
   2) 기간제교사 인력풀 > 채용계획 사전공개  제목·첨부파일명에 '미술'이 있으면 알림
                                           과목이 안 적힌 중등 글은 '확인 필요'로 알림
   3) 도교육청 > 중등임용시험 게시판         새 글은 모두 알림 (공립 + 사립 위탁 채용)
-  4) 전북 사립 중·고 홈페이지 (하루 1번)    첫 화면과 '채용' 메뉴에서 미술 채용 글을 찾음
+  4) 도교육청 > 고시/공고                  '미술' 또는 중등·교사 임용 관련 글만 알림
+                                          (임용시험 시행계획 공고가 여기에도 실림)
+  5) 전북 사립 중·고 홈페이지 (하루 1번)    첫 화면과 '채용' 메뉴에서 미술 채용 글을 찾음
                                           학교 목록은 나이스 교육정보 개방포털에서 자동으로 받음
+
+게시판마다 주소를 여러 개 두고(인력풀 사이트 → 교육청 본사이트), 앞 주소가 안 열리면 다음 주소로 넘어갑니다.
 
 환경변수
   TELEGRAM_BOT_TOKEN  텔레그램 봇 토큰
@@ -44,40 +48,80 @@ FIRST_RUN_LOOKBACK_DAYS = 14     # 첫 실행 때는 최근 이 기간의 관련
 FAILS_BEFORE_ALERT = 2           # 연속 몇 번 실패하면 경고를 보낼지 (하루 2회 실행 기준 약 반나절)
 ERROR_ALERT_INTERVAL_HOURS = 12  # 경고 반복 간격
 MAX_SEEN_PER_BOARD = 1500
+TELEGRAM_RETRIES = 4             # 텔레그램 전송 제한·서버 오류 때 다시 시도하는 횟수
 
-POOL_LIST = "https://www.jbe.go.kr/pool/board/list.jbe"
+JBE = "https://www.jbe.go.kr"
+
+
+def board_pages(path: str, pages: int, rows: int = 50, **params: str) -> list[str]:
+    """교육청 게시판 목록 주소를 페이지 수만큼 만든다 (startPage=1..pages)."""
+    query = "&".join(f"{k}={v}" for k, v in params.items())
+    return [
+        f"{JBE}{path}?{query}&listRow={rows}&listCel=1&paging=ok&searchOperation=AND&startPage={p}"
+        for p in range(1, pages + 1)
+    ]
+
+
+# 게시판마다 주소 후보를 순서대로 시도한다. 첫 주소가 안 열리거나 다른 게시판이 열리면 다음 후보로 넘어간다.
+# 주소는 검색엔진에 남은 실제 링크로 확인한 것 (2026-10 기준). boardId 는 게시판 고유 번호라 메뉴가 바뀌어도 유지된다.
 BOARDS = {
     "recruit": {
         "name": "기간제 채용공고",
-        "urls": [
-            f"{POOL_LIST}?boardId=BBS_0000130&menuCd=DOM_000001601002000000"
-            f"&listRow=50&listCel=1&paging=ok&searchOperation=AND&startPage={page}"
-            for page in (1, 2, 3)  # 12시간 사이 올라온 글을 놓치지 않도록 최근 150건
+        "sources": [
+            # 인력풀 사이트 > 학교/기관별 채용공고 > 채용공고 (최근 150건: 12시간 사이 올라온 글을 놓치지 않도록)
+            board_pages("/pool/board/list.jbe", 3, boardId="BBS_0000130", menuCd="DOM_000001601002000000"),
+            # 교육청 본사이트 > 알림마당 > 시험/채용/구직 > 학교/기관별 채용공고 (같은 게시판)
+            board_pages("/board/list.jbe", 3, boardId="BBS_0000130", menuCd="DOM_000000103004006000"),
+            board_pages("/index.jbe", 3, menuCd="DOM_000000103004006000"),
         ],
+        "expect_title": "채용공고",
+        "reject_title": "사전공개",
     },
     "preplan": {
         "name": "채용계획 사전공개",
-        "urls": [
-            f"{POOL_LIST}?boardId=BBS_0000123&menuCd=DOM_000001601001000000"
-            f"&listRow=50&listCel=1&paging=ok&searchOperation=AND&startPage={page}"
-            for page in (1, 2)  # 최근 100건
+        "sources": [
+            # 인력풀 사이트 > 학교/기관별 채용공고 > 채용계획 사전공개 (최근 100건)
+            board_pages("/pool/board/list.jbe", 2, boardId="BBS_0000053", menuCd="DOM_000001601001000000"),
+            board_pages("/pool/board/list.jbe", 2, boardId="BBS_0000053", menuCd="DOM_000001802001000000"),
+            # 교육청 본사이트 > 알림마당 > 시험/채용/구직 > 학교/기관별 채용공고 > 채용계획 사전공개
+            board_pages("/board/list.jbe", 2, boardId="BBS_0000053", menuCd="DOM_000000103004005000"),
+            board_pages("/index.jbe", 2, menuCd="DOM_000000103004005000"),
         ],
+        "expect_title": "사전공개",
     },
     "exam": {
         "name": "중등임용시험 게시판",
-        # 도교육청 누리집 > 알림마당 > 시험/채용/구직 > 중등임용시험
-        "urls": ["https://www.jbe.go.kr/index.jbe?menuCd=DOM_000000103004002000"],
+        "sources": [
+            # 교육청 본사이트 > 알림마당 > 시험/채용/구직 > 중등임용시험
+            board_pages("/board/list.jbe", 1, 30, boardId="BBS_0000043",
+                        menuCd="DOM_000000103004002000", categoryCode1="BB"),
+            [f"{JBE}/index.jbe?menuCd=DOM_000000103004002000"],
+        ],
         "expect_title": "중등임용",
     },
+    "gosi": {
+        "name": "고시/공고",
+        "sources": [
+            # 교육청 본사이트 > 알림마당 > 고시/공고 (임용시험 시행계획 공고가 여기에 실림. 글이 많아 관련 글만 골라냄)
+            board_pages("/index.jbe", 1, 30, menuCd="DOM_000000103002000000"),
+        ],
+        "expect_title": "고시/공고",
+    },
 }
+# 고시/공고에서 '미술'이 없어도 알릴 글: 중등·교사 임용 관련 (초등·유치원만 해당하는 글은 제외)
+GOSI_EXAM_RE = re.compile(r"임용")
+GOSI_TEACHER_RE = re.compile(r"중등|교사|교원")
+GOSI_EXCLUDE_RE = re.compile(r"초등|유치원|특수학교")
 
 # 사립 중·고 홈페이지
 NEIS_URL = "https://open.neis.go.kr/hub/schoolInfo"
 NEIS_OFFICE_CODE = "P10"          # 전북특별자치도교육청
 SCHOOL_KINDS = {"중학교", "고등학교"}
 SCHOOL_LIST_REFRESH_DAYS = 7      # 학교 목록(폐교·통합 반영)을 며칠마다 새로 받을지
-SCHOOL_WORKERS = 5                # 동시에 여는 홈페이지 수
+SCHOOL_WORKERS = 6                # 동시에 여는 홈페이지 수
 SCHOOL_MAX_BOARDS = 3             # 학교마다 따라 들어갈 '채용' 메뉴 수
+SCHOOL_SCAN_BUDGET_SEC = 600      # 홈페이지 확인에 쓸 최대 시간. 넘기면 남은 학교는 건너뜀 (Actions 제한시간 보호)
+SCHOOL_HTTP_TIMEOUT = 12          # 학교 홈페이지 한 번 요청에 기다리는 시간(초)
 MAX_SEEN_SCHOOL = 3000
 
 SECONDARY_RE = re.compile(r"중학교|고등학교|중등|여중|여고|고교|중·고|중고등")
@@ -109,6 +153,17 @@ def norm(text: str) -> str:
     return re.sub(r"\s+", " ", text or "").strip()
 
 
+def short_error(exc: BaseException) -> str:
+    """requests 예외를 사용자가 읽을 수 있는 짧은 말로 바꾼다."""
+    if isinstance(exc, requests.exceptions.Timeout):
+        return "시간 초과"
+    if isinstance(exc, requests.exceptions.HTTPError) and exc.response is not None:
+        return f"HTTP {exc.response.status_code}"
+    if isinstance(exc, requests.exceptions.ConnectionError):
+        return "접속 안 됨"
+    return str(exc)[:90]
+
+
 def fetch(url: str) -> str:
     last_error = None
     for attempt in range(2):
@@ -126,13 +181,15 @@ def fetch(url: str) -> str:
         except requests.RequestException as exc:
             last_error = exc
             time.sleep(3)
-    raise RuntimeError(f"접속 실패: {last_error}")
+    raise RuntimeError(f"접속 실패({short_error(last_error)})")
 
 
 def parse_page(page_html: str, base_url: str) -> tuple[str, list[dict]]:
     """목록 페이지에서 게시글 행을 뽑는다. 게시글 링크(dataSid)를 기준으로 찾는다."""
     soup = BeautifulSoup(page_html, "html.parser")
-    page_title = norm(soup.title.get_text()) if soup.title else ""
+    # 어느 게시판이 열렸는지 확인할 때 <title>과 제목 태그(h1~h4)를 함께 본다
+    headings = " | ".join(norm(h.get_text(" ")) for h in soup.find_all(["h1", "h2", "h3", "h4"])[:8])
+    page_title = norm(f"{soup.title.get_text() if soup.title else ''} | {headings}").strip(" |")
     rows: dict[str, dict] = {}
     for a in soup.find_all("a", href=True):
         href = a["href"]
@@ -157,6 +214,47 @@ def parse_page(page_html: str, base_url: str) -> tuple[str, list[dict]]:
             "text": norm(f"{container.get_text(' ')} {link_titles}"),
         }
     return page_title, list(rows.values())
+
+
+def check_board_title(board: dict, page_title: str) -> None:
+    expect, reject = board.get("expect_title"), board.get("reject_title")
+    if (expect and expect not in page_title) or (reject and reject in page_title):
+        raise RuntimeError(f"다른 게시판이 열림(페이지 제목: {page_title[:60]})")
+
+
+def read_board(board: dict) -> tuple[list[dict], str]:
+    """주소 후보를 차례로 시도해 (게시글 목록, 비고)를 돌려준다.
+
+    후보마다 첫 페이지는 반드시 읽혀야 하고, 뒤 페이지는 실패해도 읽은 데까지 쓴다.
+    """
+    failures: list[str] = []
+    for n, urls in enumerate(board["sources"], start=1):
+        rows: list[dict] = []
+        for i, url in enumerate(urls):
+            try:
+                page_title, page_rows = parse_page(fetch(url), url)
+                check_board_title(board, page_title)
+                if i == 0 and not page_rows:
+                    raise RuntimeError("게시글을 하나도 못 읽음 — 사이트 구조가 바뀌었을 수 있음")
+            except Exception as exc:  # noqa: BLE001
+                if i == 0:
+                    failures.append(str(exc)[:90])
+                    break
+                print(f"[{board['name']}] {i + 1}페이지 읽기 실패(무시): {exc}", file=sys.stderr)
+                break
+            known = {r["id"] for r in rows}
+            rows.extend(r for r in page_rows if r["id"] not in known)  # 페이지 간 중복(공지글) 제거
+            time.sleep(1)
+        if rows:
+            note = "" if n == 1 else f" (예비 주소 {n}번 사용)"
+            return rows, note
+    if len(set(failures)) == 1:
+        message = f"주소 {len(failures)}개 모두 {failures[0]}" if len(failures) > 1 else failures[0]
+    else:
+        message = " / ".join(f"{n}번 주소: {f}" for n, f in enumerate(failures, start=1))
+    if any("다른 게시판" in f or "하나도 못 읽음" in f for f in failures):
+        message += " — 주소 확인 필요"
+    raise RuntimeError(message)
 
 
 # ─────────────────────────── 판정 ───────────────────────────
@@ -186,6 +284,13 @@ def classify(board_key: str, row: dict) -> str | None:
         return "match"
     if board_key == "exam":
         return "exam"
+    if board_key == "gosi":
+        title = row["title"]
+        if GOSI_EXAM_RE.search(title) and GOSI_TEACHER_RE.search(title):
+            if GOSI_EXCLUDE_RE.search(title) and not SECONDARY_RE.search(title):
+                return None  # 초등·유치원만 해당하는 임용 글
+            return "exam"
+        return None
     if board_key == "preplan" and SECONDARY_RE.search(text):
         author = cell(row, 2)
         subject_text = text.replace(author, " ") if author else text
@@ -220,10 +325,12 @@ def format_message(board_key: str, row: dict, kind: str) -> str:
             head = "🟡 <b>과목 미기재 중등 사전공개</b> — 첨부에 미술 있는지 확인"
         body = f"{e(row['title'])}\n작성: {e(cell(row, 2))} {e(cell(row, 3))}"
     else:
-        head = "📢 <b>중등임용시험 게시판 새 글</b>"
+        where = "중등임용시험 게시판 새 글" if board_key == "exam" else "고시/공고 임용 관련 글"
+        head = f"📢 <b>{where}</b>"
         if kind == "match":
             head += " (미술 언급)"
-        body = e(row["title"])
+        found = dates_in(row["text"])
+        body = e(row["title"]) + (f"\n게시: {max(found):%Y-%m-%d}" if found else "")
     return f'{head}\n{body}\n<a href="{e(row["url"], quote=True)}">공고 열기</a>'
 
 
@@ -238,7 +345,7 @@ JS_REDIRECT_RE = re.compile(
 )
 
 
-def get_html(url: str, timeout: int = 15) -> tuple[str, str]:
+def get_html(url: str, timeout: int = SCHOOL_HTTP_TIMEOUT) -> tuple[str, str]:
     headers = dict(SESSION.headers)
     try:
         resp = requests.get(url, headers=headers, timeout=timeout)
@@ -349,10 +456,12 @@ def hiring_menus(page_url: str, soup: BeautifulSoup) -> list[str]:
     return urls[:SCHOOL_MAX_BOARDS]
 
 
-def scan_school(school: dict) -> dict:
+def scan_school(school: dict, deadline: float | None = None) -> dict:
     url = fix_url(school["url"])
     if not url:
         return {"school": school, "status": "no_url", "items": [], "boards": 0}
+    if deadline is not None and time.monotonic() > deadline:
+        return {"school": school, "status": "skipped", "items": [], "boards": 0}
     try:
         pages = load_home(url)
         items = []
@@ -412,8 +521,9 @@ def run_school_scan(api_key: str, state: dict, today: date) -> tuple[list[str], 
                 raise
             print(f"[사립학교 목록] 새로 받기 실패, 저장된 목록 사용: {exc}", file=sys.stderr)
 
+    deadline = time.monotonic() + SCHOOL_SCAN_BUDGET_SEC
     with ThreadPoolExecutor(max_workers=SCHOOL_WORKERS) as pool:
-        results = list(pool.map(scan_school, schools))
+        results = list(pool.map(lambda s: scan_school(s, deadline), schools))
 
     seen = set(state["seen"].get("school", []))
     scanned_before = set(state.get("schools_scanned", []))
@@ -445,15 +555,20 @@ def run_school_scan(api_key: str, state: dict, today: date) -> tuple[list[str], 
     ok = [r for r in results if r["status"] == "ok"]
     failed = [r for r in results if r["status"] == "fail"]
     no_url = [r for r in results if r["status"] == "no_url"]
+    skipped = [r for r in results if r["status"] == "skipped"]
     with_board = sum(1 for r in ok if r["boards"])
     for r in failed:
         print(f"[사립학교] {r['school']['name']} 접속 실패: {r.get('error')}", file=sys.stderr)
     for r in no_url:
         print(f"[사립학교] {r['school']['name']} 홈페이지 주소 없음", file=sys.stderr)
+    if skipped:
+        print(f"[사립학교] 시간 부족으로 {len(skipped)}곳 건너뜀", file=sys.stderr)
 
-    healthy = len(ok) >= max(1, len(schools) // 2)
+    healthy = len(ok) >= max(1, len(schools) // 2) and not skipped
     status = f"사립 중·고 홈페이지: {len(schools)}곳 중 {len(ok)}곳 확인 (채용 메뉴 {with_board}곳)"
-    if not healthy:
+    if skipped:
+        status += f" — 시간 부족으로 {len(skipped)}곳 건너뜀"
+    elif not healthy:
         status += " — 절반 넘게 접속 실패"
 
     summary = None
@@ -467,7 +582,8 @@ def run_school_scan(api_key: str, state: dict, today: date) -> tuple[list[str], 
             f"정상 {len(ok)}곳 · 채용 메뉴 찾음 {with_board}곳\n"
             f"접속 실패 {len(failed)}곳" + (f": {html.escape(names)}" if failed else "") + "\n"
             f"홈페이지 주소 없음 {len(no_url)}곳\n"
-            "이후로는 매일 아침 한 번 확인합니다."
+            + (f"시간 부족으로 건너뜀 {len(skipped)}곳\n" if skipped else "")
+            + "이후로는 매일 아침 한 번 확인합니다."
         )
     if healthy:
         state["school_scan_date"] = today.isoformat()  # 실패가 많으면 저녁에 다시 시도
@@ -477,20 +593,32 @@ def run_school_scan(api_key: str, state: dict, today: date) -> tuple[list[str], 
 
 # ─────────────────────────── 알림·상태 ───────────────────────────
 def send_telegram(token: str, chat_ids: list[str], text: str) -> None:
+    """메시지 하나를 모든 채팅에 보낸다. 전송 제한(429)·서버 오류(5xx)는 잠시 기다렸다가 다시 시도한다."""
     for chat_id in chat_ids:
-        resp = requests.post(
-            f"https://api.telegram.org/bot{token}/sendMessage",
-            data={
-                "chat_id": chat_id,
-                "text": text,
-                "parse_mode": "HTML",
-                "disable_web_page_preview": "true",
-            },
-            timeout=20,
-        )
-        if not resp.ok:
+        for attempt in range(TELEGRAM_RETRIES):
+            resp = requests.post(
+                f"https://api.telegram.org/bot{token}/sendMessage",
+                data={
+                    "chat_id": chat_id,
+                    "text": text,
+                    "parse_mode": "HTML",
+                    "disable_web_page_preview": "true",
+                },
+                timeout=20,
+            )
+            if resp.ok:
+                break
+            if resp.status_code == 429 or resp.status_code >= 500:
+                try:
+                    wait = int(resp.json().get("parameters", {}).get("retry_after", 0))
+                except ValueError:
+                    wait = 0
+                time.sleep(max(wait, 3))
+                continue
             raise RuntimeError(f"텔레그램 전송 실패({chat_id}): {resp.status_code} {resp.text[:200]}")
-        time.sleep(0.5)
+        else:
+            raise RuntimeError(f"텔레그램 전송 실패({chat_id}): {resp.status_code} {resp.text[:200]}")
+        time.sleep(1)  # 텔레그램 전송 제한(채팅당 초당 1건, 그룹은 분당 20건) 대비
 
 
 def load_state() -> dict:
@@ -529,17 +657,7 @@ def main() -> int:
     for key, board in BOARDS.items():
         first_run = key not in state["seen"]
         try:
-            rows: list[dict] = []
-            for url in board["urls"]:
-                page_title, page_rows = parse_page(fetch(url), url)
-                expect = board.get("expect_title")
-                if expect and expect not in page_title:
-                    raise RuntimeError(f"다른 게시판이 열림(페이지 제목: {page_title[:60]}) — 주소 확인 필요")
-                known = {r["id"] for r in rows}
-                rows.extend(r for r in page_rows if r["id"] not in known)  # 페이지 간 중복 제거
-                time.sleep(1)
-            if not rows:
-                raise RuntimeError("게시글을 하나도 못 읽음 — 사이트 구조가 바뀌었을 수 있음")
+            rows, note = read_board(board)
         except Exception as exc:  # noqa: BLE001
             state["fails"][key] = state["fails"].get(key, 0) + 1
             status_lines.append(f"❌ {board['name']}: {exc}")
@@ -549,7 +667,7 @@ def main() -> int:
             continue
 
         state["fails"][key] = 0
-        status_lines.append(f"✅ {board['name']}: 글 {len(rows)}건 읽음")
+        status_lines.append(f"✅ {board['name']}: 글 {len(rows)}건 읽음{note}")
         seen = set(state["seen"].get(key, []))
         for row in reversed(rows):  # 오래된 글부터 보내기
             if row["id"] in seen:

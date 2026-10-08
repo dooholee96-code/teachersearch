@@ -44,34 +44,39 @@ def recruit_page(rows):
     )
 
 
-def preplan_page(rows):
+PREPLAN_TITLE = "학교/기관별 채용공고 &gt; 채용계획 사전공개 : 기간제교사인력풀"
+
+
+def preplan_page(rows, title=PREPLAN_TITLE):
     """인력풀 > 채용계획 사전공개. rows: (번호, 제목, 첨부파일명, 작성, 날짜, dataSid)"""
     trs = ""
-    for n, title, fname, author, day, sid in rows:
+    for n, title_, fname, author, day, sid in rows:
         trs += (
             f"<tr><td>{n}</td>"
-            f"<td class='subject'><a href='{VIEW.format(b='BBS_0000123', sid=sid)}' title='{title}'>{title}</a></td>"
-            f"<td><a href='{DOWNLOAD.format(b='BBS_0000123', sid=sid)}' title='{fname} 다운로드'><img alt='첨부파일'></a>"
-            f"<a href='{VIEWER.format(b='BBS_0000123', sid=sid)}' title='{fname} 문서보기 새창으로 열림'>문서보기</a></td>"
+            f"<td class='subject'><a href='{VIEW.format(b='BBS_0000053', sid=sid)}' title='{title_}'>{title_}</a></td>"
+            f"<td><a href='{DOWNLOAD.format(b='BBS_0000053', sid=sid)}' title='{fname} 다운로드'><img alt='첨부파일'></a>"
+            f"<a href='{VIEWER.format(b='BBS_0000053', sid=sid)}' title='{fname} 문서보기 새창으로 열림'>문서보기</a></td>"
             f"<td>{author}</td><td>{day}</td><td>3</td></tr>"
         )
-    return (
-        "<html><head><title>학교/기관별 채용공고 &gt; 채용계획 사전공개 | 인력풀</title></head>"
-        f"<body><table><tbody>{trs}</tbody></table></body></html>"
-    )
+    return f"<html><head><title>{title}</title></head><body><table><tbody>{trs}</tbody></table></body></html>"
 
 
 EXAM_TITLE = "알림마당 &gt; 시험/채용/구직 &gt; 중등임용시험 &gt; 목록 화면| 전북특별자치도교육청"
+GOSI_TITLE = "알림마당 &gt; 고시/공고 &gt; 목록 화면| 전북특별자치도교육청"
 
 
-def exam_page(rows, title=EXAM_TITLE):
-    """도교육청 > 중등임용시험. rows: (번호, 제목, 날짜, dataSid)"""
+def exam_page(rows, title=EXAM_TITLE, board="BBS_0000043"):
+    """도교육청 > 중등임용시험 / 고시/공고. rows: (번호, 제목, 날짜, dataSid)"""
     trs = "".join(
-        f"<tr><td>{n}</td><td class='subject'><a href='{VIEW.format(b='BBS_0000009', sid=sid)}'>{t}</a></td>"
+        f"<tr><td>{n}</td><td class='subject'><a href='{VIEW.format(b=board, sid=sid)}'>{t}</a></td>"
         f"<td>첨부파일</td><td>교원인사과</td><td>{day}</td><td>10</td></tr>"
         for n, t, day, sid in rows
     )
     return f"<html><head><title>{title}</title></head><body><table><tbody>{trs}</tbody></table></body></html>"
+
+
+def gosi_page(rows):
+    return exam_page(rows, title=GOSI_TITLE, board="BBS_0000001")
 
 
 def platform_home(code, posts, menus=("채용공고",)):
@@ -128,14 +133,20 @@ class Harness:
 
         # 기본 게시판 (관련 글 없음)
         self.pages["BBS_0000130"] = recruit_page([(1, "초등학교", "가나초등학교", "조리실무사", "2026-09-29 ~ 2026-10-06", "r1")])
-        self.pages["BBS_0000123"] = preplan_page([(1, "다라중학교 영어과 사전공개", "a.hwp", "다라중학교", "26.09.28", "p1")])
+        self.pages["BBS_0000053"] = preplan_page([(1, "다라중학교 영어과 사전공개", "a.hwp", "다라중학교", "26.09.28", "p1")])
         self.pages["DOM_000000103004002000"] = exam_page([(1, "2027학년도 사전 예고", "2026-08-05", "e1")])
+        self.pages["DOM_000000103002000000"] = gosi_page([(1, "부정당업자 입찰참가자격 제한 공고", "2026-09-27", "g1")])
+        self.fetched: list[str] = []
 
     def _fetch(self, url):
-        for key, page in self.pages.items():
-            if key in url:
-                return page
-        raise RuntimeError(f"가짜 페이지 없음: {url}")
+        self.fetched.append(url)
+        keys = sorted((k for k in self.pages if k in url), key=len, reverse=True)  # 더 구체적인 주소가 우선
+        if not keys:
+            raise RuntimeError(f"접속 실패: 404 {url}")
+        page = self.pages[keys[0]]
+        if isinstance(page, Exception):
+            raise page
+        return page
 
     def _get_html(self, url, timeout=15):
         for prefix, value in self.sites.items():
@@ -180,7 +191,7 @@ def test_first_run_sends_start_message_and_only_recent_relevant_posts(h):
         (2, "초등학교", "전주중산초등학교", "조리실무사", "2026-09-29 ~ 2026-10-06", "r2"),
         (1, "고등학교", "전주예술고등학교", "시간강사(미술)", "2026-09-10 ~ 2026-09-15", "r1"),  # 마감 → 제외
     ])
-    h.pages["BBS_0000123"] = preplan_page([
+    h.pages["BBS_0000053"] = preplan_page([
         (4, "2026학년도 남원고등학교 계약제교원 채용계획 사전 공개", "계약제교원 채용계획(남원고).hwp", "남원고등학교", "26.09.29", "p4"),
         (3, "삼례중학교 기간제교원 채용 사전공개(영어과)", "삼례중-영어.hwp", "삼례중학교", "26.09.11", "p3"),
         (2, "전주솔내유치원 계약제교원(영양기간제교사) 채용 사전공고", "x.hwp", "전주솔내유치원", "26.09.15", "p2"),
@@ -204,7 +215,7 @@ def test_new_posts_after_first_run(h):
         (4, "중학교", "이리중학교", "국어", "2026-10-02 ~ 2026-10-05", "r4"),
         (1, "초등학교", "가나초등학교", "조리실무사", "2026-09-29 ~ 2026-10-06", "r1"),
     ])
-    h.pages["BBS_0000123"] = preplan_page([
+    h.pages["BBS_0000053"] = preplan_page([
         (3, "우석고등학교 기간제교사 채용 사전공고", "2학기 3차 기간제교사 채용 사전공개.hwpx", "우석고등학교", "26.10.01", "p3"),
         (2, "전주여고 기간제교원 채용계획", "사전공개(미술).hwp", "전주여자고등학교", "26.10.01", "p2"),
         (1, "다라중학교 영어과 사전공개", "a.hwp", "다라중학교", "26.09.28", "p1"),
@@ -213,18 +224,64 @@ def test_new_posts_after_first_run(h):
         (2, "2027학년도 중등학교교사 등 임용후보자 선정경쟁시험 시행계획 공고", "2026-09-30", "e2"),
         (1, "2027학년도 사전 예고", "2026-08-05", "e1"),
     ])
+    h.pages["DOM_000000103002000000"] = gosi_page([
+        (5, "2027학년도 전북특별자치도 중등학교교사 임용후보자 선정경쟁시험 시행계획 공고", "2026-09-30", "g5"),
+        (4, "2027학년도 공립 유치원·초등학교 교사 임용후보자 선정경쟁시험 시행계획 공고", "2026-09-30", "g4"),
+        (3, "2026학년도 교육공무원(장학사) 임용후보자 공개전형 공고", "2026-09-29", "g3"),
+        (2, "학교 미술품 매각 공고", "2026-09-29", "g2"),
+        (1, "부정당업자 입찰참가자격 제한 공고", "2026-09-27", "g1"),
+    ])
 
     sent = h.run()
 
     joined = "\n".join(sent)
-    assert len(sent) == 4
+    assert len(sent) == 6
     assert "우석고등학교 · " in joined and "미술 기간제교사" in joined
     assert "이리중학교" not in joined
     assert "미술 채용계획 사전공개" in joined and "전주여고" in joined          # 첨부파일명으로 잡음
     assert "과목 미기재" in joined and "우석고등학교 기간제교사 채용 사전공고" in joined
-    assert "중등임용시험 게시판 새 글" in joined and "시행계획 공고" in joined
+    assert "중등임용시험 게시판 새 글" in joined and "시행계획 공고" in joined and "게시: 2026-09-30" in joined
+    gosi = [m for m in sent if "고시/공고" in m]
+    assert len(gosi) == 2
+    assert "미술품 매각" in gosi[0] and "중등학교교사 임용후보자" in gosi[1]  # 오래된 글부터, 미술 키워드도 알림
+    assert "초등학교 교사" not in joined and "장학사" not in joined
 
     assert h.run() == []  # 같은 글은 다시 보내지 않음
+
+
+def test_board_falls_back_to_next_address_when_first_fails(h):
+    h.run()
+    h.pages["pool/board/list.jbe?boardId=BBS_0000130"] = RuntimeError("접속 실패: 500")   # 인력풀 사이트 고장
+    h.pages["board/list.jbe?boardId=BBS_0000130&menuCd=DOM_000000103004006000"] = recruit_page([
+        (2, "중학교", "원광중학교", "미술", "2026-10-02 ~ 2026-10-07", "r2"),
+        (1, "초등학교", "가나초등학교", "조리실무사", "2026-09-29 ~ 2026-10-06", "r1"),
+    ])
+
+    sent = h.run()
+
+    assert len(sent) == 1 and "원광중학교" in sent[0]
+    assert h.state()["fails"]["recruit"] == 0
+
+
+def test_board_rejects_wrong_board_even_if_it_has_posts(h):
+    # 사전공개 주소에서 채용공고 게시판이 열리면(제목이 다름) 실패로 처리해야 함
+    h.pages["BBS_0000053"] = preplan_page(
+        [(1, "미술 기간제", "x.hwp", "원광중학교", "26.09.28", "p9")], title="학교/기관별 채용공고 &gt; 채용공고 | 인력풀"
+    )
+    sent = h.run()
+    assert "❌ 채용계획 사전공개" in sent[0] and "다른 게시판이 열림" in sent[0]
+    assert len(sent) == 1
+
+
+def test_later_pages_failing_still_uses_first_page(h):
+    h.run()
+    h.pages["BBS_0000130&menuCd=DOM_000001601002000000&listRow=50&listCel=1&paging=ok&searchOperation=AND&startPage=2"] = RuntimeError("접속 실패: timeout")
+    h.pages["BBS_0000130"] = recruit_page([(2, "중학교", "원광중학교", "미술", "2026-10-02 ~ 2026-10-07", "r2")])
+    h.fetched.clear()
+    sent = h.run()
+    assert len(sent) == 1 and "원광중학교" in sent[0]
+    recruit_urls = [u for u in h.fetched if "BBS_0000130" in u]
+    assert len(recruit_urls) == 2 and "startPage=3" not in recruit_urls[-1]  # 2페이지 실패 뒤 3페이지는 시도하지 않음
 
 
 def test_wrong_exam_board_warns_after_two_failures_and_not_again_within_12h(h):
@@ -254,6 +311,54 @@ def test_telegram_failure_keeps_state_so_alerts_are_retried(h, monkeypatch):
 
     monkeypatch.setattr(monitor, "send_telegram", lambda t, c, m: h.sent.append(m))
     assert any("원광중학교" in m for m in h.run())
+
+
+def test_page_title_check_also_looks_at_headings():
+    page = "<html><head><title>전북특별자치도교육청</title></head><body><h3>채용계획 사전공개</h3></body></html>"
+    title, _ = monitor.parse_page(page, "https://www.jbe.go.kr/")
+    monitor.check_board_title(monitor.BOARDS["preplan"], title)
+    with pytest.raises(RuntimeError):
+        monitor.check_board_title(monitor.BOARDS["recruit"], title)
+
+
+@pytest.mark.parametrize("title, expected", [
+    ("2027학년도 전북특별자치도 중등학교교사 임용후보자 선정경쟁시험 시행계획 공고", "exam"),
+    ("2027학년도 중등학교교사 임용시험 사립학교 위탁 채용 과목 안내", "exam"),
+    ("2027학년도 공립 유치원·초등학교 교사 임용후보자 선정경쟁시험 시행계획 공고", None),
+    ("2027학년도 유·초·중등 교사 임용시험 사전 예고", "exam"),
+    ("2026학년도 교육공무원(장학사) 임용후보자 공개전형 공고", None),
+    ("전주○○고등학교 미술 교사 채용 공고", "match"),
+    ("부정당업자 입찰참가자격 제한 공고", None),
+])
+def test_classify_gosi(title, expected):
+    row = {"title": title, "text": title, "cells": [], "link_idx": -1}
+    assert monitor.classify("gosi", row) == expected
+
+
+def test_telegram_retries_after_rate_limit(monkeypatch):
+    calls = []
+
+    class Resp:
+        def __init__(self, status):
+            self.status_code, self.ok, self.text = status, status == 200, "{}"
+
+        def json(self):
+            return {"parameters": {"retry_after": 7}} if self.status_code == 429 else {}
+
+    def fake_post(url, data, timeout):
+        calls.append(data["chat_id"])
+        return Resp(429 if len(calls) == 1 else 200)
+
+    waits = []
+    monkeypatch.setattr(monitor.requests, "post", fake_post)
+    monkeypatch.setattr(monitor.time, "sleep", waits.append)
+    monitor.send_telegram("t", ["1", "2"], "hi")
+    assert calls == ["1", "1", "2"]
+    assert waits[0] == 7  # 텔레그램이 알려 준 시간만큼 기다림
+
+    monkeypatch.setattr(monitor.requests, "post", lambda url, data, timeout: Resp(400))
+    with pytest.raises(RuntimeError):
+        monitor.send_telegram("t", ["1"], "hi")
 
 
 def test_preplan_parse_finds_author_cell_despite_attachment_links():
@@ -361,6 +466,19 @@ def test_school_majority_failure_still_alerts_and_retries(h):
 
     second = h.run()
     assert any("사립 중·고 홈페이지 2회 연속 실패" in m for m in second)
+
+
+def test_school_scan_stops_when_time_budget_is_over(h, monkeypatch):
+    setup_schools(h)
+    monkeypatch.setattr(monitor, "SCHOOL_SCAN_BUDGET_SEC", -1)  # 시작하자마자 시간 초과
+
+    sent = h.run()
+
+    summary = next(m for m in sent if "사립 중·고 홈페이지 첫 확인" in m)
+    assert "시간 부족으로 건너뜀 5곳" in summary
+    assert "school_scan_date" not in h.state()  # 저녁에 다시 시도
+    assert h.state()["fails"]["school"] == 1
+    assert not any(m.startswith("🏫🎨") for m in sent)
 
 
 def test_school_list_falls_back_to_cache_when_neis_fails(h, monkeypatch):
