@@ -1015,3 +1015,21 @@ def test_site_scan_retries_with_http_when_https_times_out(h, monkeypatch):
     sent = h.run()
     assert any("천안A중학교" in m and "[충남] 천안교육지원청" in m for m in sent)
     assert "접속 실패 0곳" in next(m for m in sent if "누리집 첫 확인" in m)
+
+
+def test_url_variants_cover_scheme_and_www():
+    assert monitor.url_variants("https://www.cncae.go.kr/") == [
+        "https://www.cncae.go.kr/", "http://www.cncae.go.kr/", "https://cncae.go.kr/", "http://cncae.go.kr/"]
+    assert monitor.url_variants("http://woosuk.hs.kr") == [
+        "http://woosuk.hs.kr", "https://woosuk.hs.kr", "http://www.woosuk.hs.kr", "https://www.woosuk.hs.kr"]
+    assert monitor.url_variants("https://school.jbedu.kr/wonkwangms")[0] == "https://school.jbedu.kr/wonkwangms"
+
+
+def test_school_with_dead_old_address_is_reached_via_www_variant(h):
+    import requests
+    setup_schools(h)
+    h.sites["http://woosuk.hs.kr"] = requests.exceptions.ConnectionError("옛 주소")
+    h.sites["https://woosuk.hs.kr"] = requests.exceptions.ConnectionError("옛 주소")
+    h.sites["http://www.woosuk.hs.kr"] = ("https://school.jbedu.kr/woosuk/index.do", platform_home("woosuk", [(50, "가정통신문 9월")]))
+    sent = h.run()
+    assert any("2027학년도 미술 교사 채용 공고" in m for m in sent)

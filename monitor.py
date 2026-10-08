@@ -466,6 +466,22 @@ def fix_url(url: str) -> str:
     return url if url.startswith(("http://", "https://")) else "http://" + url
 
 
+def url_variants(url: str) -> list[str]:
+    """같은 사이트의 다른 표기(https↔http, www 유무). 원래 주소가 먼저."""
+    parts = urlparse(url)
+    hosts = [parts.netloc]
+    if parts.netloc.startswith("www."):
+        hosts.append(parts.netloc[4:])
+    elif parts.netloc.count(".") <= 2:
+        hosts.append("www." + parts.netloc)
+    schemes = [parts.scheme] + [x for x in ("https", "http") if x != parts.scheme]
+    out = []
+    for host in hosts:
+        for scheme in schemes:
+            out.append(parts._replace(scheme=scheme, netloc=host).geturl())
+    return out
+
+
 def load_home(start_url: str) -> list[tuple[str, BeautifulSoup]]:
     """첫 화면을 불러온다. 메타·자바스크립트 이동과 프레임은 몇 단계까지 따라간다."""
     pages, queue, visited = [], [start_url], set()
@@ -544,12 +560,16 @@ def scan_site(site: dict, deadline: float | None = None) -> dict:
     if deadline is not None and time.monotonic() > deadline:
         return {"site": site, "status": "skipped", "items": [], "boards": 0}
     try:
-        try:
-            pages = load_home(url)
-        except requests.exceptions.Timeout:
-            if not url.startswith("https://"):
-                raise
-            pages = load_home("http://" + url[len("https://"):])  # https가 막힌 곳은 http로 한 번 더
+        pages = None
+        last_error: Exception | None = None
+        for candidate in url_variants(url):  # 나이스의 옛 주소·https 차단 대비: www 유무, http/https를 바꿔 가며 시도
+            try:
+                pages = load_home(candidate)
+                break
+            except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as exc:
+                last_error = exc
+        if pages is None:
+            raise last_error or RuntimeError("접속 안 됨")
         items = []
         menus: list[str] = []
         for page_url, soup in pages:
