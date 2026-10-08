@@ -143,6 +143,7 @@ class Harness:
         self.neis_calls = 0
         self.offices = False              # True 면 교육청·교육지원청 누리집도 확인
         self.sent: list[str] = []
+        self.boards: list[str] = []      # 실행마다 만들어진 현황판 글
         self.state_file = tmp_path / "seen.json"
 
         class FixedDatetime(datetime):
@@ -158,6 +159,7 @@ class Harness:
         monkeypatch.setattr(monitor, "get_bytes", self._get_bytes)
         monkeypatch.setattr(monitor, "neis_get", self._neis)
         monkeypatch.setattr(monitor, "send_telegram", lambda token, chats, msg: self.sent.append(msg))
+        monkeypatch.setattr(monitor, "update_board", lambda token, chats, text, state: self.boards.append(text))
         monkeypatch.setenv("TELEGRAM_BOT_TOKEN", "test-token")
         monkeypatch.setenv("TELEGRAM_CHAT_ID", "1")
         monkeypatch.delenv("NEIS_API_KEY", raising=False)
@@ -834,3 +836,82 @@ def test_preplan_unspecified_rows_are_resolved_from_detail_page(h):
     sent = h.run()
     assert len(sent) == 1
     assert sent[0].startswith("🎨") and "남원A고등학교" in sent[0] and "첨부 「채용계획.hwpx」에 미술" in sent[0]
+
+
+# ─────────────────────────── 현황판 (고정 메시지) ───────────────────────────
+def test_board_lists_open_posts_and_drops_them_after_deadline(h, monkeypatch):
+    h.run()
+    h.pages["BBS_0000130"] = recruit_page([
+        (5, "고등학교", "우석고등학교", "미술 기간제교사 1명", "2026-10-02 ~ 2026-10-07", "r5"),
+        (1, "초등학교", "가나초등학교", "조리실무사", "2026-09-29 ~ 2026-10-06", "r1"),
+    ])
+    h.pages["BBS_0000053"] = preplan_page([
+        (3, "우석고등학교 기간제교사 채용 사전공고", "사전공개.hwpx", "우석고등학교", "26.10.01", "p3"),
+        (1, "다라중학교 영어과 사전공개", "a.hwp", "다라중학교", "26.09.28", "p1"),
+    ])
+    h.sites["https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000053"] = detail_page("붙임 참조", [])
+    h.pages["DOM_000000103004002000"] = exam_page([
+        (2, "2027학년도 중등학교교사 등 임용후보자 선정경쟁시험 시행계획 공고", "2026-09-30", "e2"),
+        (1, "2027학년도 사전 예고", "2026-08-05", "e1"),
+    ])
+    h.run()
+
+    board = h.boards[-1]
+    assert board.startswith("📌 <b>미술 티오 현황판</b> (09/29 09:00 기준)")
+    assert "<b>🎨 미술 공고</b> 1건" in board and "우석고등학교 · 미술 기간제교사 1명</a> ~10/07" in board
+    assert "<b>🟡 확인 필요 (과목 미기재)</b> 1건" in board and "우석고등학교 기간제교사 채용 사전공고" in board
+    assert "<b>📢 임용시험 관련</b> 1건" in board and "시행계획 공고</a> 09/29" in board
+    found = h.state()["found"]
+    assert {e["id"] for e in found} == {"recruit:r5", "preplan:p3", "exam:e2"}
+
+    # 열흘 뒤: 접수가 끝난 채용공고는 빠지고, 🟡은 14일, 📢은 30일 동안 남는다
+    monkeypatch.setattr(monitor, "datetime", type("D", (monitor.datetime,), {"now": classmethod(lambda cls, tz=None: FIXED_NOW.replace(day=29) + __import__("datetime").timedelta(days=10))}))
+    h.run()
+    board = h.boards[-1]
+    assert "<b>🎨 미술 공고</b> 0건" in board and "<b>🟡 확인 필요 (과목 미기재)</b> 1건" in board and "<b>📢 임용시험 관련</b> 1건" in board
+    assert len(h.state()["found"]) == 3  # 기록은 90일 보관
+
+    monkeypatch.setattr(monitor, "datetime", type("D", (monitor.datetime,), {"now": classmethod(lambda cls, tz=None: FIXED_NOW + __import__("datetime").timedelta(days=40))}))
+    h.run()
+    assert "<b>📢 임용시험 관련</b> 0건" in h.boards[-1]
+
+
+def test_board_includes_site_posts_with_region(h, monkeypatch):
+    setup_offices(h, monkeypatch)
+    h.run()
+    assert "[대전] " in h.boards[-1] and "공·사립 중등학교교사 임용후보자" in h.boards[-1]
+    assert "[전북] " in h.boards[-1] and "전주○○중학교" in h.boards[-1]
+
+
+def test_update_board_edits_or_sends_and_pins(monkeypatch):
+    calls = []
+
+    class Resp:
+        def __init__(self, ok, text="", mid=None):
+            self.ok, self.text, self.status_code, self.mid = ok, text, 200 if ok else 400, mid
+
+        def json(self):
+            return {"result": {"message_id": self.mid}}
+
+    def fake_call(token, method, data):
+        calls.append((method, data.get("chat_id"), data.get("message_id")))
+        if method == "editMessageText":
+            return Resp(data["chat_id"] == "1") if data.get("message_id") != 99 else Resp(False, "Bad Request: message is not modified")
+        if method == "sendMessage":
+            return Resp(True, mid=500 + len(calls))
+        return Resp(True)
+
+    monkeypatch.setattr(monitor, "telegram_call", fake_call)
+    monkeypatch.setattr(monitor.time, "sleep", lambda s: None)
+
+    state = {"board_messages": {"1": 10, "2": 20, "3": 99}}
+    monitor.update_board("t", ["1", "2", "3", "4"], "text", state)
+    methods = [c[0] for c in calls]
+    assert methods.count("editMessageText") == 3                      # 1·2·3은 고쳐 쓰기 시도
+    assert methods.count("sendMessage") == 2 and methods.count("pinChatMessage") == 2  # 2(실패)·4(없음)는 새로 보내고 고정
+    assert state["board_messages"]["1"] == 10 and state["board_messages"]["3"] == 99
+    assert state["board_messages"]["2"] != 20 and "4" in state["board_messages"]
+
+    calls.clear()
+    monitor.update_board("t", ["1", "2", "3", "4"], "text", state)
+    assert calls == []  # 내용이 같으면 아무것도 안 함

@@ -684,6 +684,11 @@ def run_site_scan(sites: list[dict], site_kind: str, state: dict, today: date) -
             format_site_message(v["kind"], v["title"], v["url"], v["names"], site_kind, v.get("note", ""))
             for v in found.values()
         ],
+        "entries": [
+            {"id": f"site:{v['id']}", "kind": v["kind"], "region": v["names"][0][1:3], "source": " · ".join(v["names"]),
+             "title": v["title"], "url": v["url"], "seen": today.isoformat(), "deadline": None, "note": v.get("note", "")}
+            for v in found.values()
+        ],
         "ok": ok, "failed": failed, "no_url": no_url, "skipped": skipped,
         "with_board": sum(1 for r in ok if r["boards"]),
         "healthy": len(ok) >= max(1, len(sites) // 2) and not skipped,
@@ -697,8 +702,8 @@ def region_counts(sites: list[dict]) -> str:
     return ", ".join(f"{r} {n}" for r, n in counts.items())
 
 
-def run_school_scan(api_key: str, state: dict, today: date) -> tuple[list[str], str, str | None, bool]:
-    """사립학교 홈페이지를 확인하고 (알림 목록, 상태 한 줄, 첫 확인 요약, 정상 여부)를 돌려준다."""
+def run_school_scan(api_key: str, state: dict, today: date) -> tuple[list[str], list[dict], str, str | None, bool]:
+    """사립학교 홈페이지를 확인하고 (알림 목록, 현황판 항목, 상태 한 줄, 첫 확인 요약, 정상 여부)를 돌려준다."""
     schools = load_school_list(api_key, state, today)
     r = run_site_scan(schools, "school", state, today)
     ok, failed, no_url, skipped = r["ok"], r["failed"], r["no_url"], r["skipped"]
@@ -726,11 +731,11 @@ def run_school_scan(api_key: str, state: dict, today: date) -> tuple[list[str], 
         )
     if r["healthy"]:
         state["school_scan_date"] = today.isoformat()  # 실패가 많으면 저녁에 다시 시도
-    return r["alerts"], status, summary, r["healthy"]
+    return r["alerts"], r["entries"], status, summary, r["healthy"]
 
 
-def run_office_scan(state: dict, today: date) -> tuple[list[str], str, str | None, bool]:
-    """교육청·교육지원청 누리집을 확인하고 (알림 목록, 상태 한 줄, 첫 확인 요약, 정상 여부)를 돌려준다."""
+def run_office_scan(state: dict, today: date) -> tuple[list[str], list[dict], str, str | None, bool]:
+    """교육청·교육지원청 누리집을 확인하고 (알림 목록, 현황판 항목, 상태 한 줄, 첫 확인 요약, 정상 여부)를 돌려준다."""
     r = run_site_scan(OFFICE_SITES, "office", state, today)
     ok, failed, skipped = r["ok"], r["failed"], r["skipped"]
     status = f"교육청·교육지원청 누리집: {len(OFFICE_SITES)}곳 중 {len(ok)}곳 확인 (채용 메뉴 {r['with_board']}곳)"
@@ -749,7 +754,7 @@ def run_office_scan(state: dict, today: date) -> tuple[list[str], str, str | Non
             f"접속 실패 {len(failed)}곳" + (f": {html.escape(names)}" if failed else "") + "\n"
             "이후로는 매번(아침·저녁) 확인합니다."
         )
-    return r["alerts"], status, summary, r["healthy"]
+    return r["alerts"], r["entries"], status, summary, r["healthy"]
 
 
 # ─────────────────────────── 글 본문·첨부파일 확인 ───────────────────────────
@@ -1000,6 +1005,86 @@ def resolve_many(urls: list[str]) -> dict[str, tuple[str | None, str]]:
     return results
 
 
+# ─────────────────────────── 현황판 (텔레그램 고정 메시지) ───────────────────────────
+# 지나간 알림을 폰에서 한눈에 볼 수 있게, 유효한 공고 목록을 메시지 하나에 모아 매 실행마다 고쳐 쓰고 채팅 상단에 고정한다.
+BOARD_DAYS = {"match": 30, "unspecified": 14, "exam": 30}  # 종류별로 현황판에 남겨 두는 기간 (접수 마감일을 알면 그날까지)
+BOARD_MAX_PER_SECTION = 12
+FOUND_KEEP_DAYS = 90
+
+
+def board_entry(key: str, row: dict, kind: str, note: str, today: date) -> dict:
+    """교육청 게시판 글 하나를 현황판 항목으로."""
+    found = dates_in(row["text"])
+    deadline = max(found).isoformat() if key == "recruit" and found else None
+    title = f"{cell(row, 0) or row['title']} · {cell(row, 1)}".strip(" ·") if key == "recruit" else row["title"]
+    return {"id": f"{key}:{row['id']}", "kind": kind, "region": "전북", "source": BOARDS[key]["name"],
+            "title": title, "url": row["url"], "seen": today.isoformat(), "deadline": deadline, "note": note}
+
+
+def remember_entries(state: dict, entries: list[dict], today: date) -> None:
+    old = {e["id"]: e for e in state.get("found", [])}
+    for e in entries:
+        old.setdefault(e["id"], e)
+    keep = [e for e in old.values() if (today - date.fromisoformat(e["seen"])).days <= FOUND_KEEP_DAYS]
+    state["found"] = keep[-500:]
+
+
+def board_alive(e: dict, today: date) -> bool:
+    if e.get("deadline"):
+        return date.fromisoformat(e["deadline"]) >= today
+    return (today - date.fromisoformat(e["seen"])).days <= BOARD_DAYS.get(e["kind"], 30)
+
+
+def build_board(state: dict, now: datetime) -> str:
+    today = now.date()
+    alive = [e for e in state.get("found", []) if board_alive(e, today)]
+    esc = html.escape
+    lines = [f"📌 <b>미술 티오 현황판</b> ({now:%m/%d %H:%M} 기준)", ""]
+    for head, kind in (("🎨 미술 공고", "match"), ("🟡 확인 필요 (과목 미기재)", "unspecified"), ("📢 임용시험 관련", "exam")):
+        items = sorted((e for e in alive if e["kind"] == kind), key=lambda e: (e.get("deadline") or "9999", e["seen"]))
+        if kind != "match":
+            items.sort(key=lambda e: e["seen"], reverse=True)
+        lines.append(f"<b>{head}</b> {len(items)}건")
+        if not items:
+            lines.append("  없음")
+        for e in items[:BOARD_MAX_PER_SECTION]:
+            when = f"~{e['deadline'][5:].replace('-', '/')}" if e.get("deadline") else e["seen"][5:].replace("-", "/")
+            lines.append(f'• [{esc(e["region"])}] <a href="{esc(e["url"], quote=True)}">{esc(e["title"][:60])}</a> {when}')
+        if len(items) > BOARD_MAX_PER_SECTION:
+            lines.append(f"  외 {len(items) - BOARD_MAX_PER_SECTION}건")
+        lines.append("")
+    lines.append("새 글은 알림으로 따로 오고, 이 글은 실행할 때마다 고쳐 씁니다.")
+    text = "\n".join(lines)
+    if len(text) > 4000:  # 텔레그램 메시지 길이 제한
+        text = text[:text.rfind("\n•", 0, 3900)] + "\n  …(너무 길어 줄임)"
+    return text
+
+
+def telegram_call(token: str, method: str, data: dict) -> requests.Response:
+    return requests.post(f"https://api.telegram.org/bot{token}/{method}", data=data, timeout=20)
+
+
+def update_board(token: str, chat_ids: list[str], text: str, state: dict) -> None:
+    """현황판 메시지를 고쳐 쓴다. 없거나 지워졌으면 새로 보내고 상단에 고정한다."""
+    msgs = state.setdefault("board_messages", {})
+    digest = hashlib.sha1(text.encode()).hexdigest()
+    if state.get("board_digest") == digest and all(c in msgs for c in chat_ids):
+        return  # 바뀐 게 없음
+    base = {"text": text, "parse_mode": "HTML", "disable_web_page_preview": "true"}
+    for chat_id in chat_ids:
+        if msgs.get(chat_id):
+            resp = telegram_call(token, "editMessageText", {**base, "chat_id": chat_id, "message_id": msgs[chat_id]})
+            if resp.ok or "message is not modified" in resp.text:
+                continue
+        resp = telegram_call(token, "sendMessage", {**base, "chat_id": chat_id})
+        if not resp.ok:
+            raise RuntimeError(f"현황판 전송 실패({chat_id}): {resp.status_code} {resp.text[:200]}")
+        msgs[chat_id] = resp.json()["result"]["message_id"]
+        telegram_call(token, "pinChatMessage", {"chat_id": chat_id, "message_id": msgs[chat_id], "disable_notification": "true"})
+        time.sleep(1)
+    state["board_digest"] = digest
+
+
 # ─────────────────────────── 알림·상태 ───────────────────────────
 def send_telegram(token: str, chat_ids: list[str], text: str) -> None:
     """메시지 하나를 모든 채팅에 보낸다. 전송 제한(429)·서버 오류(5xx)는 잠시 기다렸다가 다시 시도한다."""
@@ -1059,6 +1144,7 @@ def main() -> int:
     state.setdefault("fails", {})
 
     alerts: list[str] = []
+    entries: list[dict] = []  # 현황판에 남길 항목
     status_lines: list[str] = []
     errors: list[str] = []
     is_initial = "started" not in state
@@ -1091,7 +1177,10 @@ def main() -> int:
             resolved = resolve_many([c[0]["url"] for c in to_open])
             for c in to_open:
                 c[1], c[2] = resolved[c[0]["url"]]
-        alerts.extend(format_message(key, row, kind, note) for row, kind, note in candidates if kind)
+        for row, kind, note in candidates:
+            if kind:
+                alerts.append(format_message(key, row, kind, note))
+                entries.append(board_entry(key, row, kind, note, today))
         current_ids = [r["id"] for r in rows]
         current_set = set(current_ids)
         older_ids = [i for i in dict.fromkeys(state["seen"].get(key, [])) if i not in current_set]
@@ -1102,10 +1191,11 @@ def main() -> int:
 
     def run_scan(label: str, key: str, runner) -> None:
         try:
-            scan_alerts, scan_status, scan_summary, healthy = runner()
+            scan_alerts, scan_entries, scan_status, scan_summary, healthy = runner()
             if scan_summary:
                 summaries.append(scan_summary)
             alerts.extend(scan_alerts)
+            entries.extend(scan_entries)
             if not healthy:
                 raise RuntimeError(scan_status.split(": ", 1)[-1])
             state["fails"][key] = 0
@@ -1136,6 +1226,7 @@ def main() -> int:
             + "\n".join(html.escape(s) for s in status_lines)
             + f"\n키워드: {html.escape(', '.join(KEYWORDS))}"
             + f"\n최근 {FIRST_RUN_LOOKBACK_DAYS}일 안의 관련 글 {len(alerts)}건을 이어서 보냅니다."
+            + "\n📌 유효한 공고 목록은 '현황판' 메시지로 채팅 상단에 고정해 두고 계속 고쳐 씁니다."
         )
     outgoing.extend(summaries)
     outgoing.extend(alerts)
@@ -1151,11 +1242,14 @@ def main() -> int:
             )
             state["last_error_alert"] = now.isoformat()
 
+    remember_entries(state, entries, today)
+    board = build_board(state, now)
     print(f"{now:%Y-%m-%d %H:%M} KST | " + " | ".join(status_lines) + f" | 알림 {len(alerts)}건")
 
     if dry_run:
         for msg in outgoing:
             print("\n----- 보낼 메시지 -----\n" + msg)
+        print("\n----- 현황판 (고정 메시지) -----\n" + board)
         print("\n(--dry-run: 발송·저장 안 함)")
         return 0
 
@@ -1166,6 +1260,10 @@ def main() -> int:
         # 발송에 실패하면 상태를 저장하지 않아 다음 실행 때 다시 보낸다.
         print(exc, file=sys.stderr)
         return 1
+    try:
+        update_board(token, chat_ids, board, state)
+    except Exception as exc:  # noqa: BLE001  현황판은 다음 실행 때 다시 쓰면 되니 알림 상태는 저장한다
+        print(exc, file=sys.stderr)
 
     save_state(state)
     return 0
