@@ -5,7 +5,12 @@ on:
     # GitHub 예약 실행은 UTC 기준입니다 (한국 시간 = UTC + 9시간)
     - cron: "0 23 * * *"  # 한국 매일 08:00
     - cron: "0 12 * * *"  # 한국 매일 21:00
-  workflow_dispatch: {}         # Actions 탭에서 수동 실행
+  workflow_dispatch:            # Actions 탭에서 수동 실행
+    inputs:
+      dry_run:
+        description: "확인만 하기 (알림을 보내지 않고 결과만 로그에 출력, 비밀값 없어도 됨)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write               # seen.json(이미 본 글 목록) 저장용
@@ -36,9 +41,15 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           NEIS_API_KEY: ${{ secrets.NEIS_API_KEY }}
-        run: python monitor.py
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            python monitor.py --dry-run
+          else
+            python monitor.py
+          fi
 
       - name: 본 글 목록·현황판 데이터 저장
+        if: ${{ inputs.dry_run != true }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
