@@ -164,15 +164,16 @@ OFFICE_SITES = (
         ("대전서부교육지원청", "https://www.djsbe.go.kr/home/main.do"),
         ("대전서부교육지원청 학교지원센터", "https://www.djsbe.go.kr/ssc/home/main.do"),
     ])
-    + _offices("충남", "", [("충청남도교육청", "https://www.cne.go.kr/")])
+    + _offices("충남", "", [("충청남도교육청", "http://www.cne.go.kr/")])
+    # 충남은 GitHub 서버에서 https가 시간 초과되고 http만 열린다 (2026-10 확인)
     + _offices("충남", "교육지원청", [
-        ("천안", "https://www.cncae.go.kr/"), ("공주", "https://www.cngje.go.kr/"),
-        ("보령", "https://www.cnbre.go.kr/"), ("아산", "https://www.cnased.go.kr/"),
-        ("서산", "https://www.cnssed.go.kr/"), ("논산계룡", "https://www.cnnse.go.kr/"),
-        ("당진", "https://www.cndje.go.kr/"), ("금산", "https://www.cngse.go.kr/"),
-        ("부여", "https://www.cnbye.go.kr/"), ("서천", "https://www.cnsce.go.kr/"),
-        ("청양", "https://www.cncyed.go.kr/"), ("홍성", "https://www.cnhsed.go.kr/"),
-        ("예산", "https://www.cnyse.go.kr/"), ("태안", "https://www.cntae.go.kr/"),
+        ("천안", "http://www.cncae.go.kr/"), ("공주", "http://www.cngje.go.kr/"),
+        ("보령", "http://www.cnbre.go.kr/"), ("아산", "http://www.cnased.go.kr/"),
+        ("서산", "http://www.cnssed.go.kr/"), ("논산계룡", "http://www.cnnse.go.kr/"),
+        ("당진", "http://www.cndje.go.kr/"), ("금산", "http://www.cngse.go.kr/"),
+        ("부여", "http://www.cnbye.go.kr/"), ("서천", "http://www.cnsce.go.kr/"),
+        ("청양", "http://www.cncyed.go.kr/"), ("홍성", "http://www.cnhsed.go.kr/"),
+        ("예산", "http://www.cnyse.go.kr/"), ("태안", "http://www.cntae.go.kr/"),
     ])
 )
 
