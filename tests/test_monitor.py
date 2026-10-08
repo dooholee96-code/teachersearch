@@ -53,9 +53,9 @@ def preplan_page(rows, title=PREPLAN_TITLE):
     for n, title_, fname, author, day, sid in rows:
         trs += (
             f"<tr><td>{n}</td>"
-            f"<td class='subject'><a href='{VIEW.format(b='BBS_0000053', sid=sid)}' title='{title_}'>{title_}</a></td>"
-            f"<td><a href='{DOWNLOAD.format(b='BBS_0000053', sid=sid)}' title='{fname} 다운로드'><img alt='첨부파일'></a>"
-            f"<a href='{VIEWER.format(b='BBS_0000053', sid=sid)}' title='{fname} 문서보기 새창으로 열림'>문서보기</a></td>"
+            f"<td class='subject'><a href='{VIEW.format(b='BBS_0000123', sid=sid)}' title='{title_}'>{title_}</a></td>"
+            f"<td><a href='{DOWNLOAD.format(b='BBS_0000123', sid=sid)}' title='{fname} 다운로드'><img alt='첨부파일'></a>"
+            f"<a href='{VIEWER.format(b='BBS_0000123', sid=sid)}' title='{fname} 문서보기 새창으로 열림'>문서보기</a></td>"
             f"<td>{author}</td><td>{day}</td><td>3</td></tr>"
         )
     return f"<html><head><title>{title}</title></head><body><table><tbody>{trs}</tbody></table></body></html>"
@@ -171,7 +171,7 @@ class Harness:
 
         # 기본 게시판 (관련 글 없음)
         self.pages["BBS_0000130"] = recruit_page([(1, "초등학교", "가나초등학교", "조리실무사", "2026-09-29 ~ 2026-10-06", "r1")])
-        self.pages["BBS_0000053"] = preplan_page([(1, "다라중학교 영어과 사전공개", "a.hwp", "다라중학교", "26.09.28", "p1")])
+        self.pages["BBS_0000123"] = preplan_page([(1, "다라중학교 영어과 사전공개", "a.hwp", "다라중학교", "26.09.28", "p1")])
         self.pages["DOM_000000103004002000"] = exam_page([(1, "2027학년도 사전 예고", "2026-08-05", "e1")])
         self.pages["DOM_000000103002000000"] = gosi_page([(1, "부정당업자 입찰참가자격 제한 공고", "2026-09-27", "g1")])
         self.fetched: list[str] = []
@@ -245,7 +245,7 @@ def test_first_run_sends_start_message_and_only_recent_relevant_posts(h):
         (2, "초등학교", "전주중산초등학교", "조리실무사", "2026-09-29 ~ 2026-10-06", "r2"),
         (1, "고등학교", "전주예술고등학교", "시간강사(미술)", "2026-09-10 ~ 2026-09-15", "r1"),  # 마감 → 제외
     ])
-    h.pages["BBS_0000053"] = preplan_page([
+    h.pages["BBS_0000123"] = preplan_page([
         (4, "2026학년도 남원고등학교 계약제교원 채용계획 사전 공개", "계약제교원 채용계획(남원고).hwp", "남원고등학교", "26.09.29", "p4"),
         (3, "삼례중학교 기간제교원 채용 사전공개(영어과)", "삼례중-영어.hwp", "삼례중학교", "26.09.11", "p3"),
         (2, "전주솔내유치원 계약제교원(영양기간제교사) 채용 사전공고", "x.hwp", "전주솔내유치원", "26.09.15", "p2"),
@@ -269,7 +269,7 @@ def test_new_posts_after_first_run(h):
         (4, "중학교", "이리중학교", "국어", "2026-10-02 ~ 2026-10-05", "r4"),
         (1, "초등학교", "가나초등학교", "조리실무사", "2026-09-29 ~ 2026-10-06", "r1"),
     ])
-    h.pages["BBS_0000053"] = preplan_page([
+    h.pages["BBS_0000123"] = preplan_page([
         (3, "우석고등학교 기간제교사 채용 사전공고", "2학기 3차 기간제교사 채용 사전공개.hwpx", "우석고등학교", "26.10.01", "p3"),
         (2, "전주여고 기간제교원 채용계획", "사전공개(미술).hwp", "전주여자고등학교", "26.10.01", "p2"),
         (1, "다라중학교 영어과 사전공개", "a.hwp", "다라중학교", "26.09.28", "p1"),
@@ -319,7 +319,7 @@ def test_board_falls_back_to_next_address_when_first_fails(h):
 
 def test_board_rejects_wrong_board_even_if_it_has_posts(h):
     # 사전공개 주소에서 채용공고 게시판이 열리면(제목이 다름) 실패로 처리해야 함
-    h.pages["BBS_0000053"] = preplan_page(
+    h.pages["BBS_0000123"] = preplan_page(
         [(1, "미술 기간제", "x.hwp", "원광중학교", "26.09.28", "p9")], title="학교/기관별 채용공고 &gt; 채용공고 | 인력풀"
     )
     sent = h.run()
@@ -519,6 +519,7 @@ def test_school_majority_failure_still_alerts_and_retries(h):
     assert "school_scan_date" not in h.state()            # 저녁에 다시 시도
     assert h.state()["fails"]["school"] == 1
 
+    h.sites["http://ok.hs.kr"] = RuntimeError("blocked")  # 읽히던 곳마저 안 열리면 2회 연속 실패
     second = h.run()
     assert any("사립 중·고 홈페이지 2회 연속 실패" in m for m in second)
 
@@ -831,12 +832,12 @@ def test_office_posts_without_subject_are_resolved_from_attachments(h, monkeypat
 
 def test_preplan_unspecified_rows_are_resolved_from_detail_page(h):
     h.run()
-    h.pages["BBS_0000053"] = preplan_page([
+    h.pages["BBS_0000123"] = preplan_page([
         (3, "남원A고등학교 기간제교원 채용계획 사전공개", "채용계획.hwpx", "남원A고등학교", "26.10.01", "p3"),
         (2, "남원B중학교 기간제교원 채용계획 사전공개", "채용계획.hwpx", "남원B중학교", "26.10.01", "p2"),
     ])
     for sid, text in (("p3", "과목: 미술, 기간: 2026.11.1.~"), ("p2", "과목: 체육, 기간: 2026.11.1.~")):
-        view = f"https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000053&menuCd=X&paging=ok&startPage=1&searchOperation=AND&dataSid={sid}"
+        view = f"https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000123&menuCd=X&paging=ok&startPage=1&searchOperation=AND&dataSid={sid}"
         h.sites[view] = detail_page("붙임 참조", [("채용계획.hwpx", f"https://www.jbe.go.kr/board/download.jbe?dataSid={sid}")])
         h.files[f"https://www.jbe.go.kr/board/download.jbe?dataSid={sid}"] = make_hwpx(text)
 
@@ -852,11 +853,11 @@ def test_board_lists_open_posts_and_drops_them_after_deadline(h, monkeypatch):
         (5, "고등학교", "우석고등학교", "미술 기간제교사 1명", "2026-10-02 ~ 2026-10-07", "r5"),
         (1, "초등학교", "가나초등학교", "조리실무사", "2026-09-29 ~ 2026-10-06", "r1"),
     ])
-    h.pages["BBS_0000053"] = preplan_page([
+    h.pages["BBS_0000123"] = preplan_page([
         (3, "우석고등학교 기간제교사 채용 사전공고", "사전공개.hwpx", "우석고등학교", "26.10.01", "p3"),
         (1, "다라중학교 영어과 사전공개", "a.hwp", "다라중학교", "26.09.28", "p1"),
     ])
-    h.sites["https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000053"] = detail_page("붙임 참조", [])
+    h.sites["https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000123"] = detail_page("붙임 참조", [])
     h.pages["DOM_000000103004002000"] = exam_page([
         (2, "2027학년도 중등학교교사 등 임용후보자 선정경쟁시험 시행계획 공고", "2026-09-30", "e2"),
         (1, "2027학년도 사전 예고", "2026-08-05", "e1"),
@@ -955,3 +956,51 @@ def test_web_page_url_outside_actions_is_empty_unless_given(monkeypatch):
     assert monitor.web_page_url() == ""
     monkeypatch.setenv("WEB_PAGE_URL", "https://example.com/tio/")
     assert monitor.web_page_url() == "https://example.com/tio/"
+
+
+# ─────────────────────────── 실제 실행(2026-10-08)에서 드러난 문제들 ───────────────────────────
+def test_same_exam_notice_on_two_boards_is_sent_once(h):
+    h.run()
+    title = "2027학년도 전북특별자치도 중등학교교사 임용후보자 선정경쟁시험 시행계획 공고"
+    h.pages["DOM_000000103004002000"] = exam_page([(2, title, "2026-09-30", "e2"), (1, "2027학년도 사전 예고", "2026-08-05", "e1")])
+    h.pages["DOM_000000103002000000"] = gosi_page([(5, title, "2026-09-30", "g5"), (1, "부정당업자 입찰참가자격 제한 공고", "2026-09-27", "g1")])
+    sent = h.run()
+    assert len(sent) == 1 and "중등임용시험 게시판" in sent[0]
+    assert len(h.state()["found"]) == 1
+    assert h.run() == []
+
+
+def test_viewer_links_are_not_treated_as_attachments():
+    from bs4 import BeautifulSoup
+    page = (
+        '<html><body><div class="view"><p>붙임 참조</p><ul>'
+        '<li><a href="/board/download.jbe?dataSid=1&fileSid=1" title="채용계획.hwp 다운로드">채용계획.hwp</a>'
+        '<a href="/board/SynapViewer.jbe?dataSid=1&fileSid=1" title="채용계획.hwp 문서보기 새창으로 열림">바로보기</a></li>'
+        '</ul></div></body></html>'
+    )
+    links = monitor.attachment_links("https://www.jbe.go.kr/board/view.jbe?dataSid=1", BeautifulSoup(page, "html.parser"))
+    assert links == [("채용계획.hwp", "https://www.jbe.go.kr/board/download.jbe?dataSid=1&fileSid=1")]
+
+
+@pytest.mark.parametrize("text", ["과목(분야): 국어", "모집 분야 - 영어 1명", "담당교과 : 수학"])
+def test_subject_strict_regex_accepts_common_table_forms(text):
+    assert monitor.SUBJECT_STRICT_RE.search(text)
+
+
+def test_site_health_uses_previously_reachable_sites_as_baseline(h, monkeypatch):
+    # 대전·충남처럼 처음부터 막힌 곳은 두 번째 실행부터 '정상' 기준에서 빠진다
+    setup_offices(h, monkeypatch)
+    blocked = [{"code": f"office:blocked{i}", "name": f"막힌청{i}", "region": "충남", "url": f"https://blocked{i}.go.kr/", "kind": "office"} for i in range(5)]
+    monkeypatch.setattr(monitor, "OFFICE_SITES", TEST_OFFICES + blocked)
+    for b in blocked:
+        h.sites[b["url"]] = RuntimeError("Connection timed out")
+
+    h.run()
+    assert h.state()["fails"]["office"] == 1          # 첫 실행: 8곳 중 2곳만 읽힘 → 비정상
+    assert h.state()["office_ok"] == ["office:office.jbedu.kr/jeonjuedu", "office:www.dje.go.kr"]
+    h.run()
+    assert h.state()["fails"]["office"] == 0          # 두 번째: 지난번에 읽힌 2곳이 다 읽힘 → 정상
+    h.sites["https://www.dje.go.kr/main.do"] = RuntimeError("down")
+    h.sites["https://office.jbedu.kr/jeonjuedu"] = RuntimeError("down")
+    h.run()
+    assert h.state()["fails"]["office"] == 1          # 읽히던 곳이 다 죽으면 비정상

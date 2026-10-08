@@ -92,11 +92,10 @@ BOARDS = {
     "preplan": {
         "name": "채용계획 사전공개",
         "sources": [
-            # 인력풀 사이트 > 학교/기관별 채용공고 > 채용계획 사전공개 (최근 100건)
-            board_pages("/pool/board/list.jbe", 2, boardId="BBS_0000053", menuCd="DOM_000001601001000000"),
-            board_pages("/pool/board/list.jbe", 2, boardId="BBS_0000053", menuCd="DOM_000001802001000000"),
+            # 인력풀 사이트 > 학교/기관별 채용공고 > 채용계획 사전공개 (최근 100건). boardId는 2026-10 실제 실행으로 확인
+            board_pages("/pool/board/list.jbe", 2, boardId="BBS_0000123", menuCd="DOM_000001601001000000"),
             # 교육청 본사이트 > 알림마당 > 시험/채용/구직 > 학교/기관별 채용공고 > 채용계획 사전공개
-            board_pages("/board/list.jbe", 2, boardId="BBS_0000053", menuCd="DOM_000000103004005000"),
+            board_pages("/board/list.jbe", 2, boardId="BBS_0000123", menuCd="DOM_000000103004005000"),
             board_pages("/index.jbe", 2, menuCd="DOM_000000103004005000"),
         ],
         "expect_title": "사전공개",
@@ -115,6 +114,7 @@ BOARDS = {
         "name": "고시/공고",
         "sources": [
             # 교육청 본사이트 > 알림마당 > 고시/공고 (임용시험 시행계획 공고가 여기에 실림. 글이 많아 관련 글만 골라냄)
+            board_pages("/board/list.jbe", 1, 30, boardId="BBS_0000004", menuCd="DOM_000000103002000000"),
             board_pages("/index.jbe", 1, 30, menuCd="DOM_000000103002000000"),
         ],
         "expect_title": "고시/공고",
@@ -133,7 +133,7 @@ SCHOOL_KINDS = {"중학교", "고등학교"}
 SCHOOL_LIST_REFRESH_DAYS = 7      # 학교 목록(폐교·통합 반영)을 며칠마다 새로 받을지
 SITE_WORKERS = 8                  # 동시에 여는 누리집 수
 SITE_SCAN_BUDGET_SEC = 720        # 한 묶음(학교 전체 / 교육청 전체)을 훑는 데 쓸 최대 시간. 넘기면 남은 곳은 건너뜀
-SITE_HTTP_TIMEOUT = 12            # 누리집 한 번 요청에 기다리는 시간(초)
+SITE_HTTP_TIMEOUT = 20            # 누리집 한 번 요청에 기다리는 시간(초)
 MAX_SEEN_SCHOOL = 5000
 
 
@@ -684,6 +684,11 @@ def run_site_scan(sites: list[dict], site_kind: str, state: dict, today: date) -
         print(f"[{label}] {site_label(r['site'])} 홈페이지 주소 없음", file=sys.stderr)
     if skipped:
         print(f"[{label}] 시간 부족으로 {len(skipped)}곳 건너뜀", file=sys.stderr)
+    prev_ok = set(state.get(f"{site_kind}_ok", []))
+    now_ok = sorted(r["site"]["code"] for r in ok)
+    baseline = len(prev_ok) if prev_ok else len(sites)  # 처음엔 전체 기준, 그 뒤로는 직전에 읽혔던 곳 기준
+    if now_ok:
+        state[f"{site_kind}_ok"] = now_ok
     return {
         "alerts": [
             format_site_message(v["kind"], v["title"], v["url"], v["names"], site_kind, v.get("note", ""))
@@ -697,7 +702,7 @@ def run_site_scan(sites: list[dict], site_kind: str, state: dict, today: date) -
         ],
         "ok": ok, "failed": failed, "no_url": no_url, "skipped": skipped,
         "with_board": sum(1 for r in ok if r["boards"]),
-        "healthy": len(ok) >= max(1, len(sites) // 2) and not skipped,
+        "healthy": len(ok) >= max(1, baseline // 2) and not skipped,
     }
 
 
@@ -771,13 +776,15 @@ MAX_ATTACHMENTS = 3               # 글마다 읽을 첨부파일 수
 MAX_ATTACHMENT_BYTES = 8_000_000  # 이보다 큰 파일은 읽지 않음
 DOC_EXT_RE = re.compile(r"\.(hwpx?|pdf|docx?|xlsx?|pptx?|zip|jpe?g|png|gif|tiff?|bmp)(?=$|[?#\s])", re.I)
 ATTACH_HREF_RE = re.compile(r"download|filedown|file_down|/down/|attach|atch|/files?/|upload|getfile|fileid|filesid", re.I)
+VIEWER_RE = re.compile(r"synapviewer|viewer|preview|docview", re.I)          # 파일이 아니라 문서 뷰어를 여는 링크
+VIEWER_LABEL_RE = re.compile(r"바로보기|문서보기|미리보기|새창")
 NOT_TEACHER_RE = re.compile(r"공무직|조리|행정|시설|돌봄|방과후|초등|유치원|특수학교|자원봉사|지킴이")
 _SUBJECTS = "|".join(sorted((w for w in SUBJECT_WORDS if w != "담임"), key=len, reverse=True))
 # 본문·첨부에서 '다른 과목이 분명하다'고 볼 표현. 안내문의 흔한 말('개인정보', '교육정보과')에 걸리지 않게 앞뒤를 제한한다.
 SUBJECT_STRICT_RE = re.compile(
     rf"(?<![가-힣])(?:{_SUBJECTS})\s*(?:과(?![가-힣])|교사|교원|기간제|강사|전담|\d+\s*명)"
     rf"|[(\[/·,]\s*(?:{_SUBJECTS})\s*[)\]/·,]"
-    rf"|(?:과목|교과|분야|전공)\s*[:：]?\s*(?:{_SUBJECTS})(?![가-힣])"
+    rf"|(?:과목|교과|분야|전공)[^가-힣\n]{{0,8}}(?:{_SUBJECTS})(?![가-힣])"
 )
 
 
@@ -812,6 +819,8 @@ def attachment_links(page_url: str, soup: BeautifulSoup) -> list[tuple[str, str]
         if not href or href.startswith(("#", "javascript:", "mailto:")):
             continue
         label = norm(a.get_text(" ")) or norm(a.get("title", ""))
+        if VIEWER_RE.search(href) or (VIEWER_LABEL_RE.search(label) and not DOC_EXT_RE.search(label)):
+            continue  # 뷰어 링크는 내려받아도 파일이 아님
         if not (DOC_EXT_RE.search(label) or DOC_EXT_RE.search(href) or ATTACH_HREF_RE.search(href)):
             continue
         url = urljoin(page_url, href)
@@ -1181,6 +1190,7 @@ def main() -> int:
 
     alerts: list[str] = []
     entries: list[dict] = []  # 현황판에 남길 항목
+    known_titles = {norm(e["title"]) for e in state.get("found", [])}  # 다른 게시판에서 이미 알린 글은 다시 안 알림
     status_lines: list[str] = []
     errors: list[str] = []
     is_initial = "started" not in state
@@ -1214,9 +1224,13 @@ def main() -> int:
             for c in to_open:
                 c[1], c[2] = resolved[c[0]["url"]]
         for row, kind, note in candidates:
-            if kind:
-                alerts.append(format_message(key, row, kind, note))
-                entries.append(board_entry(key, row, kind, note, today))
+            if not kind:
+                continue
+            if kind == "exam" and norm(row["title"]) in known_titles:
+                continue  # 중등임용시험 게시판과 고시/공고에 같은 공고가 실림
+            known_titles.add(norm(row["title"]))
+            alerts.append(format_message(key, row, kind, note))
+            entries.append(board_entry(key, row, kind, note, today))
         current_ids = [r["id"] for r in rows]
         current_set = set(current_ids)
         older_ids = [i for i in dict.fromkeys(state["seen"].get(key, [])) if i not in current_set]
