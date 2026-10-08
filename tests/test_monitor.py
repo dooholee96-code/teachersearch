@@ -153,6 +153,12 @@ class Harness:
 
         monkeypatch.setattr(monitor, "datetime", FixedDatetime)
         monkeypatch.setattr(monitor, "STATE_FILE", self.state_file)
+        self.web_file = tmp_path / "docs" / "data.json"
+        monkeypatch.setattr(monitor, "WEB_DATA_FILE", self.web_file)
+        self.emails: list[tuple[str, list[str], str]] = []  # (제목, 메시지들, 현황판)
+        monkeypatch.setattr(monitor, "send_email", lambda cfg, subject, msgs, board, url: self.emails.append((subject, msgs, board)))
+        for var in ("EMAIL_FROM", "EMAIL_APP_PASSWORD", "EMAIL_TO", "WEB_PAGE_URL", "GITHUB_REPOSITORY"):
+            monkeypatch.delenv(var, raising=False)
         monkeypatch.setattr(monitor.time, "sleep", lambda s: None)
         monkeypatch.setattr(monitor, "fetch", self._fetch)
         monkeypatch.setattr(monitor, "get_html", self._get_html)
@@ -219,6 +225,9 @@ class Harness:
 
     def state(self):
         return json.loads(self.state_file.read_text(encoding="utf-8"))
+
+    def web(self):
+        return json.loads(self.web_file.read_text(encoding="utf-8"))
 
 
 @pytest.fixture
@@ -915,3 +924,61 @@ def test_update_board_edits_or_sends_and_pins(monkeypatch):
     calls.clear()
     monitor.update_board("t", ["1", "2", "3", "4"], "text", state)
     assert calls == []  # 내용이 같으면 아무것도 안 함
+
+
+# ─────────────────────────── 이메일 · 웹페이지 ───────────────────────────
+def test_email_only_setup_sends_one_mail_per_run_with_board(h, monkeypatch):
+    monkeypatch.delenv("TELEGRAM_BOT_TOKEN")
+    monkeypatch.setenv("EMAIL_FROM", "me@gmail.com")
+    monkeypatch.setenv("EMAIL_APP_PASSWORD", "abcd efgh ijkl mnop")
+    monkeypatch.setenv("EMAIL_TO", "me@gmail.com, wife@naver.com")
+    monkeypatch.setenv("GITHUB_REPOSITORY", "dooho/art-tio")
+    h.pages["BBS_0000130"] = recruit_page([(3, "중학교", "원광중학교", "미술(1개월)", "2026-09-29 ~ 2026-10-01", "r3")])
+
+    h.run()
+    assert h.sent == []  # 텔레그램 없음
+    assert len(h.emails) == 1
+    subject, msgs, board = h.emails[0]
+    assert subject == "[미술 티오] 알리미 시작 · 새 글 1건 (09/29)"
+    assert "알리미 시작" in msgs[0] and "https://dooho.github.io/art-tio/" in msgs[0]
+    assert any("원광중학교" in m for m in msgs) and "현황판" in board
+    assert monitor.email_config()["to"] == ["me@gmail.com", "wife@naver.com"]
+    assert monitor.email_config()["password"] == "abcdefghijklmnop"
+
+    assert h.run() == [] and len(h.emails) == 1  # 새 글이 없으면 메일도 없음
+
+    h.pages["BBS_0000130"] = recruit_page([
+        (5, "고등학교", "우석고등학교", "미술 기간제교사 1명", "2026-10-02 ~ 2026-10-07", "r5"),
+        (4, "중학교", "이리중학교", "미술", "2026-10-02 ~ 2026-10-05", "r4"),
+        (3, "중학교", "원광중학교", "미술(1개월)", "2026-09-29 ~ 2026-10-01", "r3"),
+    ])
+    h.run()
+    assert h.emails[-1][0] == "[미술 티오] 🎨 미술 채용공고 (기간제·강사) 외 1건 (09/29)"
+
+
+def test_without_any_channel_main_refuses(h, monkeypatch):
+    monkeypatch.delenv("TELEGRAM_BOT_TOKEN")
+    monkeypatch.setattr(monitor.sys, "argv", ["monitor.py", "--no-offices"])
+    assert monitor.main() == 1
+    monkeypatch.setattr(monitor.sys, "argv", ["monitor.py", "--no-offices", "--dry-run"])
+    assert monitor.main() == 0  # 확인용 실행은 됨
+
+
+def test_web_data_file_lists_entries_with_alive_flag(h):
+    h.pages["BBS_0000130"] = recruit_page([
+        (3, "중학교", "원광중학교", "미술(1개월)", "2026-09-29 ~ 2026-10-01", "r3"),
+        (2, "고등학교", "전주예술고등학교", "시간강사(미술)", "2026-09-10 ~ 2026-09-15", "r2"),  # 마감 → 첫 실행 땐 안 보냄
+    ])
+    h.run()
+    web = h.web()
+    assert web["updated"].startswith("2026-09-29T09:00") and web["regions"] == ["전북", "대전", "충남"]
+    assert [e["title"] for e in web["entries"]] == ["원광중학교 · 미술(1개월)"]
+    assert web["entries"][0]["alive"] is True and web["entries"][0]["deadline"] == "2026-10-01"
+    assert any("기간제 채용공고" in s for s in web["status"])
+
+
+def test_html_to_text_and_subjects():
+    assert monitor.html_to_text('🎨 <b>미술</b><br>\n<a href="https://x/1">공고 열기</a>') == "🎨 미술\n공고 열기 (https://x/1)"
+    now = FIXED_NOW
+    assert monitor.email_subject([], ["⚠️ <b>알리미 점검 필요</b>"], now) == "[미술 티오] ⚠️ 알리미 점검 필요 (09/29)"
+    assert monitor.web_page_url() == ""

@@ -1,12 +1,13 @@
 # 전북·대전·충남 미술 교사 티오 알리미 — 작업 메모
 
 사용자의 배우자(중등 미술 2급 정교사)를 위해 전북·대전·충남 지역 미술 교사 채용 공고를 빨리 알려 주는 개인용 알리미다.
-GitHub Actions가 하루 두 번 `monitor.py`를 실행하고, 새로 찾은 글을 텔레그램으로 보낸다.
+GitHub Actions가 하루 두 번 `monitor.py`를 실행하고, 새로 찾은 글을 이메일(기본)과 텔레그램(선택)으로 보내며, 현황판 웹페이지 데이터를 갱신한다.
 
 ## 파일
 
 - `monitor.py` — 수집·판정·알림 전부. 외부 의존성은 `requests`, `beautifulsoup4`, `olefile`(hwp), `pypdf`(pdf)
-- `.github/workflows/monitor.yml` — 매일 08:00·21:00(KST) 실행, 실행 뒤 `seen.json`을 커밋
+- `.github/workflows/monitor.yml` — 매일 08:00·21:00(KST) 실행, 실행 뒤 `seen.json`과 `docs/data.json`을 커밋
+- `docs/index.html` — 현황판 웹페이지(GitHub Pages, `/docs` 폴더). 외부 라이브러리 없이 `data.json`을 읽어 그린다. 폰 폭 기준, 라이트/다크 지원
 - `seen.json` — 이미 본 글 목록과 상태. Actions가 만들고 커밋한다 (`.gitignore`에 넣지 말 것)
 - `tests/test_monitor.py` — 가짜 페이지로 만든 테스트. `python -m pytest -q`
 - `README.md` — 사용자용 설치 안내 (개발자가 아닌 사람이 따라 할 수 있게 쓴 한국어)
@@ -27,6 +28,8 @@ GitHub Actions가 하루 두 번 `monitor.py`를 실행하고, 새로 찾은 글
 - 사립 학교 목록은 나이스 `schoolInfo` API(`NEIS_OFFICES`: 전북 P10, 대전 G10, 충남 N10, `FOND_SC_NM=사립`)에서 받아 7일간 `seen.json`에 캐시. 캐시의 `regions`가 `NEIS_OFFICES`와 다르면 바로 새로 받음. 해당 학교가 없는 지역은 INFO-200 → 건너뜀
 - 누리집 확인은 묶음마다 `SITE_SCAN_BUDGET_SEC`(12분)을 넘기면 남은 곳을 건너뛰고 비정상으로 처리(학교는 저녁에 재시도). Actions 제한시간(40분) 안에 끝내기 위함. `--no-offices`로 교육청 묶음을 끌 수 있음(테스트 하네스 기본값)
 - 글 열어 보기(`needs_detail` → `resolve_by_detail`): 제목에 교사·교원·기간제 채용이 있는데 과목이 없는 새 글(누리집 글, 사전공개 🟡 글)은 상세 페이지를 열어 `main_text`(링크 5개 이하인 가장 긴 블록)와 첨부파일을 본다. 첨부는 내용으로 종류를 알아내 hwp(`olefile`+레코드 파싱, 암호·배포용은 못 읽음)·hwpx/docx/xlsx/pptx(zip XML)·pdf(`pypdf`)를 읽는다. '미술' → match, `SUBJECT_STRICT_RE`로 다른 과목이 분명하고 못 읽은 첨부가 없으면 None(조용히 넘김), 그 외 unspecified(🟡 + 이유). 한 번에 `MAX_DETAILS_PER_RUN`(40)건까지. 처음 보는 누리집의 글은 열지 않음
+- 알림 채널: `email_config()`(EMAIL_FROM/EMAIL_APP_PASSWORD/EMAIL_TO, Gmail SMTP SSL 465, 앱 비밀번호)와 텔레그램 중 설정된 것만 쓴다. 둘 다 없으면 종료(dry-run 제외). 이메일은 실행당 한 통(`send_email`: 메시지들 + 현황판, 제목은 `email_subject`), 새 글이 없으면 안 보냄
+- 웹페이지: `write_web_data()`가 `docs/data.json`에 `found` 전체(+`alive`)와 상태줄을 쓴다. 주소는 `web_page_url()`(Actions에선 `GITHUB_REPOSITORY`로 `https://owner.github.io/repo/`, 아니면 `WEB_PAGE_URL`). 저장소는 Public이어야 Pages 무료
 - 현황판: 알림으로 보낸 글을 `state.found`에 90일 보관(제목·url·지역·종류·접수마감). `build_board()`가 유효한 것(🎨 마감일까지 또는 30일, 🟡 14일, 📢 30일)만 모아 메시지 하나로 만들고, `update_board()`가 `editMessageText`로 고쳐 쓴다(없거나 지워졌으면 새로 보내고 `pinChatMessage`). 메시지 id는 `state.board_messages[chat_id]`, 내용 해시 `board_digest`가 같으면 호출 안 함. 현황판 전송 실패는 알림 상태 저장을 막지 않음
 - 첫 실행: 최근 14일 안의 글만 알림 (채용공고는 접수 마감 전인 것만). 처음 보는 학교는 올해·내년 미술 글만 알림
 - 같은 출처가 2번 연속 실패하면 ⚠️ 경고, 12시간에 한 번만
@@ -38,7 +41,7 @@ GitHub Actions가 하루 두 번 `monitor.py`를 실행하고, 새로 찾은 글
 - 실행은 매일 아침 8시, 저녁 9시 두 번만 (30분 간격은 필요 없다고 함)
 - 사립 중·고는 홈페이지까지 전부 감시
 - 교육지원청도 감시, 범위는 전북 + 충남 + 대전 (2026-10-08 요청)
-- '폰에서 볼 수 있게' → 텔레그램 고정 현황판 메시지로 해결 (비공개 저장소라 GitHub Pages는 유료)
+- '폰에서 볼 수 있게' → 처음엔 텔레그램 고정 현황판. 이어서 '텔레그램보다 접근성 좋은 방법' 요청 → 이메일 알림 + 공개 저장소 GitHub Pages 현황판으로 전환, 텔레그램은 선택 사항 (2026-10-08)
 
 ## 확인된 것 / 아직 확인하지 못한 것 (중요)
 

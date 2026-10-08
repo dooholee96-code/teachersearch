@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f5f1ea" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#17161a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="미술 티오">
+<meta name="robots" content="noindex">
+<title>미술 티오 현황판</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23c0392b'/%3E%3Ctext x='32' y='42' font-size='30' text-anchor='middle'%3E🎨%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #f5f1ea; --card: #ffffff; --text: #1f1d1a; --muted: #6b665e; --line: #e4dfd5;
+    --accent: #b23a2a; --chip: #ebe6dc; --chip-on: #1f1d1a; --chip-on-text: #ffffff;
+    --art: #b23a2a; --check: #b8860b; --exam: #2a5d8f; --dead: #a8a39b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17161a; --card: #222126; --text: #efeae2; --muted: #9b958b; --line: #34323a;
+      --accent: #e0735f; --chip: #2d2c33; --chip-on: #efeae2; --chip-on-text: #17161a;
+      --art: #e0735f; --check: #d9a93a; --exam: #6fa3d8; --dead: #6b6760;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #17161a; --card: #222126; --text: #efeae2; --muted: #9b958b; --line: #34323a;
+    --accent: #e0735f; --chip: #2d2c33; --chip-on: #efeae2; --chip-on-text: #17161a;
+    --art: #e0735f; --check: #d9a93a; --exam: #6fa3d8; --dead: #6b6760;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.5 -apple-system, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", system-ui, sans-serif;
+    padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+  }
+  main { max-width: 640px; margin: 0 auto; padding: 16px 16px 48px; }
+  header h1 { font-size: 22px; margin: 8px 0 2px; letter-spacing: -0.01em; }
+  header p { margin: 0; color: var(--muted); font-size: 14px; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0 6px; }
+  .chip {
+    border: 0; border-radius: 999px; padding: 7px 14px; font-size: 14px; cursor: pointer;
+    background: var(--chip); color: var(--text);
+  }
+  .chip[aria-pressed="true"] { background: var(--chip-on); color: var(--chip-on-text); }
+  section { margin-top: 22px; }
+  h2 { font-size: 15px; margin: 0 0 8px; color: var(--muted); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  h2 .count { background: var(--chip); color: var(--text); border-radius: 999px; padding: 1px 9px; font-size: 13px; }
+  .card {
+    display: block; text-decoration: none; color: inherit; background: var(--card);
+    border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 12px;
+    padding: 12px 14px; margin-bottom: 8px;
+  }
+  .card:active { opacity: 0.8; }
+  .card.match { border-left-color: var(--art); }
+  .card.unspecified { border-left-color: var(--check); }
+  .card.exam { border-left-color: var(--exam); }
+  .card.dead { border-left-color: var(--dead); opacity: 0.7; }
+  .meta { display: flex; gap: 8px; flex-wrap: wrap; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+  .region { font-weight: 700; color: var(--text); }
+  .title { font-size: 16px; font-weight: 600; line-height: 1.4; word-break: keep-all; overflow-wrap: anywhere; }
+  .note { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .deadline { color: var(--accent); font-weight: 600; }
+  .empty { color: var(--muted); font-size: 14px; padding: 8px 2px; }
+  details { margin-top: 24px; }
+  summary { cursor: pointer; color: var(--muted); font-size: 14px; }
+  .status { font-size: 13px; color: var(--muted); line-height: 1.6; margin-top: 10px; }
+  .status li { margin: 2px 0; }
+  footer { margin-top: 32px; font-size: 13px; color: var(--muted); }
+  #error { display: none; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-top: 16px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>🎨 미술 티오 현황판</h1>
+    <p id="updated">불러오는 중…</p>
+  </header>
+
+  <div class="chips" id="regions" role="group" aria-label="지역 고르기"></div>
+
+  <div id="error"></div>
+
+  <section id="sec-match"><h2>🎨 미술 공고 <span class="count"></span></h2><div class="list"></div></section>
+  <section id="sec-unspecified"><h2>🟡 확인 필요 (과목 미기재) <span class="count"></span></h2><div class="list"></div></section>
+  <section id="sec-exam"><h2>📢 임용시험 관련 <span class="count"></span></h2><div class="list"></div></section>
+
+  <details id="past"><summary>지난 공고 (최근 90일, <span class="count">0</span>건)</summary><div class="list"></div></details>
+
+  <details id="health"><summary>알리미 상태</summary><ul class="status"></ul></details>
+
+  <footer>
+    미술 공고는 접수 마감일까지(마감일을 모르면 30일), 확인 필요 글은 14일, 임용 글은 30일 동안 보입니다.<br>
+    매일 아침 8시·저녁 9시에 새로 고쳐집니다. 홈 화면에 추가해 두면 앱처럼 열립니다.
+  </footer>
+</main>
+
+<script>
+(function () {
+  var REGION_KEY = "art-tio-region";
+  var state = { data: null, region: "전체" };
+  try { state.region = localStorage.getItem(REGION_KEY) || "전체"; } catch (e) {}
+
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function md(iso) { return iso ? iso.slice(5).replace("-", "/") : ""; }
+  function fmtUpdated(iso) {
+    // "2026-10-08T21:00+09:00" 처럼 한국 시간으로 적혀 오므로 시간대 변환 없이 그대로 보여 준다
+    var m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(iso || "");
+    if (!m) return iso || "";
+    return Number(m[2]) + "월 " + Number(m[3]) + "일 " + m[4] + ":" + m[5] + " 기준";
+  }
+
+  function card(e) {
+    var cls = "card " + e.kind + (e.alive ? "" : " dead");
+    var when = e.deadline ? '<span class="deadline">~' + md(e.deadline) + ' 접수</span>' : '<span>' + md(e.seen) + '</span>';
+    return '<a class="' + cls + '" href="' + esc(e.url) + '" target="_blank" rel="noopener">' +
+      '<div class="meta"><span class="region">[' + esc(e.region) + ']</span><span>' + esc(e.source) + '</span>' + when + '</div>' +
+      '<div class="title">' + esc(e.title) + '</div>' +
+      (e.note ? '<div class="note">' + esc(e.note) + '</div>' : '') + '</a>';
+  }
+
+  function render() {
+    var d = state.data;
+    var entries = d.entries.filter(function (e) { return state.region === "전체" || e.region === state.region; });
+    ["match", "unspecified", "exam"].forEach(function (kind) {
+      var sec = document.getElementById("sec-" + kind);
+      var items = entries.filter(function (e) { return e.alive && e.kind === kind; });
+      sec.querySelector(".count").textContent = items.length;
+      sec.querySelector(".list").innerHTML = items.length ? items.map(card).join("") : '<div class="empty">없음</div>';
+    });
+    var past = entries.filter(function (e) { return !e.alive; });
+    var pastEl = document.getElementById("past");
+    pastEl.querySelector(".count").textContent = past.length;
+    pastEl.querySelector(".list").innerHTML = past.length ? past.map(card).join("") : '<div class="empty">없음</div>';
+    document.getElementById("updated").textContent = fmtUpdated(d.updated);
+    var health = document.getElementById("health");
+    health.querySelector(".status").innerHTML = (d.status || []).map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("");
+    health.querySelector("summary").textContent = "알리미 상태" + ((d.status || []).some(function (s) { return s.indexOf("❌") === 0; }) ? " ⚠️" : " ✅");
+  }
+
+  function renderChips(regions) {
+    var box = document.getElementById("regions");
+    box.innerHTML = ["전체"].concat(regions).map(function (r) {
+      return '<button class="chip" type="button" aria-pressed="' + (state.region === r) + '" data-region="' + esc(r) + '">' + esc(r) + '</button>';
+    }).join("");
+    box.addEventListener("click", function (ev) {
+      var b = ev.target.closest("button[data-region]");
+      if (!b) return;
+      state.region = b.getAttribute("data-region");
+      try { localStorage.setItem(REGION_KEY, state.region); } catch (e) {}
+      Array.prototype.forEach.call(box.querySelectorAll("button"), function (x) { x.setAttribute("aria-pressed", x === b); });
+      render();
+    });
+  }
+
+  fetch("data.json?t=" + Date.now(), { cache: "no-store" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (d) {
+      state.data = d;
+      if (state.region !== "전체" && d.regions.indexOf(state.region) < 0) state.region = "전체";
+      renderChips(d.regions || []);
+      render();
+    })
+    .catch(function (err) {
+      var box = document.getElementById("error");
+      box.style.display = "block";
+      box.textContent = "아직 알리미가 한 번도 돌지 않았거나(data.json 없음) 페이지 설정이 안 끝났습니다. GitHub 저장소의 Actions 탭에서 한 번 실행해 보세요. (" + err.message + ")";
+      document.getElementById("updated").textContent = "자료 없음";
+    });
+})();
+</script>
+</body>
+</html>
