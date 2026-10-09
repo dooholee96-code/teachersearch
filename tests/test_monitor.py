@@ -144,7 +144,8 @@ class Harness:
         self.offices = False              # True 면 교육청·교육지원청 누리집도 확인
         self.sent: list[str] = []
         self.boards: list[str] = []      # 실행마다 만들어진 현황판 글
-        self.state_file = tmp_path / "seen.json"
+        self.tmp_path = tmp_path
+        self.profile = "art"
 
         class FixedDatetime(datetime):
             @classmethod
@@ -152,9 +153,8 @@ class Harness:
                 return FIXED_NOW
 
         monkeypatch.setattr(monitor, "datetime", FixedDatetime)
-        monkeypatch.setattr(monitor, "STATE_FILE", self.state_file)
-        self.web_file = tmp_path / "docs" / "data.json"
-        monkeypatch.setattr(monitor, "WEB_DATA_FILE", self.web_file)
+        monkeypatch.setattr(monitor, "STATE_DIR", tmp_path)
+        monitor.apply_profile("art")
         for var in ("WEB_PAGE_URL", "GITHUB_REPOSITORY"):
             monkeypatch.delenv(var, raising=False)
         monkeypatch.setattr(monitor.time, "sleep", lambda s: None)
@@ -174,6 +174,10 @@ class Harness:
         self.pages["BBS_0000123"] = preplan_page([(1, "다라중학교 영어과 사전공개", "a.hwp", "다라중학교", "26.09.28", "p1")])
         self.pages["DOM_000000103004002000"] = exam_page([(1, "2027학년도 사전 예고", "2026-08-05", "e1")])
         self.pages["DOM_000000103002000000"] = gosi_page([(1, "부정당업자 입찰참가자격 제한 공고", "2026-09-27", "g1")])
+        self.pages["DOM_000000103004003000"] = exam_page([(1, "2026년 지방공무원 공개경쟁임용 필기시험 장소 안내", "2026-09-20", "v0")],
+                                                         title="알림마당 &gt; 시험/채용/구직 &gt; 지방공무원시험 &gt; 목록 화면| 전북특별자치도교육청")
+        self.pages["DOM_000000103004004000"] = exam_page([(1, "2026년 교육공무직원 채용시험 합격자 발표", "2026-09-20", "w0")],
+                                                         title="알림마당 &gt; 시험/채용/구직 &gt; 교육공무직 채용시험| 전북특별자치도교육청")
         self.fetched: list[str] = []
 
     def _fetch(self, url):
@@ -213,10 +217,20 @@ class Harness:
     def enable_schools(self):
         self.monkeypatch.setenv("NEIS_API_KEY", "test-key")
 
+    @property
+    def state_file(self):
+        return self.tmp_path / monitor.PROFILES[self.profile]["state"]
+
+    @property
+    def web_file(self):
+        return self.tmp_path / monitor.PROFILES[self.profile]["web"]
+
     def run(self, *args):
         self.sent.clear()
         if not self.offices:
             args = ("--no-offices", *args)
+        if self.profile != "art":
+            args = ("--profile", self.profile, *args)
         self.monkeypatch.setattr(monitor.sys, "argv", ["monitor.py", *args])
         assert monitor.main() == 0
         return list(self.sent)
@@ -1146,8 +1160,85 @@ def test_inferred_deadline_keeps_entry_a_week_as_closed(h, monkeypatch):
     listed = {"id": "a", "kind": "match", "seen": "2026-09-20", "deadline": "2026-09-28", "deadline_source": "list"}
     inferred = {"id": "b", "kind": "match", "seen": "2026-09-20", "deadline": "2026-09-28", "deadline_source": "text"}
     assert not monitor.board_alive(listed, today)                       # 목록에 적힌 접수기간은 믿고 바로 뺌
-    assert monitor.board_alive(inferred, today)                         # 본문 추정 마감은 7일 더 '마감됨'으로 보여 줌
-    assert not monitor.board_alive(inferred, date(2026, 10, 6))
+    assert monitor.board_alive(inferred, today)                         # 본문 추정 마감은 숨기지 않고 '마감됨'만 표시
+    assert monitor.board_alive(inferred, date(2026, 10, 6))
+    assert not monitor.board_alive(inferred, date(2026, 10, 25))        # 30일이 지나면 다른 글처럼 내려감
     state = {"found": [{**inferred, "region": "전북", "title": "미술 공고", "url": "https://x/1", "summary": {}}]}
     board = monitor.build_board(state, FIXED_NOW)
     assert "~09/28 마감됨" in board
+
+
+def test_find_deadline_reads_end_of_range_without_year():
+    from datetime import date
+    assert monitor.find_deadline("접수기간: 2026. 9. 23.(화) ~ 9. 26.(금) 17:00", date(2026, 9, 29)) == "2026-09-26"
+    assert monitor.find_deadline("원서 접수: 2026.10.1. ~ 2026.10.8.", date(2026, 10, 9)) == "2026-10-08"
+    assert monitor.find_deadline("접수 마감 2026년 10월 14일", date(2026, 10, 9)) == "2026-10-14"
+
+
+# ─────────────────────────── 기록연구사 프로필 ───────────────────────────
+def test_profiles_switch_keywords_and_files(monkeypatch, tmp_path):
+    monkeypatch.setattr(monitor, "STATE_DIR", tmp_path)
+    monitor.apply_profile("records")
+    try:
+        assert monitor.KEYWORDS[0] == "기록연구" and monitor.STATE_FILE == tmp_path / "seen-records.json"
+        assert monitor.WEB_DATA_FILE == tmp_path / "docs" / "data-records.json"
+        assert not monitor.PROFILE["scan_schools"]
+    finally:
+        monitor.apply_profile("art")
+
+
+def test_records_profile_opens_exam_notices_and_reports_only_record_jobs(h):
+    h.profile = "records"
+    h.pages["DOM_000000103004003000"] = exam_page([
+        (3, "2026년 제3회 전북특별자치도교육청 지방공무원 경력경쟁임용시험 시행계획 공고", "2026-09-29", "v3"),
+        (2, "2026년 제2회 전북특별자치도교육청 지방공무원 경력경쟁임용시험 시행계획 공고", "2026-09-28", "v2"),
+        (1, "2026년도 지방공무원 공개경쟁임용 필기시험 장소 안내", "2026-09-20", "v1"),
+    ], title="알림마당 &gt; 시험/채용/구직 &gt; 지방공무원시험 &gt; 목록 화면| 전북특별자치도교육청")
+    h.pages["DOM_000000103004004000"] = exam_page([(1, "2026년 하반기 교육공무직원 채용시험 공고", "2026-09-27", "w1")],
+                                                  title="알림마당 &gt; 시험/채용/구직 &gt; 교육공무직 채용시험| 전북특별자치도교육청")
+    h.pages["BBS_0000130"] = recruit_page([(1, "교육지원청", "전주교육지원청", "기록물관리 전문요원(기간제)", "2026-09-29 ~ 2026-10-06", "r1")])
+    base = "https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000043&menuCd=X&paging=ok&startPage=1&searchOperation=AND&dataSid="
+    h.sites[base + "v3"] = detail_page("붙임 참조", [("시행계획.hwpx", "https://www.jbe.go.kr/dl/v3")])
+    h.files["https://www.jbe.go.kr/dl/v3"] = make_hwpx("선발 예정 직렬: 기록연구사 1명(전북특별자치도교육청), 보건연구사 1명. 원서 접수: 2026.10.1. ~ 2026.10.8.")
+    h.sites[base + "v2"] = detail_page("붙임 참조", [("시행계획.hwpx", "https://www.jbe.go.kr/dl/v2")])
+    h.files["https://www.jbe.go.kr/dl/v2"] = make_hwpx("선발 예정 직렬: 간호직 2명")
+    h.sites[base + "w1"] = detail_page("직종: 조리실무사, 특수교육실무사", [])
+    h.sites["https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000130&menuCd=X&paging=ok&startPage=1&searchOperation=AND&dataSid=r1"] = detail_page("기록물관리 전문요원 1명 채용", [])
+
+    sent = h.run()
+    assert "기록연구사 티오 알리미 시작" in sent[0]
+    body = alerts_only(sent)
+    assert len(body) == 2, body
+    exam = next(m for m in body if "경력경쟁" in m)
+    assert exam.startswith("📋") and "제3회" in exam and "요약: 전북특별자치도교육청 · 기록연구사 1명 · ~10/08 접수" in exam
+    rec = next(m for m in body if "전주교육지원청" in m)
+    assert rec.startswith("📋 <b>기록연구사·기록물관리 채용공고</b>")
+    joined = "\n".join(sent)
+    assert "제2회" not in joined and "조리실무사" not in joined and "필기시험 장소" not in joined
+
+    web = h.web()
+    assert web["profile"] == "records" and web["title"] == "기록연구사 티오" and web["sections"][0][1] == "match"
+    assert [p["name"] for p in web["profiles"]] == ["art", "records"]
+    assert h.boards[-1].startswith("📌 <b>기록연구사 티오 현황판</b>")
+    assert h.run() == []
+    assert not (h.tmp_path / "seen.json").exists()  # 미술 쪽 상태는 건드리지 않음
+
+
+def test_records_profile_office_posts_use_detail_for_public_worker_notices(h, monkeypatch):
+    h.profile = "records"
+    setup_offices(h, monkeypatch)
+    h.run()
+    jj = "https://office.jbedu.kr/jeonjuedu"
+    h.sites[jj + "/M01050902"] = office_board(jj + "/M01050902", [
+        (41, "2026년 전주교육지원청 교육공무직원(기록물관리) 채용 공고"),
+        (42, "2026년 전주교육지원청 교육공무직원 채용 공고"),
+        (43, "2026년 전주교육지원청 교육공무직원 채용 공고(2차)"),
+        (44, "2026학년도 전주A중학교 기간제교사 채용 공고(미술)"),
+    ])
+    v = jj + "/M01050902/view/"
+    h.sites[v + "42"] = detail_page("채용 직종: 기록물관리 전문요원 1명 (교육지원청 기록관)", [])
+    h.sites[v + "43"] = detail_page("채용 직종: 조리실무사 2명", [])
+    sent = h.run()
+    titles = "\n".join(sent)
+    assert "교육공무직원(기록물관리)" in titles and "교육공무직원 채용 공고\n" in titles
+    assert "(2차)" not in titles and "기간제교사" not in titles

@@ -35,6 +35,7 @@
   python monitor.py --dry-run        알림 내용만 화면에 출력하고 저장하지 않음
   python monitor.py --force-schools  오늘 이미 확인했어도 사립학교 홈페이지를 다시 확인
   python monitor.py --no-offices     교육청·교육지원청 누리집 확인은 건너뜀
+  python monitor.py --profile records  기록연구사(기록물관리) 버전으로 실행 (상태 seen-records.json, 웹 data-records.json)
 """
 from __future__ import annotations
 
@@ -109,6 +110,24 @@ BOARDS = {
             [f"{JBE}/index.jbe?menuCd=DOM_000000103004002000"],
         ],
         "expect_title": "중등임용",
+    },
+    "govexam": {
+        "name": "지방공무원시험 게시판",
+        "sources": [
+            # 교육청 본사이트 > 알림마당 > 시험/채용/구직 > 지방공무원시험 (연구사 경력경쟁임용 공고가 실림)
+            [f"{JBE}/index.jbe?menuCd=DOM_000000103004003000"],
+            board_pages("/board/list.jbe", 1, 30, boardId="BBS_0000043", menuCd="DOM_000000103004003000"),
+        ],
+        "expect_title": "지방공무원",
+    },
+    "pubexam": {
+        "name": "교육공무직 채용시험 게시판",
+        "sources": [
+            # 교육청 본사이트 > 알림마당 > 시험/채용/구직 > 교육공무직원 채용시험
+            [f"{JBE}/index.jbe?menuCd=DOM_000000103004004000"],
+            board_pages("/board/list.jbe", 1, 30, boardId="BBS_0000043", menuCd="DOM_000000103004004000"),
+        ],
+        "expect_title": "공무직",
     },
     "gosi": {
         "name": "고시/공고",
@@ -186,8 +205,45 @@ SUBJECT_WORDS = (
 ).split()
 
 KST = timezone(timedelta(hours=9))
-STATE_FILE = Path(__file__).with_name("seen.json")
-WEB_DATA_FILE = Path(__file__).with_name("docs") / "data.json"  # 현황판 웹페이지(docs/index.html)가 읽는 데이터
+# 프로필: 같은 감시 체계를 직종별로 따로 돌린다. `python monitor.py --profile records`
+PROFILES = {
+    "art": {
+        "title": "미술 티오", "icon": "🎨", "label": "미술",
+        "keywords": ["미술"],
+        "count_terms": ["미술"],                       # '미술 1명'처럼 인원을 찾을 때 앞에 오는 말
+        "state": "seen.json", "web": "docs/data.json",
+        "boards": ["recruit", "preplan", "exam", "gosi"],
+        "scan_schools": True,                         # 사립 중·고 홈페이지까지 확인
+        "teacher_rules": True,                        # 과목 미기재 🟡, 중등 임용 📢 같은 교사 전용 규칙
+        "sections": [["🎨 미술 공고", "match"], ["🟡 확인 필요 (과목 미기재)", "unspecified"], ["📢 임용시험 관련", "exam"]],
+    },
+    "records": {
+        "title": "기록연구사 티오", "icon": "📋", "label": "기록연구사·기록물관리",
+        "keywords": ["기록연구", "기록물관리", "기록관리", "기록물 관리", "기록관 "],
+        "count_terms": ["기록연구사", "기록물관리 전문요원", "기록물관리", "기록관리", "기록연구"],
+        "state": "seen-records.json", "web": "docs/data-records.json",
+        "boards": ["recruit", "preplan", "govexam", "pubexam", "gosi"],
+        "scan_schools": False,                        # 학교는 기록연구사를 뽑지 않음
+        "teacher_rules": False,
+        # 제목에 키워드가 없어도 열어 볼 글: 경력경쟁·공무직 채용처럼 직종이 첨부에만 있는 공고
+        "detail_title_re": r"경력경쟁|임용시험|시행계획|공무직|연구사|연구직|전문요원|기록",
+        "sections": [["📋 기록연구사·기록물관리 공고", "match"], ["📢 임용시험 관련", "exam"]],
+    },
+}
+STATE_DIR = Path(__file__).parent  # seen*.json 과 docs/ 가 있는 곳 (테스트에서 바꿈)
+PROFILE_NAME = "art"
+PROFILE = PROFILES["art"]
+STATE_FILE = STATE_DIR / "seen.json"
+WEB_DATA_FILE = STATE_DIR / "docs" / "data.json"  # 현황판 웹페이지(docs/index.html)가 읽는 데이터
+
+
+def apply_profile(name: str) -> None:
+    """프로필에 따라 키워드·상태 파일·웹 데이터 파일을 바꾼다."""
+    global PROFILE_NAME, PROFILE, KEYWORDS, STATE_FILE, WEB_DATA_FILE
+    PROFILE_NAME, PROFILE = name, PROFILES[name]
+    KEYWORDS = list(PROFILE["keywords"])
+    STATE_FILE = STATE_DIR / PROFILE["state"]
+    WEB_DATA_FILE = STATE_DIR / PROFILE["web"]
 VIEW_LINK_RE = re.compile(r"/board/view\.jbe")
 DATE_FULL_RE = re.compile(r"(?<!\d)(20\d{2})\s*[-./년]\s*(\d{1,2})\s*[-./월]\s*(\d{1,2})(?!\d)")
 DATE_SHORT_RE = re.compile(r"(?<!\d)(\d{2})\.(\d{2})\.(\d{2})(?!\d)")
@@ -336,6 +392,11 @@ def classify(board_key: str, row: dict) -> str | None:
     text = row["text"]
     if any(k in text for k in KEYWORDS):
         return "match"
+    if not PROFILE["teacher_rules"]:
+        # 직종이 첨부에만 적히는 공고(경력경쟁 임용, 공무직 채용 등)는 열어서 확인 → "detail"
+        if board_key in ("govexam", "pubexam", "gosi") and re.search(PROFILE["detail_title_re"], row["title"]):
+            return "detail"
+        return None
     if board_key == "exam":
         return "exam"
     if board_key == "gosi":
@@ -366,7 +427,7 @@ def format_message(board_key: str, row: dict, kind: str, note: str = "", summary
     e = html.escape
     if board_key == "recruit":
         period = next((c for c in row["cells"] if DATE_FULL_RE.search(c)), "")
-        head = "🎨 <b>미술 채용공고</b> (기간제·강사)"
+        head = f"{PROFILE['icon']} <b>{PROFILE['label']} 채용공고</b> (기간제·강사)"
         body = (
             f"{e(cell(row, 0) or row['title'])} · {e(cell(row, -1))}\n"
             f"과목: {e(cell(row, 1))}\n"
@@ -374,15 +435,15 @@ def format_message(board_key: str, row: dict, kind: str, note: str = "", summary
         )
     elif board_key == "preplan":
         if kind == "match":
-            head = "🎨 <b>미술 채용계획 사전공개</b> (보통 7일 뒤 본공고)"
+            head = f"{PROFILE['icon']} <b>{PROFILE['label']} 채용계획 사전공개</b> (보통 7일 뒤 본공고)"
         else:
             head = "🟡 <b>과목 미기재 중등 사전공개</b> — 첨부에 미술 있는지 확인"
         body = f"{e(row['title'])}\n작성: {e(cell(row, 2))} {e(cell(row, 3))}" + (f"\n({e(note)})" if note else "")
     else:
-        where = "중등임용시험 게시판 새 글" if board_key == "exam" else "고시/공고 임용 관련 글"
+        where = f"{BOARDS[board_key]['name']} 새 글" if board_key != "gosi" else "고시/공고 임용 관련 글"
         head = f"📢 <b>{where}</b>"
         if kind == "match":
-            head += " (미술 언급)"
+            head = f"{PROFILE['icon']} <b>{BOARDS[board_key]['name']}</b> ({PROFILE['label']} 언급)"
         found = dates_in(row["text"])
         body = e(row["title"]) + (f"\n게시: {max(found):%Y-%m-%d}" if found else "")
     if summary and summary.get("line"):
@@ -600,6 +661,8 @@ def classify_site_title(title: str, kind: str = "school") -> str | None:
         return None
     if any(k in title for k in KEYWORDS):
         return "match"
+    if not PROFILE["teacher_rules"]:
+        return None
     if REGULAR_RE.search(title) and TEACHER_RE.search(title) and not any(w in title for w in SUBJECT_WORDS):
         return "unspecified"
     if kind == "office" and GOSI_EXAM_RE.search(title) and GOSI_TEACHER_RE.search(title):
@@ -623,7 +686,7 @@ def format_site_message(kind: str, title: str, url: str, names: list[str], site_
     where = "사립학교 홈페이지" if site_kind == "school" else "교육(지원)청 누리집"
     icon = "🏫" if site_kind == "school" else "🏢"
     if kind == "match":
-        head = f"{icon}🎨 <b>{where} 미술 채용 글</b>"
+        head = f"{icon}{PROFILE['icon']} <b>{where} {PROFILE['label']} 채용 글</b>"
     elif kind == "exam":
         head = f"{icon}📢 <b>{where} 중등 임용시험 글</b>"
     else:
@@ -828,7 +891,10 @@ SUBJECT_STRICT_RE = re.compile(
 
 
 def needs_detail(title: str) -> bool:
-    """제목만으로는 과목을 알 수 없는 교사 채용 글인지."""
+    """제목만으로는 직종(과목)을 알 수 없어 열어 봐야 하는 채용 글인지."""
+    if not PROFILE["teacher_rules"]:
+        return bool(is_hiring(title) and re.search(PROFILE["detail_title_re"], title)
+                    and not any(k in title for k in KEYWORDS))
     return bool(
         is_hiring(title) and STAFF_RE.search(title)
         and not any(k in title for k in KEYWORDS)
@@ -1028,13 +1094,18 @@ def resolve_by_detail(url: str, title: str = "", today: date | None = None) -> t
     def matched(note: str) -> tuple[str, str, dict]:
         return "match", note, summarize_post(title, full, today)
 
-    if any(k in page["text"] for k in KEYWORDS):
-        return matched("본문에 미술")
-    if any(k in names for k in KEYWORDS):
-        return matched("첨부파일 이름에 미술")
+    def hit(text: str) -> str:
+        return next((k.strip() for k in KEYWORDS if k in text), "")
+
+    if hit(page["text"]):
+        return matched(f"본문에 {hit(page['text'])}")
+    if hit(names):
+        return matched(f"첨부파일 이름에 {hit(names)}")
     for text in texts[1:]:
-        if any(k in text for k in KEYWORDS):
-            return matched(f"첨부 「{text[1:text.index(']')]}」에 미술")
+        if hit(text):
+            return matched(f"첨부 「{text[1:text.index(']')]}」에 {hit(text)}")
+    if not PROFILE["teacher_rules"]:
+        return None, "키워드 없음", {}
     found = SUBJECT_STRICT_RE.search(full)
     if found and not unread:
         return None, f"다른 과목({norm(found.group(0))})", {}
@@ -1066,13 +1137,24 @@ LONG_SCHOOL_RE = re.compile(r"([가-힣A-Za-z0-9]{1,15}(?:고등학교|중학교
 SHORT_SCHOOL_RE = re.compile(r"((?<![가-힣])[가-힣]{2,10}(?:여고|여중|고|중))(?![가-힣])")
 NOT_SCHOOL_WORDS = {"공고", "예고", "신고", "광고", "보고", "참고", "최고", "경고", "재공고", "사전공고", "계약제", "기간제",
                     "중등", "집중", "도중", "연중", "나중", "주중", "전국", "최종", "학교", "교육청", "시행공고", "채용공고"}
-COUNT_NEAR_ART = (
-    re.compile(r"미술[^\n]{0,25}?(\d{1,2})\s*명"),
-    re.compile(r"(\d{1,2})\s*명[^\n]{0,15}?미술"),
-    re.compile(r"미술\s*[(（:：]\s*(\d{1,2})\s*[)）]"),
-)
+ORG_RE = re.compile(r"((?<![가-힣])[가-힣]{2,12}(?:교육지원청|교육청|교육원|연수원|도서관|도청|시청|군청|구청))(?![가-힣])")
+
+
+def count_patterns() -> list[re.Pattern]:
+    terms = "|".join(re.escape(t) for t in sorted(PROFILE["count_terms"], key=len, reverse=True))
+    return [
+        re.compile(rf"(?:{terms})[^\n]{{0,25}}?(\d{{1,2}})\s*명"),
+        re.compile(rf"(\d{{1,2}})\s*명[^\n]{{0,15}}?(?:{terms})"),
+        re.compile(rf"(?:{terms})\s*[(（:：]\s*(\d{{1,2}})\s*[)）]"),
+    ]
+
+
 GENERIC_COUNT_RE = re.compile(r"(?:모집|채용|선발)\s*인원[^\d\n]{0,12}(\d{1,2})\s*명")
 DEADLINE_HINT_RE = re.compile(r"접수|마감|제출")
+# "2026. 9. 23.(화) ~ 9. 26.(금)"처럼 뒷날짜에 연도가 없는 기간 표기
+DATE_RANGE_RE = re.compile(
+    r"(20\d{2})\s*[-./년]\s*(\d{1,2})\s*[-./월]\s*(\d{1,2})[^\d~∼〜-]{0,8}[~∼〜-]\s*(?:(20\d{2})\s*[-./년]\s*)?(\d{1,2})\s*[-./월]\s*(\d{1,2})(?!\d)"
+)
 
 
 def short_school_name(name: str) -> str:
@@ -1093,6 +1175,10 @@ def find_school_name(*texts: str) -> str:
     for text in texts:
         if not text:
             continue
+        if not PROFILE["teacher_rules"]:  # 교육청·교육지원청 같은 기관이 먼저
+            m = ORG_RE.search(text)
+            if m:
+                return m.group(1)
         for rx in (LONG_SCHOOL_RE, SHORT_SCHOOL_RE):
             for m in rx.finditer(text):
                 name = re.sub(r"^\d+학년도", "", m.group(1)).strip("·-_ ")
@@ -1115,7 +1201,7 @@ def school_kind(name: str, text: str = "") -> str:
 
 
 def art_count(text: str, title: str = "") -> int | None:
-    for rx in COUNT_NEAR_ART:
+    for rx in count_patterns():
         m = rx.search(text)
         if m:
             return int(m.group(1))
@@ -1130,7 +1216,13 @@ def find_deadline(text: str, today: date) -> str | None:
     """'접수/마감/제출' 뒤 80자 안의 날짜 중 가장 늦은 것. 너무 오래된 날짜는 무시."""
     found: list[date] = []
     for m in DEADLINE_HINT_RE.finditer(text):
-        found += dates_in(text[m.end():m.end() + 80])
+        window = text[m.end():m.end() + 80]
+        found += dates_in(window)
+        for r in DATE_RANGE_RE.finditer(window):  # 뒷날짜에 연도가 없으면 앞날짜의 연도를 쓴다
+            try:
+                found.append(date(int(r.group(4) or r.group(1)), int(r.group(5)), int(r.group(6))))
+            except ValueError:
+                pass
     found = [d for d in found if d >= today - timedelta(days=60)]
     return max(found).isoformat() if found else None
 
@@ -1148,7 +1240,7 @@ def summary_line(s: dict) -> str:
     if s.get("school"):
         parts.append(f"{s['school']}({s['kind']})" if s.get("kind") else s["school"])
     if s.get("count"):
-        parts.append(f"미술 {s['count']}명")
+        parts.append(f"{PROFILE['label'].split('·')[0]} {s['count']}명")
     if s.get("deadline"):
         parts.append(f"~{s['deadline'][5:].replace('-', '/')} 접수")
     return " · ".join(parts)
@@ -1237,13 +1329,10 @@ def remember_entries(state: dict, entries: list[dict], today: date) -> None:
     state["found"] = keep[-500:]
 
 
-INFERRED_DEADLINE_GRACE_DAYS = 7  # 본문에서 추정한 마감일은 틀릴 수 있어, 지나도 이만큼은 '마감됨'으로 보여 준다
-
-
 def board_alive(e: dict, today: date) -> bool:
-    if e.get("deadline"):
-        grace = INFERRED_DEADLINE_GRACE_DAYS if e.get("deadline_source") == "text" else 0
-        return date.fromisoformat(e["deadline"]) + timedelta(days=grace) >= today
+    """목록에 적힌 접수기간이 지나면 뺀다. 본문에서 추정한 마감일은 틀릴 수 있어 '마감됨' 표시만 하고 숨기지 않는다."""
+    if e.get("deadline") and e.get("deadline_source") != "text":
+        return date.fromisoformat(e["deadline"]) >= today
     return (today - date.fromisoformat(e["seen"])).days <= BOARD_DAYS.get(e["kind"], 30)
 
 
@@ -1255,8 +1344,8 @@ def build_board(state: dict, now: datetime) -> str:
     today = now.date()
     alive = [e for e in state.get("found", []) if board_alive(e, today)]
     esc = html.escape
-    lines = [f"📌 <b>미술 티오 현황판</b> ({now:%m/%d %H:%M} 기준)", ""]
-    for head, kind in (("🎨 미술 공고", "match"), ("🟡 확인 필요 (과목 미기재)", "unspecified"), ("📢 임용시험 관련", "exam")):
+    lines = [f"📌 <b>{PROFILE['title']} 현황판</b> ({now:%m/%d %H:%M} 기준)", ""]
+    for head, kind in PROFILE["sections"]:
         items = sorted((e for e in alive if e["kind"] == kind), key=lambda e: (e.get("deadline") or "9999", e["seen"]))
         if kind != "match":
             items.sort(key=lambda e: e["seen"], reverse=True)
@@ -1328,6 +1417,12 @@ def write_web_data(state: dict, now: datetime, status_lines: list[str]) -> None:
     entries.sort(key=lambda e: not e["alive"])            # 유효한 글 먼저 (안정 정렬)
     data = {
         "updated": now.isoformat(timespec="minutes"),
+        "profile": PROFILE_NAME,
+        "title": PROFILE["title"],
+        "icon": PROFILE["icon"],
+        "count_label": PROFILE["label"].split("·")[0],
+        "sections": PROFILE["sections"],
+        "profiles": [{"name": k, "title": v["title"], "icon": v["icon"], "file": Path(v["web"]).name} for k, v in PROFILES.items()],
         "regions": list(NEIS_OFFICES.values()),
         "keywords": KEYWORDS,
         "entries": entries,
@@ -1384,6 +1479,13 @@ def save_state(state: dict) -> None:
 # ─────────────────────────── 실행 ───────────────────────────
 def main() -> int:
     dry_run = "--dry-run" in sys.argv
+    profile = os.environ.get("PROFILE", "art")
+    if "--profile" in sys.argv:
+        profile = sys.argv[sys.argv.index("--profile") + 1]
+    if profile not in PROFILES:
+        print(f"모르는 프로필: {profile} (가능: {', '.join(PROFILES)})")
+        return 1
+    apply_profile(profile)
     token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
     chat_ids = [c.strip() for c in os.environ.get("TELEGRAM_CHAT_ID", "").split(",") if c.strip()]
     use_telegram = bool(token and chat_ids)  # 텔레그램은 선택. 없으면 현황판 웹페이지만 갱신한다
@@ -1394,7 +1496,13 @@ def main() -> int:
     state = load_state()
     state.setdefault("seen", {})
     state.setdefault("fails", {})
-    set_private_schools(state.get("schools", {}).get("list", []))  # 공립/사립 판단용
+    private_list = state.get("schools", {}).get("list", [])
+    if not private_list and (STATE_DIR / PROFILES["art"]["state"]).exists():  # 다른 프로필이 받아 둔 목록을 빌려 쓴다
+        try:
+            private_list = json.loads((STATE_DIR / PROFILES["art"]["state"]).read_text(encoding="utf-8")).get("schools", {}).get("list", [])
+        except (OSError, json.JSONDecodeError):
+            private_list = []
+    set_private_schools(private_list)  # 공립/사립 판단용
 
     alerts: list[str] = []
     entries: list[dict] = []  # 현황판에 남길 항목
@@ -1403,7 +1511,8 @@ def main() -> int:
     errors: list[str] = []
     is_initial = "started" not in state
 
-    for key, board in BOARDS.items():
+    for key in PROFILE["boards"]:
+        board = BOARDS[key]
         first_run = key not in state["seen"]
         try:
             rows, note = read_board(board)
@@ -1424,23 +1533,25 @@ def main() -> int:
                 continue
             kind = classify(key, row)
             if kind and (not first_run or is_recent(key, row, kind, today)):
-                candidates.append([row, kind, ""])
-        # 과목이 안 적힌 사전공개 글은 글을 열어 본문·첨부파일에서 과목을 찾는다
-        to_open = [c for c in candidates if key == "preplan" and c[1] == "unspecified"]
+                candidates.append([row, kind, "", kind])
+        # 과목(직종)이 안 적힌 글은 글을 열어 본문·첨부파일에서 찾는다
+        to_open = [c for c in candidates if c[1] == "detail" or (key == "preplan" and c[1] == "unspecified")]
         summaries: dict[str, dict] = {}
         if to_open:
             resolved = resolve_many([(c[0]["url"], c[0]["title"]) for c in to_open], today)
             for c in to_open:
                 c[1], c[2], summaries[c[0]["url"]] = resolved[c[0]["url"]]
+                if c[3] == "detail" and c[1] == "unspecified":
+                    c[1] = None  # 열어 봐도 키워드가 없으면 조용히 넘김 (교사 전용 🟡 규칙은 여기 해당 없음)
         # 🎨 글은 열어서 학교명·공립/사립·미술 인원·접수 마감을 요약한다
         to_sum = [c for c in candidates if c[1] == "match" and not summaries.get(c[0]["url"])]
         if to_sum:
             summaries.update(summarize_many([(c[0]["url"], board_entry_title(key, c[0])) for c in to_sum], today))
-        for row, kind, note in candidates:
+        for row, kind, note, origin in candidates:
             if not kind:
                 continue
-            if kind == "exam" and norm(row["title"]) in known_titles:
-                continue  # 중등임용시험 게시판과 고시/공고에 같은 공고가 실림
+            if origin in ("exam", "detail") and norm(row["title"]) in known_titles:
+                continue  # 같은 공고가 여러 게시판(임용시험·고시/공고)에 실림
             known_titles.add(norm(row["title"]))
             summary = summaries.get(row["url"]) or {}
             if key == "recruit" and summary and not summary.get("deadline"):
@@ -1480,7 +1591,9 @@ def main() -> int:
         run_scan("교육청·교육지원청 누리집", "office", lambda: run_office_scan(state, today))
 
     neis_key = os.environ.get("NEIS_API_KEY", "").strip()
-    if not neis_key:
+    if not PROFILE["scan_schools"]:
+        pass  # 이 직종은 학교 홈페이지를 보지 않음
+    elif not neis_key:
         status_lines.append("⏸ 사립 중·고 홈페이지: NEIS_API_KEY 없음(건너뜀)")
     elif state.get("school_scan_date") == today.isoformat() and "--force-schools" not in sys.argv:
         status_lines.append("⏭ 사립 중·고 홈페이지: 오늘 이미 확인함")
@@ -1491,7 +1604,7 @@ def main() -> int:
     if is_initial:
         state["started"] = now.isoformat()
         outgoing.append(
-            "✅ <b>미술 티오 알리미 시작</b>\n"
+            f"✅ <b>{PROFILE['title']} 알리미 시작</b>\n"
             + "\n".join(html.escape(s) for s in status_lines)
             + f"\n키워드: {html.escape(', '.join(KEYWORDS))}"
             + f"\n최근 {FIRST_RUN_LOOKBACK_DAYS}일 안의 관련 글 {len(alerts)}건을 이어서 보냅니다."

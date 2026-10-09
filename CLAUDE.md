@@ -12,6 +12,12 @@ GitHub Actions가 하루 두 번 `monitor.py`를 실행해 현황판 웹페이�
 - `tests/test_monitor.py` — 가짜 페이지로 만든 테스트. `python -m pytest -q`
 - `README.md` — 사용자용 설치 안내 (개발자가 아닌 사람이 따라 할 수 있게 쓴 한국어)
 
+## 프로필 (직종별 실행)
+
+`PROFILES`(`art` 미술, `records` 기록연구사)로 같은 코드를 직종별로 돌린다. `--profile records` 또는 `PROFILE` 환경변수. `apply_profile()`이 `KEYWORDS`·`STATE_FILE`(`seen-records.json`)·`WEB_DATA_FILE`(`docs/data-records.json`)을 바꾼다. 워크플로는 두 프로필을 차례로 실행하고 `seen*.json docs/data*.json`을 커밋. 웹페이지는 `?p=records`로 데이터 파일을 고르고 `data.json`의 `profiles`로 전환 버튼을 그린다.
+- `records`: 게시판은 recruit·preplan·govexam(지방공무원시험 `DOM_000000103004003000`)·pubexam(교육공무직 채용시험 `DOM_000000103004004000`)·gosi. 학교 홈페이지는 안 봄(`scan_schools` False). `teacher_rules` False → 🟡/📢 교사 규칙 없음. 제목에 키워드가 없어도 `detail_title_re`(경력경쟁·임용시험·시행계획·공무직·연구사·전문요원·기록)에 걸리면 글을 열어(`classify`→"detail", `needs_detail`) 키워드가 있을 때만 알림, 없으면 조용히 넘김. 요약의 기관명은 `ORG_RE`(교육청·교육지원청 등) 우선, 인원은 `count_terms`로. 공립/사립 목록은 `art` 상태 파일에서 빌려 씀
+- 테스트 하네스는 `STATE_DIR`을 tmp로 바꾸고 `h.profile = "records"`로 전환
+
 ## 감시 대상과 판정
 
 | 키 | 출처 | 알림 기준 |
@@ -31,7 +37,7 @@ GitHub Actions가 하루 두 번 `monitor.py`를 실행해 현황판 웹페이�
 - 알림 채널: 텔레그램만(선택). 토큰·채팅 ID가 없으면 메시지를 로그에만 찍고 웹페이지 데이터만 갱신한다. 이메일(Gmail SMTP)은 한때 넣었다가 사용자가 빼 달라고 해서 제거함
 - 웹페이지: `write_web_data()`가 `docs/data.json`에 `found` 전체(+`alive`)와 상태줄을 쓴다. 주소는 `web_page_url()`(Actions에선 `GITHUB_REPOSITORY`로 `https://owner.github.io/repo/`, 아니면 `WEB_PAGE_URL`). 저장소는 Public이어야 Pages 무료
 - 요약(`summarize_post`): 🎨 글은 `read_post`로 본문+첨부를 읽어 학교명(`find_school_name`: 정식명 우선, '공고' 같은 말 제외), 공립/사립(`school_kind`: `PRIVATE_SCHOOL_NAMES`=나이스 사립 목록과 정식·줄임 이름으로 대조, 목록이 있는데 없으면 공립), 미술 인원(`art_count`: '미술 … n명' 등, 제목이 미술 공고면 '모집 인원 n명'도 인정), 접수 마감(`find_deadline`: 접수/마감/제출 뒤 80자 안 날짜의 최댓값)을 뽑아 `entry.summary`에 둔다. 채용공고 행은 목록의 접수기간이 우선. 예전 항목은 `backfill_summaries`가 실행마다 10건씩 채움. 글 열기 한도는 `MAX_DETAILS_PER_RUN` 공유
-- 현황판: 알림으로 보낸 글을 `state.found`에 90일 보관(제목·url·지역·종류·접수마감). `build_board()`가 유효한 것(🎨 마감일까지 또는 30일, 🟡 14일, 📢 30일)만 모아 메시지 하나로 만들고, `update_board()`가 `editMessageText`로 고쳐 쓴다(없거나 지워졌으면 새로 보내고 `pinChatMessage`). 메시지 id는 `state.board_messages[chat_id]`, 내용 해시 `board_digest`가 같으면 호출 안 함. 현황판 전송 실패는 알림 상태 저장을 막지 않음
+- 현황판: 알림으로 보낸 글을 `state.found`에 90일 보관(제목·url·지역·종류·접수마감). `build_board()`가 유효한 것(🎨 목록 접수기간(`deadline_source`="list")이면 마감일까지, 본문 추정("text")이면 30일 동안 '마감됨' 표시만, 🟡 14일, 📢 30일)만 모아 메시지 하나로 만들고, `update_board()`가 `editMessageText`로 고쳐 쓴다(없거나 지워졌으면 새로 보내고 `pinChatMessage`). 메시지 id는 `state.board_messages[chat_id]`, 내용 해시 `board_digest`가 같으면 호출 안 함. 현황판 전송 실패는 알림 상태 저장을 막지 않음
 - 첫 실행: 최근 14일 안의 글만 알림 (채용공고는 접수 마감 전인 것만). 처음 보는 학교는 올해·내년 미술 글만 알림
 - 같은 출처가 2번 연속 실패하면 ⚠️ 경고, 12시간에 한 번만
 - 텔레그램 429/5xx는 `retry_after`만큼 기다렸다가 재시도, 메시지 사이 1초 간격. 그래도 실패하면 `seen.json`을 저장하지 않아 다음 실행 때 다시 보냄

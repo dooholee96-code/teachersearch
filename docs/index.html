@@ -44,6 +44,7 @@
     background: var(--chip); color: var(--text);
   }
   .chip[aria-pressed="true"] { background: var(--chip-on); color: var(--chip-on-text); }
+  a.chip { text-decoration: none; display: inline-block; }
   section { margin-top: 22px; }
   h2 { font-size: 15px; margin: 0 0 8px; color: var(--muted); font-weight: 600; display: flex; align-items: center; gap: 8px; }
   h2 .count { background: var(--chip); color: var(--text); border-radius: 999px; padding: 1px 9px; font-size: 13px; }
@@ -77,31 +78,35 @@
 <body>
 <main>
   <header>
-    <h1>🎨 미술 티오 현황판</h1>
+    <h1 id="heading">현황판</h1>
     <p id="updated">불러오는 중…</p>
   </header>
+
+  <div class="chips" id="profiles" role="group" aria-label="직종 고르기"></div>
 
   <div class="chips" id="regions" role="group" aria-label="지역 고르기"></div>
 
   <div id="error"></div>
 
-  <section id="sec-match"><h2>🎨 미술 공고 <span class="count"></span></h2><div class="list"></div></section>
-  <section id="sec-unspecified"><h2>🟡 확인 필요 (과목 미기재) <span class="count"></span></h2><div class="list"></div></section>
-  <section id="sec-exam"><h2>📢 임용시험 관련 <span class="count"></span></h2><div class="list"></div></section>
+  <div id="sections"></div>
 
   <details id="past"><summary>지난 공고 (최근 90일, <span class="count">0</span>건)</summary><div class="list"></div></details>
 
   <details id="health"><summary>알리미 상태</summary><ul class="status"></ul></details>
 
   <footer>
-    미술 공고는 접수 마감일까지(마감일을 모르면 30일), 확인 필요 글은 14일, 임용 글은 30일 동안 보입니다.<br>
-    매일 아침 8시·저녁 9시에 새로 고쳐지고, 그날 처음 찾은 글에는 '새 글' 표시가 붙습니다. 홈 화면에 추가해 두면 앱처럼 열립니다.
+    공고는 접수 마감일까지(마감일을 모르면 30일), 확인 필요 글은 14일, 임용 글은 30일 동안 보입니다. 본문에서 읽은 마감일이 지나면 '마감됨'으로만 표시합니다.<br>
+    매일 아침 8시·저녁 9시에 새로 고쳐지고, 그날 처음 찾은 글에는 '새 글' 표시가 붙습니다. 홈 화면에 추가해 두면 앱처럼 열립니다.<br>
+    위쪽 버튼으로 직종(미술 / 기록연구사)을 바꿀 수 있습니다.
   </footer>
 </main>
 
 <script>
 (function () {
   var REGION_KEY = "art-tio-region";
+  var params = new URLSearchParams(location.search);
+  var profile = params.get("p") || "art";
+  var dataFile = profile === "art" ? "data.json" : "data-" + profile + ".json";
   var state = { data: null, region: "전체" };
   try { state.region = localStorage.getItem(REGION_KEY) || "전체"; } catch (e) {}
 
@@ -120,7 +125,7 @@
     if (!s.school && !s.count) return "";
     var parts = [];
     if (s.school) parts.push(esc(s.school) + (s.kind ? ' <span class="kind">' + esc(s.kind) + '</span>' : ''));
-    if (s.count) parts.push('미술 ' + esc(s.count) + '명');
+    if (s.count) parts.push(esc((state.data && state.data.count_label) || '미술') + ' ' + esc(s.count) + '명');
     return '<div class="summary">' + parts.join(' · ') + '</div>';
   }
 
@@ -142,12 +147,14 @@
   function render() {
     var d = state.data;
     var entries = d.entries.filter(function (e) { return state.region === "전체" || e.region === state.region; });
-    ["match", "unspecified", "exam"].forEach(function (kind) {
-      var sec = document.getElementById("sec-" + kind);
-      var items = entries.filter(function (e) { return e.alive && e.kind === kind; });
-      sec.querySelector(".count").textContent = items.length;
-      sec.querySelector(".list").innerHTML = items.length ? items.map(card).join("") : '<div class="empty">없음</div>';
-    });
+    var sections = d.sections || [["🎨 미술 공고", "match"], ["🟡 확인 필요 (과목 미기재)", "unspecified"], ["📢 임용시험 관련", "exam"]];
+    document.getElementById("sections").innerHTML = sections.map(function (sec) {
+      var items = entries.filter(function (e) { return e.alive && e.kind === sec[1]; });
+      return '<section><h2>' + esc(sec[0]) + ' <span class="count">' + items.length + '</span></h2><div class="list">' +
+        (items.length ? items.map(card).join("") : '<div class="empty">없음</div>') + '</div></section>';
+    }).join("");
+    document.getElementById("heading").textContent = (d.icon || "🎨") + " " + (d.title || "미술 티오") + " 현황판";
+    document.title = (d.title || "미술 티오") + " 현황판";
     var past = entries.filter(function (e) { return !e.alive; });
     var pastEl = document.getElementById("past");
     pastEl.querySelector(".count").textContent = past.length;
@@ -156,6 +163,15 @@
     var health = document.getElementById("health");
     health.querySelector(".status").innerHTML = (d.status || []).map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("");
     health.querySelector("summary").textContent = "알리미 상태" + ((d.status || []).some(function (s) { return s.indexOf("❌") === 0; }) ? " ⚠️" : " ✅");
+  }
+
+  function renderProfiles(profiles) {
+    var box = document.getElementById("profiles");
+    if (!profiles || profiles.length < 2) { box.style.display = "none"; return; }
+    box.innerHTML = profiles.map(function (p) {
+      var href = p.name === "art" ? location.pathname : location.pathname + "?p=" + encodeURIComponent(p.name);
+      return '<a class="chip" role="button" aria-pressed="' + (p.name === profile) + '" href="' + esc(href) + '">' + esc(p.icon + " " + p.title) + '</a>';
+    }).join("");
   }
 
   function renderChips(regions) {
@@ -173,11 +189,12 @@
     });
   }
 
-  fetch("data.json?t=" + Date.now(), { cache: "no-store" })
+  fetch(dataFile + "?t=" + Date.now(), { cache: "no-store" })
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(function (d) {
       state.data = d;
       if (state.region !== "전체" && d.regions.indexOf(state.region) < 0) state.region = "전체";
+      renderProfiles(d.profiles);
       renderChips(d.regions || []);
       render();
     })

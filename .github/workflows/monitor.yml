@@ -45,12 +45,23 @@ jobs:
             python monitor.py
           fi
 
+      - name: 기록연구사 버전 확인
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            python monitor.py --profile records --dry-run
+          else
+            python monitor.py --profile records
+          fi
+
       - name: 본 글 목록·현황판 데이터 저장
         if: ${{ inputs.dry_run != true }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add seen.json docs/data.json
+          git add seen*.json docs/data*.json
           if git diff --cached --quiet; then exit 0; fi
           git commit -m "본 글 목록·현황판 갱신"
           git pull --rebase --autostash
