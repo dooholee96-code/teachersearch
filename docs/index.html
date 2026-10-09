@@ -127,7 +127,11 @@
   function card(e) {
     var cls = "card " + e.kind + (e.alive ? "" : " dead");
     var isNew = e.alive && state.data && (state.data.updated || "").slice(0, 10) === e.seen;  // 이번 실행 날짜에 처음 본 글
-    var when = e.deadline ? '<span class="deadline">~' + md(e.deadline) + ' 접수</span>' : '<span>' + md(e.seen) + '</span>';
+    var updatedDay = state.data ? (state.data.updated || "").slice(0, 10) : "";
+    var passed = e.deadline && updatedDay && e.deadline < updatedDay;
+    var when = e.deadline
+      ? (passed ? '<span>' + md(e.deadline) + ' 마감됨</span>' : '<span class="deadline">~' + md(e.deadline) + ' 접수</span>')
+      : '<span>' + md(e.seen) + '</span>';
     return '<a class="' + cls + '" href="' + esc(e.url) + '" target="_blank" rel="noopener">' +
       '<div class="meta">' + (isNew ? '<span class="new">새 글</span>' : '') + '<span class="region">[' + esc(e.region) + ']</span><span>' + esc(e.source) + '</span>' + when + '</div>' +
       summaryLine(e) +

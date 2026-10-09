@@ -735,7 +735,7 @@ def run_site_scan(sites: list[dict], site_kind: str, state: dict, today: date) -
             {"id": f"site:{v['id']}", "kind": v["kind"], "region": v["names"][0][1:3],
              "source": " · ".join(re.sub(r"^\[[^\]]+\] ", "", n) for n in v["names"]),
              "title": v["title"], "url": v["url"], "seen": today.isoformat(),
-             "deadline": (v.get("summary") or {}).get("deadline"), "note": v.get("note", ""),
+             "deadline": (v.get("summary") or {}).get("deadline"), "deadline_source": "text", "note": v.get("note", ""),
              "summary": v.get("summary") or {}}
             for v in found.values()
         ],
@@ -1209,10 +1209,12 @@ def board_entry_title(key: str, row: dict) -> str:
 def board_entry(key: str, row: dict, kind: str, note: str, today: date, summary: dict | None = None) -> dict:
     """교육청 게시판 글 하나를 현황판 항목으로."""
     found = dates_in(row["text"])
-    deadline = max(found).isoformat() if key == "recruit" and found else (summary or {}).get("deadline")
+    from_list = key == "recruit" and bool(found)
+    deadline = max(found).isoformat() if from_list else (summary or {}).get("deadline")
     return {"id": f"{key}:{row['id']}", "kind": kind, "region": "전북", "source": BOARDS[key]["name"],
             "title": board_entry_title(key, row), "url": row["url"], "seen": today.isoformat(),
-            "deadline": deadline, "note": note, "summary": summary or {}}
+            "deadline": deadline, "deadline_source": "list" if from_list else "text", "note": note,
+            "summary": summary or {}}
 
 
 def backfill_summaries(state: dict, today: date, limit: int = 10) -> None:
@@ -1224,7 +1226,7 @@ def backfill_summaries(state: dict, today: date, limit: int = 10) -> None:
     for e in todo:
         e["summary"] = summaries.get(e["url"]) or summarize_post(e["title"], "", today)
         if not e.get("deadline") and e["summary"].get("deadline"):
-            e["deadline"] = e["summary"]["deadline"]
+            e["deadline"], e["deadline_source"] = e["summary"]["deadline"], "text"
 
 
 def remember_entries(state: dict, entries: list[dict], today: date) -> None:
@@ -1235,10 +1237,18 @@ def remember_entries(state: dict, entries: list[dict], today: date) -> None:
     state["found"] = keep[-500:]
 
 
+INFERRED_DEADLINE_GRACE_DAYS = 7  # 본문에서 추정한 마감일은 틀릴 수 있어, 지나도 이만큼은 '마감됨'으로 보여 준다
+
+
 def board_alive(e: dict, today: date) -> bool:
     if e.get("deadline"):
-        return date.fromisoformat(e["deadline"]) >= today
+        grace = INFERRED_DEADLINE_GRACE_DAYS if e.get("deadline_source") == "text" else 0
+        return date.fromisoformat(e["deadline"]) + timedelta(days=grace) >= today
     return (today - date.fromisoformat(e["seen"])).days <= BOARD_DAYS.get(e["kind"], 30)
+
+
+def deadline_passed(e: dict, today: date) -> bool:
+    return bool(e.get("deadline")) and date.fromisoformat(e["deadline"]) < today
 
 
 def build_board(state: dict, now: datetime) -> str:
@@ -1255,6 +1265,8 @@ def build_board(state: dict, now: datetime) -> str:
             lines.append("  없음")
         for e in items[:BOARD_MAX_PER_SECTION]:
             when = f"~{e['deadline'][5:].replace('-', '/')}" if e.get("deadline") else e["seen"][5:].replace("-", "/")
+            if deadline_passed(e, today):
+                when += " 마감됨"
             sm = e.get("summary") or {}
             lead = ""
             if sm.get("school"):

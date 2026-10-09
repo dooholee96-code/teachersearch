@@ -1138,3 +1138,16 @@ def test_recruit_row_summary_opens_detail_and_old_entries_get_backfilled(h):
     entry = next(e for e in h.state()["found"] if e["id"] == "recruit:r5")
     assert entry["summary"]["line"].startswith("우석고등학교(사립) · 미술 1명")
     assert all("summary" in e for e in h.state()["found"])  # 다른 옛 항목도 (제목만으로라도) 요약이 붙음
+
+
+def test_inferred_deadline_keeps_entry_a_week_as_closed(h, monkeypatch):
+    from datetime import date
+    today = date(2026, 9, 29)
+    listed = {"id": "a", "kind": "match", "seen": "2026-09-20", "deadline": "2026-09-28", "deadline_source": "list"}
+    inferred = {"id": "b", "kind": "match", "seen": "2026-09-20", "deadline": "2026-09-28", "deadline_source": "text"}
+    assert not monitor.board_alive(listed, today)                       # 목록에 적힌 접수기간은 믿고 바로 뺌
+    assert monitor.board_alive(inferred, today)                         # 본문 추정 마감은 7일 더 '마감됨'으로 보여 줌
+    assert not monitor.board_alive(inferred, date(2026, 10, 6))
+    state = {"found": [{**inferred, "region": "전북", "title": "미술 공고", "url": "https://x/1", "summary": {}}]}
+    board = monitor.build_board(state, FIXED_NOW)
+    assert "~09/28 마감됨" in board
