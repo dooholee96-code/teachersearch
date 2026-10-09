@@ -1033,3 +1033,106 @@ def test_school_with_dead_old_address_is_reached_via_www_variant(h):
     h.sites["http://www.woosuk.hs.kr"] = ("https://school.jbedu.kr/woosuk/index.do", platform_home("woosuk", [(50, "가정통신문 9월")]))
     sent = h.run()
     assert any("2027학년도 미술 교사 채용 공고" in m for m in sent)
+
+
+# ─────────────────────────── 요약 (학교명·공립/사립·인원·마감) ───────────────────────────
+def test_dates_in_accepts_spaced_and_korean_forms():
+    from datetime import date
+    assert monitor.dates_in("2026. 10. 14.(화)") == [date(2026, 10, 14)]
+    assert monitor.dates_in("2026년 10월 8일부터") == [date(2026, 10, 8)]
+    assert monitor.dates_in("2026-10-02 ~ 2026-10-07") == [date(2026, 10, 2), date(2026, 10, 7)]
+
+
+@pytest.mark.parametrize("title, text, expected", [
+    ("2026학년도 부안여자고등학교 기간제교원(미술) 채용 공고(1차)", "", "부안여자고등학교"),
+    ("계약제 채용공고 [충남예술고]미술(시간강사) 채용 공고 2026-10-08", "", "충남예술고"),
+    ("2027학년도 전북특별자치도 중등학교교사 임용후보자 선정경쟁시험 시행계획 공고", "", ""),
+    ("기간제교사 채용 공고", "1. 학교명: 전주신흥고등학교 2. 모집 분야", "전주신흥고등학교"),
+    ("원광중학교 · 미술(1개월)", "", "원광중학교"),
+])
+def test_find_school_name(title, text, expected):
+    assert monitor.find_school_name(title, text) == expected
+
+
+def test_school_kind_uses_private_list(monkeypatch):
+    monitor.set_private_schools([{"name": "부안여자고등학교"}, {"name": "충남예술고등학교"}])
+    assert monitor.school_kind("부안여자고등학교") == "사립"
+    assert monitor.school_kind("부안여고") == "사립"
+    assert monitor.school_kind("충남예술고") == "사립"
+    assert monitor.school_kind("전주신흥고등학교") == "공립"
+    assert monitor.school_kind("") == ""
+    monitor.set_private_schools([])
+    assert monitor.school_kind("전주신흥고등학교") == ""      # 목록이 없으면 모름
+    assert monitor.school_kind("전주신흥고등학교", "사립학교 교원 채용") == "사립"
+
+
+@pytest.mark.parametrize("text, title, expected", [
+    ("모집 분야 및 인원: 미술 1명", "", 1),
+    ("미술 교사 2명 (여)", "", 2),
+    ("1명 (미술)", "", 1),
+    ("과목: 미술(1)", "", 1),
+    ("모집 인원: 3명", "미술 기간제교사 채용", 3),
+    ("모집 인원: 3명", "기간제교사 채용", None),
+    ("미술 2급 정교사 자격 소지자", "", None),
+])
+def test_art_count(text, title, expected):
+    assert monitor.art_count(text, title) == expected
+
+
+def test_summarize_post_builds_line():
+    from datetime import date
+    monitor.set_private_schools([{"name": "부안여자고등학교"}])
+    s = monitor.summarize_post(
+        "2026학년도 부안여자고등학교 기간제교원(미술) 채용 공고(1차)",
+        "1. 모집 분야: 미술 1명\n2. 접수 기간: 2026. 10. 8.(수) ~ 2026. 10. 14.(화) 17:00까지\n3. 서류 제출: 방문 또는 이메일",
+        date(2026, 10, 9),
+    )
+    assert s["school"] == "부안여자고등학교" and s["kind"] == "사립" and s["count"] == 1 and s["deadline"] == "2026-10-14"
+    assert s["line"] == "부안여자고등학교(사립) · 미술 1명 · ~10/14 접수"
+    monitor.set_private_schools([])
+
+
+def test_office_art_post_gets_summary_in_message_board_and_web(h, monkeypatch):
+    setup_offices(h, monkeypatch)
+    setup_schools(h)  # 나이스 사립 목록(우석고등학교 등)으로 공립/사립을 가린다
+    h.run()           # 첫 확인 (목록 저장)
+
+    jj = "https://office.jbedu.kr/jeonjuedu"
+    h.sites[jj + "/M01050902"] = office_board(jj + "/M01050902", [
+        (31, "2026학년도 우석고등학교 기간제교사(미술) 채용 공고"),
+        (32, "2026학년도 전주솔빛중학교 미술 시간강사 채용 공고"),
+    ])
+    v = jj + "/M01050902/view/"
+    h.sites[v + "31"] = detail_page("붙임 공고문 참조", [("공고문.hwpx", jj + "/down/31")])
+    h.files[jj + "/down/31"] = make_hwpx("1. 모집 분야: 미술 1명 2. 접수기간: 2026.10.1.(목) ~ 2026.10.6.(화)")
+    h.sites[v + "32"] = detail_page("미술 시간강사 2명을 모집합니다. 접수 마감: 2026년 10월 3일", [])
+
+    sent = h.run()
+    a = next(m for m in sent if "우석고등학교" in m)
+    assert "요약: 우석고등학교(사립) · 미술 1명 · ~10/06 접수" in a
+    b = next(m for m in sent if "전주솔빛중학교" in m)
+    assert "요약: 전주솔빛중학교(공립) · 미술 2명 · ~10/03 접수" in b
+
+    board = h.boards[-1]
+    assert "우석고등학교(사립) 미술 1명 — " in board and "~10/06" in board
+    web = {e["title"]: e for e in h.web()["entries"]}
+    e = web["2026학년도 우석고등학교 기간제교사(미술) 채용 공고"]
+    assert e["summary"]["school"] == "우석고등학교" and e["summary"]["count"] == 1 and e["deadline"] == "2026-10-06"
+
+
+def test_recruit_row_summary_opens_detail_and_old_entries_get_backfilled(h):
+    setup_schools(h)
+    h.run()
+    h.pages["BBS_0000130"] = recruit_page([(5, "고등학교", "우석고등학교", "미술 기간제교사 1명", "2026-10-02 ~ 2026-10-07", "r5")])
+    view = "https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000130&menuCd=X&paging=ok&startPage=1&searchOperation=AND&dataSid=r5"
+    h.sites[view] = detail_page("우석고등학교 미술 기간제교사 1명 채용", [])
+    sent = h.run()
+    assert "요약: 우석고등학교(사립) · 미술 1명 · ~10/07 접수" in sent[0]
+
+    # 요약 기능 전에 저장된 글은 다음 실행 때 요약이 붙는다
+    state = h.state()
+    for e in state["found"]:
+        e.pop("summary", None)
+    h.state_file.write_text(json.dumps(state, ensure_ascii=False), encoding="utf-8")
+    h.run()
+    assert h.state()["found"][0]["summary"]["line"].startswith("우석고등학교(사립)")

@@ -189,7 +189,7 @@ KST = timezone(timedelta(hours=9))
 STATE_FILE = Path(__file__).with_name("seen.json")
 WEB_DATA_FILE = Path(__file__).with_name("docs") / "data.json"  # 현황판 웹페이지(docs/index.html)가 읽는 데이터
 VIEW_LINK_RE = re.compile(r"/board/view\.jbe")
-DATE_FULL_RE = re.compile(r"(?<!\d)(20\d{2})[-.](\d{1,2})[-.](\d{1,2})(?!\d)")
+DATE_FULL_RE = re.compile(r"(?<!\d)(20\d{2})\s*[-./년]\s*(\d{1,2})\s*[-./월]\s*(\d{1,2})(?!\d)")
 DATE_SHORT_RE = re.compile(r"(?<!\d)(\d{2})\.(\d{2})\.(\d{2})(?!\d)")
 
 SESSION = requests.Session()
@@ -362,7 +362,7 @@ def is_recent(board_key: str, row: dict, kind: str, today: date) -> bool:
     return max(found) >= today - timedelta(days=FIRST_RUN_LOOKBACK_DAYS)
 
 
-def format_message(board_key: str, row: dict, kind: str, note: str = "") -> str:
+def format_message(board_key: str, row: dict, kind: str, note: str = "", summary: dict | None = None) -> str:
     e = html.escape
     if board_key == "recruit":
         period = next((c for c in row["cells"] if DATE_FULL_RE.search(c)), "")
@@ -385,6 +385,8 @@ def format_message(board_key: str, row: dict, kind: str, note: str = "") -> str:
             head += " (미술 언급)"
         found = dates_in(row["text"])
         body = e(row["title"]) + (f"\n게시: {max(found):%Y-%m-%d}" if found else "")
+    if summary and summary.get("line"):
+        body += f"\n요약: {e(summary['line'])}"
     return f'{head}\n{body}\n<a href="{e(row["url"], quote=True)}">공고 열기</a>'
 
 
@@ -616,7 +618,7 @@ def site_label(site: dict) -> str:
 
 
 def format_site_message(kind: str, title: str, url: str, names: list[str], site_kind: str = "school",
-                        note: str = "") -> str:
+                        note: str = "", summary: dict | None = None) -> str:
     e = html.escape
     where = "사립학교 홈페이지" if site_kind == "school" else "교육(지원)청 누리집"
     icon = "🏫" if site_kind == "school" else "🏢"
@@ -627,6 +629,8 @@ def format_site_message(kind: str, title: str, url: str, names: list[str], site_
     else:
         head = f"{icon}🟡 <b>{where} 교사 채용 글</b> — 과목 미기재, 미술 있는지 확인"
     body = f'{e(" · ".join(names))}\n{e(title)}' + (f"\n({e(note)})" if note else "")
+    if summary and summary.get("line"):
+        body += f"\n요약: {e(summary['line'])}"
     return f'{head}\n{body}\n<a href="{e(url, quote=True)}">글 열기</a>'
 
 
@@ -691,10 +695,16 @@ def run_site_scan(sites: list[dict], site_kind: str, state: dict, today: date) -
 
     pending = [v for v in found.values() if v["kind"] == "detail"]
     if pending:
-        resolved = resolve_many([v["url"] for v in pending])
+        resolved = resolve_many([(v["url"], v["title"]) for v in pending], today)
         for v in pending:
-            v["kind"], v["note"] = resolved[v["url"]]
+            v["kind"], v["note"], v["summary"] = resolved[v["url"]]
     found = {k: v for k, v in found.items() if v["kind"]}
+    # 🎨 글은 열어서 학교명·공립/사립·미술 인원·접수 마감을 요약한다
+    to_sum = [v for v in found.values() if v["kind"] == "match" and not v.get("summary")]
+    if to_sum:
+        summaries = summarize_many([(v["url"], v["title"]) for v in to_sum if v.get("detail")], today)
+        for v in to_sum:
+            v["summary"] = summaries.get(v["url"]) or summarize_post(v["title"], "", today)
 
     state["schools_scanned"] = sorted(scanned_before)
     state["seen"]["school"] = list(dict.fromkeys(newly_seen + state["seen"].get("school", [])))[:MAX_SEEN_SCHOOL]
@@ -717,13 +727,16 @@ def run_site_scan(sites: list[dict], site_kind: str, state: dict, today: date) -
         state[f"{site_kind}_ok"] = now_ok
     return {
         "alerts": [
-            format_site_message(v["kind"], v["title"], v["url"], v["names"], site_kind, v.get("note", ""))
+            format_site_message(v["kind"], v["title"], v["url"], v["names"], site_kind, v.get("note", ""),
+                                v.get("summary") or {})
             for v in found.values()
         ],
         "entries": [
             {"id": f"site:{v['id']}", "kind": v["kind"], "region": v["names"][0][1:3],
              "source": " · ".join(re.sub(r"^\[[^\]]+\] ", "", n) for n in v["names"]),
-             "title": v["title"], "url": v["url"], "seen": today.isoformat(), "deadline": None, "note": v.get("note", "")}
+             "title": v["title"], "url": v["url"], "seen": today.isoformat(),
+             "deadline": (v.get("summary") or {}).get("deadline"), "note": v.get("note", ""),
+             "summary": v.get("summary") or {}}
             for v in found.values()
         ],
         "ok": ok, "failed": failed, "no_url": no_url, "skipped": skipped,
@@ -1001,48 +1014,184 @@ def extract_text(data: bytes) -> str | None:
     return None
 
 
-def resolve_by_detail(url: str) -> tuple[str | None, str]:
-    """글을 열어 (판정, 설명)을 돌려준다. 판정: match / None(다른 과목) / unspecified(알 수 없음)."""
+def resolve_by_detail(url: str, title: str = "", today: date | None = None) -> tuple[str | None, str, dict]:
+    """글을 열어 (판정, 설명, 요약)을 돌려준다. 판정: match / None(다른 과목) / unspecified(알 수 없음)."""
+    today = today or datetime.now(KST).date()
     try:
-        page = read_detail(url)
+        post = read_post(url)
     except Exception as exc:  # noqa: BLE001
-        return "unspecified", f"글을 열지 못함({short_error(exc)}) — 직접 확인"
+        return "unspecified", f"글을 열지 못함({short_error(exc)}) — 직접 확인", {}
+    page, texts, unread = post["page"], post["texts"], post["unread"]
     names = " ".join(n for n, _ in page["attachments"])
+    full = "\n".join(texts)
+
+    def matched(note: str) -> tuple[str, str, dict]:
+        return "match", note, summarize_post(title, full, today)
+
     if any(k in page["text"] for k in KEYWORDS):
-        return "match", "본문에 미술"
+        return matched("본문에 미술")
     if any(k in names for k in KEYWORDS):
-        return "match", "첨부파일 이름에 미술"
+        return matched("첨부파일 이름에 미술")
+    for text in texts[1:]:
+        if any(k in text for k in KEYWORDS):
+            return matched(f"첨부 「{text[1:text.index(']')]}」에 미술")
+    found = SUBJECT_STRICT_RE.search(full)
+    if found and not unread:
+        return None, f"다른 과목({norm(found.group(0))})", {}
+    if unread:
+        return "unspecified", f"첨부 「{unread[0]}」를 읽지 못함 — 직접 확인", {}
+    if not page["attachments"]:
+        return "unspecified", "과목이 적혀 있지 않음 — 직접 확인", {}
+    return "unspecified", "첨부에서 과목을 찾지 못함 — 직접 확인", {}
+
+
+def resolve_many(items: list[tuple[str, str]], today: date) -> dict[str, tuple[str | None, str, dict]]:
+    """(url, 제목) 여러 개를 한꺼번에 연다. 한도(MAX_DETAILS_PER_RUN)를 넘는 글은 🟡로 둔다."""
+    seen: dict[str, str] = {}
+    for url, title in items:
+        seen.setdefault(url, title)
+    todo, rest = list(seen.items())[:MAX_DETAILS_PER_RUN], list(seen.items())[MAX_DETAILS_PER_RUN:]
+    with ThreadPoolExecutor(max_workers=SITE_WORKERS) as pool:
+        results = dict(zip([u for u, _ in todo], pool.map(lambda it: resolve_by_detail(it[0], it[1], today), todo)))
+    for url, _ in rest:
+        results[url] = ("unspecified", "확인할 글이 많아 열어 보지 못함 — 직접 확인", {})
+    return results
+
+
+# ─────────────────────────── 요약 (학교명·공립/사립·미술 모집 인원·접수 마감) ───────────────────────────
+# 🎨 글마다 본문과 첨부파일에서 학교 이름, 미술 교사 모집 인원, 접수 마감일을 뽑아 한 줄로 붙인다.
+# 공립/사립은 나이스에서 받아 둔 사립 중·고 목록(PRIVATE_SCHOOL_NAMES)과 대조해서 정한다.
+PRIVATE_SCHOOL_NAMES: set[str] = set()   # main()에서 state의 학교 목록으로 채움 (정식 이름과 줄임 이름 모두)
+LONG_SCHOOL_RE = re.compile(r"([가-힣A-Za-z0-9]{1,15}(?:고등학교|중학교))(?![가-힣])")
+SHORT_SCHOOL_RE = re.compile(r"((?<![가-힣])[가-힣]{2,10}(?:여고|여중|고|중))(?![가-힣])")
+NOT_SCHOOL_WORDS = {"공고", "예고", "신고", "광고", "보고", "참고", "최고", "경고", "재공고", "사전공고", "계약제", "기간제",
+                    "중등", "집중", "도중", "연중", "나중", "주중", "전국", "최종", "학교", "교육청", "시행공고", "채용공고"}
+COUNT_NEAR_ART = (
+    re.compile(r"미술[^\n]{0,25}?(\d{1,2})\s*명"),
+    re.compile(r"(\d{1,2})\s*명[^\n]{0,15}?미술"),
+    re.compile(r"미술\s*[(（:：]\s*(\d{1,2})\s*[)）]"),
+)
+GENERIC_COUNT_RE = re.compile(r"(?:모집|채용|선발)\s*인원[^\d\n]{0,12}(\d{1,2})\s*명")
+DEADLINE_HINT_RE = re.compile(r"접수|마감|제출")
+
+
+def short_school_name(name: str) -> str:
+    """부안여자고등학교 → 부안여고, 원광중학교 → 원광중, 충남예술고등학교 → 충남예술고"""
+    return (name.replace("여자고등학교", "여고").replace("여자중학교", "여중")
+            .replace("고등학교", "고").replace("중학교", "중"))
+
+
+def set_private_schools(schools: list[dict]) -> None:
+    PRIVATE_SCHOOL_NAMES.clear()
+    for s in schools:
+        if s.get("name"):
+            PRIVATE_SCHOOL_NAMES.update({s["name"], short_school_name(s["name"])})
+
+
+def find_school_name(*texts: str) -> str:
+    """제목에서 먼저, 없으면 본문에서 학교 이름을 찾는다. 정식 이름을 우선한다."""
+    for text in texts:
+        if not text:
+            continue
+        for rx in (LONG_SCHOOL_RE, SHORT_SCHOOL_RE):
+            for m in rx.finditer(text):
+                name = re.sub(r"^\d+학년도", "", m.group(1)).strip("·-_ ")
+                if name and name not in NOT_SCHOOL_WORDS and not name.endswith(("공고", "예고")):
+                    return name
+    return ""
+
+
+def school_kind(name: str, text: str = "") -> str:
+    """사립 / 공립 / '' (모름). 사립 목록에 있으면 사립, 목록이 있는데 없으면 공립으로 본다."""
+    if not name:
+        return ""
+    if name in PRIVATE_SCHOOL_NAMES or short_school_name(name) in PRIVATE_SCHOOL_NAMES:
+        return "사립"
+    if "사립" in text[:300]:
+        return "사립"
+    if PRIVATE_SCHOOL_NAMES and name.endswith(("고등학교", "중학교", "고", "중")):
+        return "공립"
+    return ""
+
+
+def art_count(text: str, title: str = "") -> int | None:
+    for rx in COUNT_NEAR_ART:
+        m = rx.search(text)
+        if m:
+            return int(m.group(1))
+    if any(k in title for k in KEYWORDS):  # 미술만 뽑는 공고면 '모집 인원 n명'이 곧 미술 인원
+        m = GENERIC_COUNT_RE.search(text)
+        if m:
+            return int(m.group(1))
+    return None
+
+
+def find_deadline(text: str, today: date) -> str | None:
+    """'접수/마감/제출' 뒤 80자 안의 날짜 중 가장 늦은 것. 너무 오래된 날짜는 무시."""
+    found: list[date] = []
+    for m in DEADLINE_HINT_RE.finditer(text):
+        found += dates_in(text[m.end():m.end() + 80])
+    found = [d for d in found if d >= today - timedelta(days=60)]
+    return max(found).isoformat() if found else None
+
+
+def summarize_post(title: str, text: str, today: date) -> dict:
+    name = find_school_name(title, text)
+    kind = school_kind(name, text)
+    summary = {"school": name, "kind": kind, "count": art_count(text, title), "deadline": find_deadline(text, today)}
+    summary["line"] = summary_line(summary)
+    return summary
+
+
+def summary_line(s: dict) -> str:
+    parts = []
+    if s.get("school"):
+        parts.append(f"{s['school']}({s['kind']})" if s.get("kind") else s["school"])
+    if s.get("count"):
+        parts.append(f"미술 {s['count']}명")
+    if s.get("deadline"):
+        parts.append(f"~{s['deadline'][5:].replace('-', '/')} 접수")
+    return " · ".join(parts)
+
+
+def read_post(url: str) -> dict:
+    """글을 열어 본문과 첨부파일 글자를 모은다. {'page', 'texts', 'unread'}"""
+    page = read_detail(url)
     texts, unread = [page["text"]], []
     for name, aurl in page["attachments"][:MAX_ATTACHMENTS]:
         try:
-            real_name, data = get_bytes(aurl)
+            _, data = get_bytes(aurl)
             text = extract_text(data)
         except Exception:  # noqa: BLE001
             text = None
         if text is None:
             unread.append(name)
-            continue
-        if any(k in text for k in KEYWORDS):
-            return "match", f"첨부 「{name}」에 미술"
-        texts.append(text)
-    found = SUBJECT_STRICT_RE.search(" ".join(texts))
-    if found and not unread:
-        return None, f"다른 과목({norm(found.group(0))})"
-    if unread:
-        return "unspecified", f"첨부 「{unread[0]}」를 읽지 못함 — 직접 확인"
-    if not page["attachments"]:
-        return "unspecified", "과목이 적혀 있지 않음 — 직접 확인"
-    return "unspecified", "첨부에서 과목을 찾지 못함 — 직접 확인"
+        else:
+            texts.append(f"[{name}] {text}")
+    return {"page": page, "texts": texts, "unread": unread}
 
 
-def resolve_many(urls: list[str]) -> dict[str, tuple[str | None, str]]:
-    """여러 글을 한꺼번에 연다. 한도(MAX_DETAILS_PER_RUN)를 넘는 글은 🟡로 둔다."""
-    urls = list(dict.fromkeys(urls))
-    todo, rest = urls[:MAX_DETAILS_PER_RUN], urls[MAX_DETAILS_PER_RUN:]
+def summarize_url(url: str, title: str, today: date) -> dict:
+    """🎨 글 하나를 열어 요약한다. 못 열면 제목만으로 요약."""
+    try:
+        post = read_post(url)
+        text = "\n".join(post["texts"])
+    except Exception:  # noqa: BLE001
+        text = ""
+    return summarize_post(title, text, today)
+
+
+def summarize_many(items: list[tuple[str, str]], today: date) -> dict[str, dict]:
+    """(url, 제목) 목록을 한꺼번에 요약한다. 한도를 넘는 글은 제목만으로."""
+    seen: dict[str, str] = {}
+    for url, title in items:
+        seen.setdefault(url, title)
+    todo = list(seen.items())[:MAX_DETAILS_PER_RUN]
+    rest = list(seen.items())[MAX_DETAILS_PER_RUN:]
     with ThreadPoolExecutor(max_workers=SITE_WORKERS) as pool:
-        results = dict(zip(todo, pool.map(resolve_by_detail, todo)))
-    for u in rest:
-        results[u] = ("unspecified", "확인할 글이 많아 열어 보지 못함 — 직접 확인")
+        results = dict(zip([u for u, _ in todo], pool.map(lambda it: summarize_url(it[0], it[1], today), todo)))
+    for url, title in rest:
+        results[url] = summarize_post(title, "", today)
     return results
 
 
@@ -1053,13 +1202,29 @@ BOARD_MAX_PER_SECTION = 12
 FOUND_KEEP_DAYS = 90
 
 
-def board_entry(key: str, row: dict, kind: str, note: str, today: date) -> dict:
+def board_entry_title(key: str, row: dict) -> str:
+    return f"{cell(row, 0) or row['title']} · {cell(row, 1)}".strip(" ·") if key == "recruit" else row["title"]
+
+
+def board_entry(key: str, row: dict, kind: str, note: str, today: date, summary: dict | None = None) -> dict:
     """교육청 게시판 글 하나를 현황판 항목으로."""
     found = dates_in(row["text"])
-    deadline = max(found).isoformat() if key == "recruit" and found else None
-    title = f"{cell(row, 0) or row['title']} · {cell(row, 1)}".strip(" ·") if key == "recruit" else row["title"]
+    deadline = max(found).isoformat() if key == "recruit" and found else (summary or {}).get("deadline")
     return {"id": f"{key}:{row['id']}", "kind": kind, "region": "전북", "source": BOARDS[key]["name"],
-            "title": title, "url": row["url"], "seen": today.isoformat(), "deadline": deadline, "note": note}
+            "title": board_entry_title(key, row), "url": row["url"], "seen": today.isoformat(),
+            "deadline": deadline, "note": note, "summary": summary or {}}
+
+
+def backfill_summaries(state: dict, today: date, limit: int = 10) -> None:
+    """요약 기능이 생기기 전에 저장된 🎨 글에도 요약을 붙인다 (한 번에 몇 건씩)."""
+    todo = [e for e in state.get("found", []) if e["kind"] == "match" and "summary" not in e][:limit]
+    if not todo:
+        return
+    summaries = summarize_many([(e["url"], e["title"]) for e in todo], today)
+    for e in todo:
+        e["summary"] = summaries.get(e["url"]) or summarize_post(e["title"], "", today)
+        if not e.get("deadline") and e["summary"].get("deadline"):
+            e["deadline"] = e["summary"]["deadline"]
 
 
 def remember_entries(state: dict, entries: list[dict], today: date) -> None:
@@ -1090,7 +1255,11 @@ def build_board(state: dict, now: datetime) -> str:
             lines.append("  없음")
         for e in items[:BOARD_MAX_PER_SECTION]:
             when = f"~{e['deadline'][5:].replace('-', '/')}" if e.get("deadline") else e["seen"][5:].replace("-", "/")
-            lines.append(f'• [{esc(e["region"])}] <a href="{esc(e["url"], quote=True)}">{esc(e["title"][:60])}</a> {when}')
+            sm = e.get("summary") or {}
+            lead = ""
+            if sm.get("school"):
+                lead = esc(sm["school"] + (f"({sm['kind']})" if sm.get("kind") else "")) + (f" 미술 {sm['count']}명" if sm.get("count") else "") + " — "
+            lines.append(f'• [{esc(e["region"])}] {lead}<a href="{esc(e["url"], quote=True)}">{esc(e["title"][:60])}</a> {when}')
         if len(items) > BOARD_MAX_PER_SECTION:
             lines.append(f"  외 {len(items) - BOARD_MAX_PER_SECTION}건")
         lines.append("")
@@ -1213,6 +1382,7 @@ def main() -> int:
     state = load_state()
     state.setdefault("seen", {})
     state.setdefault("fails", {})
+    set_private_schools(state.get("schools", {}).get("list", []))  # 공립/사립 판단용
 
     alerts: list[str] = []
     entries: list[dict] = []  # 현황판에 남길 항목
@@ -1245,18 +1415,29 @@ def main() -> int:
                 candidates.append([row, kind, ""])
         # 과목이 안 적힌 사전공개 글은 글을 열어 본문·첨부파일에서 과목을 찾는다
         to_open = [c for c in candidates if key == "preplan" and c[1] == "unspecified"]
+        summaries: dict[str, dict] = {}
         if to_open:
-            resolved = resolve_many([c[0]["url"] for c in to_open])
+            resolved = resolve_many([(c[0]["url"], c[0]["title"]) for c in to_open], today)
             for c in to_open:
-                c[1], c[2] = resolved[c[0]["url"]]
+                c[1], c[2], summaries[c[0]["url"]] = resolved[c[0]["url"]]
+        # 🎨 글은 열어서 학교명·공립/사립·미술 인원·접수 마감을 요약한다
+        to_sum = [c for c in candidates if c[1] == "match" and not summaries.get(c[0]["url"])]
+        if to_sum:
+            summaries.update(summarize_many([(c[0]["url"], board_entry_title(key, c[0])) for c in to_sum], today))
         for row, kind, note in candidates:
             if not kind:
                 continue
             if kind == "exam" and norm(row["title"]) in known_titles:
                 continue  # 중등임용시험 게시판과 고시/공고에 같은 공고가 실림
             known_titles.add(norm(row["title"]))
-            alerts.append(format_message(key, row, kind, note))
-            entries.append(board_entry(key, row, kind, note, today))
+            summary = summaries.get(row["url"]) or {}
+            if key == "recruit" and summary and not summary.get("deadline"):
+                found = dates_in(row["text"])  # 채용공고 목록의 접수기간 칸이 가장 믿을 만하다
+                if found:
+                    summary["deadline"] = max(found).isoformat()
+                    summary["line"] = summary_line(summary)
+            alerts.append(format_message(key, row, kind, note, summary))
+            entries.append(board_entry(key, row, kind, note, today, summary))
         current_ids = [r["id"] for r in rows]
         current_set = set(current_ids)
         older_ids = [i for i in dict.fromkeys(state["seen"].get(key, [])) if i not in current_set]
@@ -1320,6 +1501,7 @@ def main() -> int:
             state["last_error_alert"] = now.isoformat()
 
     remember_entries(state, entries, today)
+    backfill_summaries(state, today)
     board = build_board(state, now)
     print(f"{now:%Y-%m-%d %H:%M} KST | " + " | ".join(status_lines) + f" | 알림 {len(alerts)}건")
 

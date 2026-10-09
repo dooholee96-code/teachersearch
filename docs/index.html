@@ -61,6 +61,8 @@
   .region { font-weight: 700; color: var(--text); }
   .title { font-size: 16px; font-weight: 600; line-height: 1.4; word-break: keep-all; overflow-wrap: anywhere; }
   .note { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .summary { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+  .summary .kind { font-weight: 500; color: var(--muted); }
   .deadline { color: var(--accent); font-weight: 600; }
   .new { background: var(--accent); color: #fff; border-radius: 6px; padding: 0 6px; font-size: 12px; font-weight: 700; }
   .empty { color: var(--muted); font-size: 14px; padding: 8px 2px; }
@@ -113,12 +115,22 @@
     return Number(m[2]) + "월 " + Number(m[3]) + "일 " + m[4] + ":" + m[5] + " 기준";
   }
 
+  function summaryLine(e) {
+    var s = e.summary || {};
+    if (!s.school && !s.count) return "";
+    var parts = [];
+    if (s.school) parts.push(esc(s.school) + (s.kind ? ' <span class="kind">' + esc(s.kind) + '</span>' : ''));
+    if (s.count) parts.push('미술 ' + esc(s.count) + '명');
+    return '<div class="summary">' + parts.join(' · ') + '</div>';
+  }
+
   function card(e) {
     var cls = "card " + e.kind + (e.alive ? "" : " dead");
     var isNew = e.alive && state.data && (state.data.updated || "").slice(0, 10) === e.seen;  // 이번 실행 날짜에 처음 본 글
     var when = e.deadline ? '<span class="deadline">~' + md(e.deadline) + ' 접수</span>' : '<span>' + md(e.seen) + '</span>';
     return '<a class="' + cls + '" href="' + esc(e.url) + '" target="_blank" rel="noopener">' +
       '<div class="meta">' + (isNew ? '<span class="new">새 글</span>' : '') + '<span class="region">[' + esc(e.region) + ']</span><span>' + esc(e.source) + '</span>' + when + '</div>' +
+      summaryLine(e) +
       '<div class="title">' + esc(e.title) + '</div>' +
       (e.note ? '<div class="note">' + esc(e.note) + '</div>' : '') + '</a>';
   }
