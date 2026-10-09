@@ -1135,4 +1135,6 @@ def test_recruit_row_summary_opens_detail_and_old_entries_get_backfilled(h):
         e.pop("summary", None)
     h.state_file.write_text(json.dumps(state, ensure_ascii=False), encoding="utf-8")
     h.run()
-    assert h.state()["found"][0]["summary"]["line"].startswith("우석고등학교(사립)")
+    entry = next(e for e in h.state()["found"] if e["id"] == "recruit:r5")
+    assert entry["summary"]["line"].startswith("우석고등학교(사립) · 미술 1명")
+    assert all("summary" in e for e in h.state()["found"])  # 다른 옛 항목도 (제목만으로라도) 요약이 붙음
