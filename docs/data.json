@@ -1,5 +1,37 @@
 {
- "updated": "2026-10-09T09:12+09:00",
+ "updated": "2026-10-09T11:28+09:00",
+ "profile": "art",
+ "title": "미술 티오",
+ "icon": "🎨",
+ "count_label": "미술",
+ "sections": [
+  [
+   "🎨 미술 공고",
+   "match"
+  ],
+  [
+   "🟡 확인 필요 (과목 미기재)",
+   "unspecified"
+  ],
+  [
+   "📢 임용시험 관련",
+   "exam"
+  ]
+ ],
+ "profiles": [
+  {
+   "name": "art",
+   "title": "미술 티오",
+   "icon": "🎨",
+   "file": "data.json"
+  },
+  {
+   "name": "records",
+   "title": "기록연구사 티오",
+   "icon": "📋",
+   "file": "data-records.json"
+  }
+ ],
  "regions": [
   "전북",
   "대전",
@@ -39,7 +71,7 @@
     "line": "부안여자고등학교(사립) · 미술 1명 · ~09/23 접수"
    },
    "deadline_source": "text",
-   "alive": false
+   "alive": true
   }
  ],
  "status": [
