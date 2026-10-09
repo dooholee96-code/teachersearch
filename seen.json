@@ -611,7 +611,6 @@
  ],
  "office_ok": [
   "office:office.jbedu.kr/gce",
-  "office:office.jbedu.kr/jbbae",
   "office:office.jbedu.kr/jbgje",
   "office:office.jbedu.kr/jbgse",
   "office:office.jbedu.kr/jbime",
@@ -623,12 +622,7 @@
   "office:office.jbedu.kr/jbnwe",
   "office:office.jbedu.kr/jbsce",
   "office:office.jbedu.kr/jbwje",
-  "office:office.jbedu.kr/jeonjuedu",
-  "office:www.djdbe.go.kr/home/main.do",
-  "office:www.djdbe.go.kr/ssc/home/main.do",
-  "office:www.dje.go.kr/main.do",
-  "office:www.djsbe.go.kr/home/main.do",
-  "office:www.djsbe.go.kr/ssc/home/main.do"
+  "office:office.jbedu.kr/jeonjuedu"
  ],
  "office_summary_sent": "2026-10-09",
  "started": "2026-10-09T03:04:24.615989+09:00",
