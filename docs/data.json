@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-11T01:28+09:00",
+ "updated": "2026-10-11T10:45+09:00",
  "profile": "art",
  "title": "미술 티오",
  "icon": "🎨",
@@ -41,6 +41,62 @@
   "미술"
  ],
  "entries": [
+  {
+   "id": "site:17b780f3f2c4d801",
+   "kind": "unspecified",
+   "region": "충남",
+   "source": "당진교육지원청",
+   "title": "2026학년도 학교자율특색과정 강사 채용 공고.hwp 다운로드",
+   "url": "https://www.cndje.go.kr/board/dl.action/4372cd3e64346c6134ab7a843e364023/2026%ED%95%99%EB%85%84%EB%8F%84 %ED%95%99%EA%B5%90%EC%9E%90%EC%9C%A8%ED%8A%B9%EC%83%89%EA%B3%BC%EC%A0%95 %EA%B0%95%EC%82%AC %EC%B1%84%EC%9A%A9 %EA%B3%B5%EA%B3%A0.hwp?q=ca0ee3443a573ad632a5f75b29d8821223b5d29d2dbe9ee91a4c4bfdfc7cbbb0e483c21290a5786a9d52fd048ebf24725bae50e2e31ae034f3bc94d1d3e767ab",
+   "seen": "2026-10-11",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "글을 열지 못함(HTTP 404) — 직접 확인",
+   "summary": {},
+   "alive": true
+  },
+  {
+   "id": "site:53fbdcdb93b6c1e2",
+   "kind": "unspecified",
+   "region": "충남",
+   "source": "태안교육지원청",
+   "title": "★기간제교원 위탁채용 최종 합격자 공고문외(1건).zip 다운로드",
+   "url": "https://www.cntae.go.kr/board/dl.action/598ae6605b8c8e296b2b34392b7aa877/%E2%98%85%EA%B8%B0%EA%B0%84%EC%A0%9C%EA%B5%90%EC%9B%90 %EC%9C%84%ED%83%81%EC%B1%84%EC%9A%A9 %EC%B5%9C%EC%A2%85 %ED%95%A9%EA%B2%A9%EC%9E%90 %EA%B3%B5%EA%B3%A0%EB%AC%B8%EC%99%B8%281%EA%B1%B4%29.zip?q=142bc42c2df6dd5fedc39fed3b28250440bd4e9062f4fdf4b53193c7b2f3adc652cc0fc333ecd2a4b573303882f3449c9aad8c74171c372d934423f68dabea58",
+   "seen": "2026-10-11",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "글을 열지 못함(HTTP 404) — 직접 확인",
+   "summary": {},
+   "alive": true
+  },
+  {
+   "id": "site:d63a366290819f35",
+   "kind": "unspecified",
+   "region": "충남",
+   "source": "태안교육지원청",
+   "title": "★2026학년도 2차 기간제교원 위탁채용 재공고문.hwp 다운로드",
+   "url": "https://www.cntae.go.kr/board/dl.action/598ae6605b8c8e296b2b34392b7aa877/%E2%98%852026%ED%95%99%EB%85%84%EB%8F%84 2%EC%B0%A8 %EA%B8%B0%EA%B0%84%EC%A0%9C%EA%B5%90%EC%9B%90 %EC%9C%84%ED%83%81%EC%B1%84%EC%9A%A9 %EC%9E%AC%EA%B3%B5%EA%B3%A0%EB%AC%B8.hwp?q=142bc42c2df6dd5fedc39fed3b28250440bd4e9062f4fdf4b53193c7b2f3adc6ba299a202a0ed473a234d37c58dbb405bd590377e384a49cd61a5481b1715871",
+   "seen": "2026-10-11",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "글을 열지 못함(HTTP 404) — 직접 확인",
+   "summary": {},
+   "alive": true
+  },
+  {
+   "id": "site:3dab0b2a1d41f848",
+   "kind": "unspecified",
+   "region": "충남",
+   "source": "태안교육지원청",
+   "title": "★기간제교원 위탁채용 최종 합격자 공고문외(1건).zip 다운로드",
+   "url": "https://www.cntae.go.kr/board/dl.action/598ae6605b8c8e296b2b34392b7aa877/%E2%98%85%EA%B8%B0%EA%B0%84%EC%A0%9C%EA%B5%90%EC%9B%90 %EC%9C%84%ED%83%81%EC%B1%84%EC%9A%A9 %EC%B5%9C%EC%A2%85 %ED%95%A9%EA%B2%A9%EC%9E%90 %EA%B3%B5%EA%B3%A0%EB%AC%B8%EC%99%B8%281%EA%B1%B4%29.zip?q=142bc42c2df6dd5fedc39fed3b28250440bd4e9062f4fdf4b53193c7b2f3adc6cd9b373d6731802b37879ffd0e695ba867e0f264a23621b336c392ec36416353",
+   "seen": "2026-10-11",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "글을 열지 못함(HTTP 404) — 직접 확인",
+   "summary": {},
+   "alive": true
+  },
   {
    "id": "site:0d6a5ba3c0905a36",
    "kind": "match",
@@ -99,8 +155,8 @@
   "✅ 채용계획 사전공개: 글 100건 읽음",
   "✅ 중등임용시험 게시판: 글 30건 읽음",
   "✅ 고시/공고: 글 30건 읽음",
-  "✅ 교육청·교육지원청 누리집: 34곳 중 20곳 확인 (채용 메뉴 15곳)",
-  "✅ 사립 중·고 홈페이지: 238곳 중 176곳 확인 (채용 메뉴 11곳)"
+  "✅ 교육청·교육지원청 누리집: 34곳 중 34곳 확인 (채용 메뉴 21곳)",
+  "⏭ 사립 중·고 홈페이지: 오늘 이미 확인함"
  ],
  "fails": {
   "recruit": 0,
