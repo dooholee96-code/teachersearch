@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-12T01:53+09:00",
+ "updated": "2026-10-12T11:12+09:00",
  "profile": "art",
  "title": "미술 티오",
  "icon": "🎨",
@@ -41,6 +41,68 @@
   "미술"
  ],
  "entries": [
+  {
+   "id": "site:63a36c702a0b6632",
+   "kind": "match",
+   "region": "전북",
+   "source": "김제교육지원청",
+   "title": "[공고]2026학년도 2학기 김제중학교 기간제교원 채용 공고(1차)",
+   "url": "https://office.jbedu.kr/jbgje/M010501/view/6938409.do",
+   "seen": "2026-10-12",
+   "deadline": "2026-10-14",
+   "deadline_source": "text",
+   "note": "첨부 「2026학년도 2학기 김제중학교 기간제교원 채용 공고문(1차).hwpx」에 미술",
+   "summary": {
+    "school": "김제중학교",
+    "kind": "공립",
+    "count": null,
+    "deadline": "2026-10-14",
+    "line": "김제중학교(공립) · ~10/14 접수"
+   },
+   "alive": true
+  },
+  {
+   "id": "site:25510b9440554c5b",
+   "kind": "unspecified",
+   "region": "전북",
+   "source": "김제교육지원청",
+   "title": "2026학년도 백석초 창의적 체험활동 동아리 외부강사 채용 공고(연극)",
+   "url": "https://office.jbedu.kr/jbgje/M01060201/view/6937919.do",
+   "seen": "2026-10-12",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부에서 과목을 찾지 못함 — 직접 확인",
+   "summary": {},
+   "alive": true
+  },
+  {
+   "id": "site:6d691cfa31a51af7",
+   "kind": "unspecified",
+   "region": "전북",
+   "source": "완주교육지원청",
+   "title": "2026년 중등(봉서중) 기초학력 협력강사 모집 공고(2차)",
+   "url": "https://office.jbedu.kr/jbwje/M01040601/view/6938429.do",
+   "seen": "2026-10-12",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부에서 과목을 찾지 못함 — 직접 확인",
+   "summary": {},
+   "alive": true
+  },
+  {
+   "id": "site:7d504e3a23519643",
+   "kind": "exam",
+   "region": "대전",
+   "source": "대전광역시교육청",
+   "title": "2027학년도 대전광역시 중등학교교사, 보건ㆍ영양ㆍ사서ㆍ전문상담ㆍ특수(중등)교사 임용시험 원서 접수(취소) 안내[새창]",
+   "url": "https://edurecruit.go.kr",
+   "seen": "2026-10-12",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "",
+   "summary": {},
+   "alive": true
+  },
   {
    "id": "site:17b780f3f2c4d801",
    "kind": "unspecified",
@@ -155,15 +217,15 @@
   "✅ 채용계획 사전공개: 글 100건 읽음",
   "✅ 중등임용시험 게시판: 글 30건 읽음",
   "✅ 고시/공고: 글 30건 읽음",
-  "❌ 교육청·교육지원청 누리집: 34곳 중 14곳 확인 (채용 메뉴 14곳) — 절반 넘게 접속 실패",
-  "❌ 사립 중·고 홈페이지: 238곳 중 64곳 확인 (채용 메뉴 2곳) — 시간 부족으로 117곳 건너뜀"
+  "✅ 교육청·교육지원청 누리집: 34곳 중 20곳 확인 (채용 메뉴 15곳)",
+  "❌ 사립 중·고 홈페이지: 238곳 중 48곳 확인 (채용 메뉴 1곳) — 시간 부족으로 104곳 건너뜀"
  ],
  "fails": {
   "recruit": 0,
   "preplan": 0,
   "exam": 0,
   "gosi": 0,
-  "office": 1,
-  "school": 1
+  "office": 0,
+  "school": 2
  }
 }

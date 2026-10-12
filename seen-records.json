@@ -1,6 +1,21 @@
 {
  "seen": {
   "recruit": [
+   "1188685",
+   "1188682",
+   "1188680",
+   "1188677",
+   "1188663",
+   "1188662",
+   "1188658",
+   "1188655",
+   "1188654",
+   "1188639",
+   "1188637",
+   "1188636",
+   "1188634",
+   "1188629",
+   "1188620",
    "1187999",
    "1187998",
    "1187324",
@@ -155,6 +170,7 @@
    "1182976"
   ],
   "preplan": [
+   "1188640",
    "1183628",
    "1178131",
    "1176776",
@@ -281,6 +297,7 @@
    "1012904"
   ],
   "gosi": [
+   "1186870",
    "1187340",
    "1186953",
    "1186203",
@@ -314,6 +331,8 @@
    "1175672"
   ],
   "school": [
+   "a7244297583589da",
+   "7d504e3a23519643",
    "4a105ce016930c67",
    "ade6151330acd0c8",
    "5b88ec0063e0d9fa",
@@ -500,7 +519,7 @@
   "govexam": 0,
   "pubexam": 0,
   "gosi": 0,
-  "office": 1
+  "office": 0
  },
  "schools_scanned": [
   "office:office.jbedu.kr/gce",
@@ -539,20 +558,16 @@
   "office:www.djsbe.go.kr/ssc/home/main.do"
  ],
  "office_ok": [
-  "office:office.jbedu.kr/gce",
   "office:office.jbedu.kr/jbbae",
-  "office:office.jbedu.kr/jbgje",
   "office:office.jbedu.kr/jbgse",
-  "office:office.jbedu.kr/jbime",
-  "office:office.jbedu.kr/jbise",
-  "office:office.jbedu.kr/jbjae",
   "office:office.jbedu.kr/jbjse",
-  "office:office.jbedu.kr/jbjue",
-  "office:office.jbedu.kr/jbmje",
-  "office:office.jbedu.kr/jbnwe",
   "office:office.jbedu.kr/jbsce",
-  "office:office.jbedu.kr/jbwje",
-  "office:office.jbedu.kr/jeonjuedu"
+  "office:www.cne.go.kr",
+  "office:www.djdbe.go.kr/home/main.do",
+  "office:www.djdbe.go.kr/ssc/home/main.do",
+  "office:www.dje.go.kr/main.do",
+  "office:www.djsbe.go.kr/home/main.do",
+  "office:www.djsbe.go.kr/ssc/home/main.do"
  ],
  "office_summary_sent": "2026-10-09",
  "started": "2026-10-09T11:33:24.687747+09:00",
