@@ -1,6 +1,7 @@
 {
  "seen": {
   "recruit": [
+   "1200703",
    "1200307",
    "1200293",
    "1200289",
@@ -426,6 +427,10 @@
    "1175672"
   ],
   "school": [
+   "152905d13362aa34",
+   "096a2cd88be5c4f5",
+   "039d6218962d3309",
+   "669503e9327ab829",
    "89dc3e026c51db61",
    "54a33a2e873c10ca",
    "9cc850c870b0483b",
@@ -902,6 +907,7 @@
   "office:office.jbedu.kr/jbsce",
   "office:office.jbedu.kr/jbwje",
   "office:office.jbedu.kr/jeonjuedu",
+  "office:www.cne.go.kr",
   "office:www.djdbe.go.kr/home/main.do",
   "office:www.djdbe.go.kr/ssc/home/main.do",
   "office:www.dje.go.kr/main.do",
@@ -1714,6 +1720,58 @@
    "source": "중등임용시험 게시판",
    "title": "2027학년도 전북특별자치도 중등학교교사 등 임용후보자 선정경쟁시험 장애인 구분 모집 선발 분야 원서접수 현황 안내",
    "url": "https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000043&menuCd=DOM_000000103004002000&orderBy=REGISTER_DATE:DESC&paging=ok&startPage=1&searchOperation=AND&categoryCode1=BB&dataSid=1200338",
+   "seen": "2026-10-17",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "",
+   "summary": {}
+  },
+  {
+   "id": "site:152905d13362aa34",
+   "kind": "exam",
+   "region": "대전",
+   "source": "대전광역시교육청",
+   "title": "17 26.10 임용시험 [장애분야 원서접수 현황] 2027학년도 중등교사 임용시험 장애분야 응시원서 접수현황",
+   "url": "https://www.dje.go.kr/boardCnts/view.do?boardID=64&boardSeq=3365535&lev=0&s=dje&menuID=031701",
+   "seen": "2026-10-17",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "",
+   "summary": {}
+  },
+  {
+   "id": "site:096a2cd88be5c4f5",
+   "kind": "exam",
+   "region": "대전",
+   "source": "대전광역시교육청",
+   "title": "[장애분야 원서접수 현황] 2027학년도 중등교사 임용시험 장애분...",
+   "url": "https://www.dje.go.kr/boardCnts/list.do?boardID=64&m=031701&s=dje",
+   "seen": "2026-10-17",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "",
+   "summary": {}
+  },
+  {
+   "id": "site:039d6218962d3309",
+   "kind": "exam",
+   "region": "충남",
+   "source": "충청남도교육청",
+   "title": "2027학년도 충청남도 중등학교교사,특수(중등),보건·사서·전문상담·영양교사(국·사립위탁 ... 2027학년도 충청남도 중등학교교사,특수(중등),보건·사서·전문상담·영양교사(국·사립위탁 포함) 임용시험 장애인 ... 2026-10-17",
+   "url": "http://www.cne.go.kr:80/boardCnts/view.do?boardID=47&boardSeq=2375772&lev=0&searchType=null&statusYN=W&page=1&s=cne&m=021201&opType=N",
+   "seen": "2026-10-17",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "",
+   "summary": {}
+  },
+  {
+   "id": "site:669503e9327ab829",
+   "kind": "exam",
+   "region": "충남",
+   "source": "충청남도교육청",
+   "title": "2027학년도 충청남도 중등학교교사,특수(중등),보건·사서·전문상담·영양교사(국·사립위탁 ... 2027학년도 충청남도 중등학교교사,특수(중등),보건·사서·전문상담·영양교사(국·사립위탁 포함) 임용시험 장애인 ... 2026-10-17",
+   "url": "http://www.cne.go.kr:80/boardCnts/view.do?boardID=47&boardSeq=2375772&lev=0&searchType=null&statusYN=W&page=1&s=cne&m=021202&opType=N",
    "seen": "2026-10-17",
    "deadline": null,
    "deadline_source": "text",
