@@ -1,6 +1,11 @@
 {
  "seen": {
   "recruit": [
+   "1201163",
+   "1201156",
+   "1201155",
+   "1201134",
+   "1201128",
    "1200703",
    "1200307",
    "1200293",
@@ -370,10 +375,11 @@
    "1012904"
   ],
   "gosi": [
+   "1199880",
    "1200271",
    "1200131",
-   "1189374",
    "1189373",
+   "1189374",
    "1189758",
    "1188812",
    "1189391",
@@ -414,6 +420,8 @@
    "1175672"
   ],
   "school": [
+   "871acaac1377fc25",
+   "3761fa8d28d02cce",
    "039d6218962d3309",
    "669503e9327ab829",
    "f428ab96897e462e",
@@ -809,10 +817,8 @@
   "office:office.jbedu.kr/jbise",
   "office:office.jbedu.kr/jbjae",
   "office:office.jbedu.kr/jbjse",
-  "office:office.jbedu.kr/jbjue",
   "office:office.jbedu.kr/jbmje",
   "office:office.jbedu.kr/jbnwe",
-  "office:office.jbedu.kr/jbsce",
   "office:office.jbedu.kr/jbwje",
   "office:office.jbedu.kr/jeonjuedu",
   "office:www.cne.go.kr",
