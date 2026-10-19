@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-19T09:59+09:00",
+ "updated": "2026-10-20T02:51+09:00",
  "profile": "art",
  "title": "미술 티오",
  "icon": "🎨",
@@ -41,6 +41,40 @@
   "미술"
  ],
  "entries": [
+  {
+   "id": "site:642b72a1159da017",
+   "kind": "match",
+   "region": "전북",
+   "source": "익산교육지원청",
+   "title": "2026학년도 웅포중학교 2학기 기간제교원 채용공고",
+   "url": "https://office.jbedu.kr/jbise/M01040201/view/6948563.do",
+   "seen": "2026-10-20",
+   "deadline": "2026-10-21",
+   "deadline_source": "text",
+   "note": "첨부 「2026학년도 2학기 기간제교원 채용공고(영어)..hwpx」에 미술",
+   "summary": {
+    "school": "웅포중학교",
+    "kind": "공립",
+    "count": null,
+    "deadline": "2026-10-21",
+    "line": "웅포중학교(공립) · ~10/21 접수"
+   },
+   "alive": true
+  },
+  {
+   "id": "site:58287f06011b4841",
+   "kind": "unspecified",
+   "region": "충남",
+   "source": "충청남도교육청",
+   "title": "아산배방중학교 [아산배방중학교] 2026년 시간제강사(소금) 채용 공고 안녕하세요! 아산배방중학교에서 2026년 시간제강사(소금)를 모... 2026-10-19",
+   "url": "http://www.cne.go.kr:80/boardCnts/view.do?boardID=646&boardSeq=2375866&lev=0&searchType=null&statusYN=W&page=1&s=cne&m=020201&opType=N",
+   "seen": "2026-10-20",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부 「WA_Situation.html?MenuCD=110」를 읽지 못함 — 직접 확인",
+   "summary": {},
+   "alive": true
+  },
   {
    "id": "site:89dc3e026c51db61",
    "kind": "unspecified",
@@ -974,7 +1008,7 @@
   "✅ 중등임용시험 게시판: 글 30건 읽음",
   "✅ 고시/공고: 글 30건 읽음",
   "✅ 교육청·교육지원청 누리집: 34곳 중 20곳 확인 (채용 메뉴 16곳)",
-  "✅ 사립 중·고 홈페이지: 238곳 중 179곳 확인 (채용 메뉴 11곳)"
+  "✅ 사립 중·고 홈페이지: 238곳 중 161곳 확인 (채용 메뉴 10곳)"
  ],
  "fails": {
   "recruit": 0,
