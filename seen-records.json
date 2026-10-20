@@ -1,6 +1,19 @@
 {
  "seen": {
   "recruit": [
+   "1201896",
+   "1201830",
+   "1201829",
+   "1201826",
+   "1201806",
+   "1201805",
+   "1201794",
+   "1201767",
+   "1201745",
+   "1201740",
+   "1201708",
+   "1201706",
+   "1201703",
    "1201683",
    "1201657",
    "1201641",
@@ -264,6 +277,7 @@
    "1182976"
   ],
   "preplan": [
+   "1201725",
    "1201397",
    "1201204",
    "1199820",
@@ -395,6 +409,7 @@
    "1012904"
   ],
   "gosi": [
+   "1201834",
    "1201502",
    "1199880",
    "1200271",
@@ -441,6 +456,9 @@
    "1175672"
   ],
   "school": [
+   "e9371bb4d3b21c6d",
+   "aec8a078780a5c57",
+   "cc3f17948fc679a5",
    "054dcdba8cb64d1e",
    "87fd319726e2c8dd",
    "98a5be67c27beda9",
@@ -842,7 +860,6 @@
   "office:office.jbedu.kr/jbbae",
   "office:office.jbedu.kr/jbgje",
   "office:office.jbedu.kr/jbgse",
-  "office:office.jbedu.kr/jbime",
   "office:office.jbedu.kr/jbise",
   "office:office.jbedu.kr/jbjae",
   "office:office.jbedu.kr/jbjse",
@@ -852,6 +869,7 @@
   "office:office.jbedu.kr/jbsce",
   "office:office.jbedu.kr/jbwje",
   "office:office.jbedu.kr/jeonjuedu",
+  "office:www.cne.go.kr",
   "office:www.djdbe.go.kr/home/main.do",
   "office:www.djdbe.go.kr/ssc/home/main.do",
   "office:www.dje.go.kr/main.do",
@@ -2519,6 +2537,25 @@
    "deadline_source": "text",
    "note": "확인할 글이 많아 열어 보지 못함 — 직접 확인",
    "summary": {}
+  },
+  {
+   "id": "site:cc3f17948fc679a5",
+   "kind": "match",
+   "region": "대전",
+   "source": "대전광역시교육청",
+   "title": "20 26.10 채용공고 대전관저중학교 기간제 교육공무직원(영양사) 채용 공고",
+   "url": "https://www.dje.go.kr/boardCnts/view.do?boardID=54&boardSeq=3365620&lev=0&s=dje&menuID=030202",
+   "seen": "2026-10-21",
+   "deadline": "2027-01-08",
+   "deadline_source": "text",
+   "note": "첨부 「26.10.20. 기간제 교육공무직원(영양사) 채용공고.hwpx」에 기록관리",
+   "summary": {
+    "school": "대전관저중학교",
+    "kind": "공립",
+    "count": null,
+    "deadline": "2027-01-08",
+    "line": "대전관저중학교(공립) · ~01/08 접수"
+   }
   }
  ]
 }
