@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-21T01:11+09:00",
+ "updated": "2026-10-21T10:29+09:00",
  "profile": "records",
  "title": "기록연구사 티오",
  "icon": "📋",
@@ -58,6 +58,26 @@
     "count": null,
     "deadline": "2027-01-08",
     "line": "대전관저중학교(공립) · ~01/08 접수"
+   },
+   "alive": true
+  },
+  {
+   "id": "site:408aef657eb762ec",
+   "kind": "match",
+   "region": "대전",
+   "source": "대전광역시교육청",
+   "title": "21 26.10 채용공고 대전삼천초등학교 교육공무직 조리실무사(기간제) 채용 공고 자세한 내용은 첨부파일을 확인하여 주시기 바랍니다.",
+   "url": "https://www.dje.go.kr/boardCnts/view.do?boardID=54&boardSeq=3365627&lev=0&s=dje&menuID=030202",
+   "seen": "2026-10-21",
+   "deadline": "2027-02-28",
+   "deadline_source": "text",
+   "note": "첨부 「대전삼천초등학교 조리실무사(기간제) 채용 공고(2026년 10월).hwpx」에 기록관리",
+   "summary": {
+    "school": "대전광역시교육청",
+    "kind": "",
+    "count": null,
+    "deadline": "2027-02-28",
+    "line": "대전광역시교육청 · ~02/28 접수"
    },
    "alive": true
   },
