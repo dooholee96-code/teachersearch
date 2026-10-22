@@ -1,6 +1,10 @@
 {
  "seen": {
   "recruit": [
+   "1202550",
+   "1202526",
+   "1202493",
+   "1202490",
    "1202253",
    "1202251",
    "1202247",
@@ -114,7 +118,6 @@
    "1188768",
    "1188764",
    "1188758",
-   "1188714",
    "1188713",
    "1188711",
    "1188685",
@@ -148,6 +151,7 @@
    "1187166",
    "1187164",
    "1187163",
+   "1188714",
    "1187160",
    "1187140",
    "1187137",
@@ -485,6 +489,7 @@
    "1175672"
   ],
   "school": [
+   "074301c41a412225",
    "9150ba38228db5e8",
    "160f47d081cd9b01",
    "41b5ae86b351ab11",
@@ -973,7 +978,6 @@
   "office:office.jbedu.kr/jbsce",
   "office:office.jbedu.kr/jbwje",
   "office:office.jbedu.kr/jeonjuedu",
-  "office:www.cne.go.kr",
   "office:www.djdbe.go.kr/home/main.do",
   "office:www.djdbe.go.kr/ssc/home/main.do",
   "office:www.dje.go.kr/main.do",
@@ -1919,6 +1923,25 @@
     "count": null,
     "deadline": "2026-10-27",
     "line": "가지고(공립) · ~10/27 접수"
+   }
+  },
+  {
+   "id": "site:074301c41a412225",
+   "kind": "match",
+   "region": "전북",
+   "source": "정읍교육지원청",
+   "title": "2026. 정원내 기간제교원(동신초) 채용 공고",
+   "url": "https://office.jbedu.kr/jbjue/M01070501/view/6953922.do",
+   "seen": "2026-10-22",
+   "deadline": "2026-11-02",
+   "deadline_source": "text",
+   "note": "첨부 「2026. 관내학교 기간제교원(동신초) 채용 공고문.hwpx」에 미술",
+   "summary": {
+    "school": "하였고",
+    "kind": "공립",
+    "count": null,
+    "deadline": "2026-11-02",
+    "line": "하였고(공립) · ~11/02 접수"
    }
   }
  ],
