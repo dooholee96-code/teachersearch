@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-25T10:11+09:00",
+ "updated": "2026-10-26T00:25+09:00",
  "profile": "records",
  "title": "기록연구사 티오",
  "icon": "📋",
@@ -2949,7 +2949,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   },
   {
    "id": "site:ade6151330acd0c8",
@@ -2963,7 +2963,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   },
   {
    "id": "site:5b88ec0063e0d9fa",
@@ -2977,7 +2977,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   },
   {
    "id": "site:35e7603e01f7f404",
@@ -2991,7 +2991,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   },
   {
    "id": "site:d7ec4597946bf7ba",
@@ -3005,7 +3005,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   },
   {
    "id": "site:3fa54135b96a29c2",
@@ -3019,7 +3019,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   },
   {
    "id": "site:e2c153f3c1f788f2",
@@ -3033,7 +3033,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   },
   {
    "id": "site:e6514b4deb4bc274",
@@ -3047,7 +3047,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   },
   {
    "id": "site:cd80a040792afac4",
@@ -3061,7 +3061,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   },
   {
    "id": "site:5ea76cdd5df327ca",
@@ -3075,7 +3075,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   },
   {
    "id": "site:e5f55e7a55c8e2c5",
@@ -3089,7 +3089,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   },
   {
    "id": "site:97ee31c588465e86",
@@ -3103,7 +3103,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   },
   {
    "id": "site:9faee63508b79ecb",
@@ -3117,7 +3117,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   },
   {
    "id": "site:7829dad7de7873cc",
@@ -3131,7 +3131,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   },
   {
    "id": "site:a25ce025000acbf1",
@@ -3145,7 +3145,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   },
   {
    "id": "site:aaa9ce52d0243677",
@@ -3159,7 +3159,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   },
   {
    "id": "site:2226b6f0c1dc11b7",
@@ -3173,7 +3173,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   },
   {
    "id": "site:b73d129a08c176f8",
@@ -3187,7 +3187,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   },
   {
    "id": "site:df6f7ffb39d4d201",
@@ -3201,7 +3201,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   },
   {
    "id": "site:e63204b90258149c",
@@ -3215,7 +3215,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   },
   {
    "id": "site:7b268baafa68b987",
@@ -3229,7 +3229,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   },
   {
    "id": "site:7d118a14fdc3ec1d",
@@ -3243,7 +3243,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   },
   {
    "id": "site:31218c308bae530b",
@@ -3257,7 +3257,7 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
+   "alive": false
   }
  ],
  "status": [
@@ -3266,7 +3266,7 @@
   "✅ 지방공무원시험 게시판: 글 10건 읽음",
   "✅ 교육공무직 채용시험 게시판: 글 10건 읽음",
   "✅ 고시/공고: 글 30건 읽음",
-  "✅ 교육청·교육지원청 누리집: 34곳 중 16곳 확인 (채용 메뉴 12곳)"
+  "✅ 교육청·교육지원청 누리집: 34곳 중 19곳 확인 (채용 메뉴 15곳)"
  ],
  "fails": {
   "recruit": 0,
