@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-26T10:15+09:00",
+ "updated": "2026-10-27T02:59+09:00",
  "profile": "records",
  "title": "기록연구사 티오",
  "icon": "📋",
@@ -41,6 +41,20 @@
   "기록관 "
  ],
  "entries": [
+  {
+   "id": "site:06b06eba28f4b5db",
+   "kind": "unspecified",
+   "region": "전북",
+   "source": "완주교육지원청",
+   "title": "(재공고)2026학년도 교육공무직(조리실무사) 채용 공고",
+   "url": "https://office.jbedu.kr/jbwje/M01040601/view/6958556.do",
+   "seen": "2026-10-27",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "글을 열지 못함(시간 초과) — 직접 확인",
+   "summary": {},
+   "alive": true
+  },
   {
    "id": "site:5990e0f6bb69127a",
    "kind": "match",
@@ -3726,7 +3740,7 @@
   "✅ 지방공무원시험 게시판: 글 10건 읽음",
   "✅ 교육공무직 채용시험 게시판: 글 10건 읽음",
   "✅ 고시/공고: 글 30건 읽음",
-  "✅ 교육청·교육지원청 누리집: 34곳 중 30곳 확인 (채용 메뉴 19곳)"
+  "✅ 교육청·교육지원청 누리집: 34곳 중 19곳 확인 (채용 메뉴 15곳)"
  ],
  "fails": {
   "recruit": 0,
