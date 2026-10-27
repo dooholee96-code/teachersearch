@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-27T10:56+09:00",
+ "updated": "2026-10-28T01:56+09:00",
  "profile": "art",
  "title": "미술 티오",
  "icon": "🎨",
@@ -41,6 +41,46 @@
   "미술"
  ],
  "entries": [
+  {
+   "id": "recruit:1204651",
+   "kind": "match",
+   "region": "전북",
+   "source": "기간제 채용공고",
+   "title": "전주만성중학교 · 미술(기간제교사)",
+   "url": "https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000130&menuCd=DOM_000001601002000000&paging=ok&startPage=1&searchOperation=AND&dataSid=1204651",
+   "seen": "2026-10-28",
+   "deadline": "2026-10-29",
+   "deadline_source": "list",
+   "note": "",
+   "summary": {
+    "school": "전주만성중학교",
+    "kind": "공립",
+    "count": 1,
+    "deadline": "2027-02-28",
+    "line": "전주만성중학교(공립) · 미술 1명 · ~02/28 접수"
+   },
+   "alive": true
+  },
+  {
+   "id": "site:b0a732219d205b16",
+   "kind": "match",
+   "region": "전북",
+   "source": "전주교육지원청",
+   "title": "2026학년도 전주만성중학교 기간제교사(미술) 채용",
+   "url": "https://office.jbedu.kr/jeonjuedu/M01050902/view/6960542.do",
+   "seen": "2026-10-28",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "",
+   "summary": {
+    "school": "전주만성중학교",
+    "kind": "공립",
+    "count": null,
+    "deadline": null,
+    "line": "전주만성중학교(공립)"
+   },
+   "alive": true
+  },
   {
    "id": "site:1ae1ad55b358c7f3",
    "kind": "unspecified",
@@ -1388,20 +1428,6 @@
    "alive": true
   },
   {
-   "id": "site:ebe7d3ca6ab2fbb1",
-   "kind": "unspecified",
-   "region": "충남",
-   "source": "충청남도교육청",
-   "title": "2026학년도 예산꿈빛학교 2학기 고교학점제 전문교과 시간제 강사 채용 공고(3차) 2026학년도 2학기 고교학점제 전문교과 시간제 강사 채용 공고(3차)입니다. 1. 채용부문: 시간제 강사(외식서비스) 2... 2026-10-13",
-   "url": "http://www.cne.go.kr:80/boardCnts/view.do?boardID=648&boardSeq=2375470&lev=0&searchType=null&statusYN=W&page=1&s=cne&m=020201&opType=N",
-   "seen": "2026-10-13",
-   "deadline": null,
-   "deadline_source": "text",
-   "note": "첨부 「WA_Situation.html?MenuCD=110」를 읽지 못함 — 직접 확인",
-   "summary": {},
-   "alive": true
-  },
-  {
    "id": "site:e0b18eccf4140cf0",
    "kind": "exam",
    "region": "충남",
@@ -1426,62 +1452,6 @@
    "deadline": null,
    "deadline_source": "text",
    "note": "",
-   "summary": {},
-   "alive": true
-  },
-  {
-   "id": "site:8ca2f07f0826dfe7",
-   "kind": "unspecified",
-   "region": "충남",
-   "source": "충청남도교육청",
-   "title": "계약제 교원 채용 지원 시스템 바로가기",
-   "url": "http://www.cne.go.kr:80/apply/list.do?s=cne&m=032101",
-   "seen": "2026-10-13",
-   "deadline": null,
-   "deadline_source": "text",
-   "note": "첨부 「WA_Situation.html?MenuCD=110」를 읽지 못함 — 직접 확인",
-   "summary": {},
-   "alive": true
-  },
-  {
-   "id": "site:17c09fa4e1bac92a",
-   "kind": "unspecified",
-   "region": "충남",
-   "source": "충청남도교육청",
-   "title": "중등 기간제 교사 채용",
-   "url": "http://www.cne.go.kr:80/boardCnts/list.do?boardID=644&m=020201&s=cne",
-   "seen": "2026-10-13",
-   "deadline": null,
-   "deadline_source": "text",
-   "note": "첨부 「WA_Situation.html?MenuCD=110」를 읽지 못함 — 직접 확인",
-   "summary": {},
-   "alive": true
-  },
-  {
-   "id": "site:0e54199dcd5bd442",
-   "kind": "unspecified",
-   "region": "충남",
-   "source": "충청남도교육청",
-   "title": "중등 특기적성 강사 채용",
-   "url": "http://www.cne.go.kr:80/boardCnts/list.do?boardID=646&m=020201&s=cne",
-   "seen": "2026-10-13",
-   "deadline": null,
-   "deadline_source": "text",
-   "note": "첨부 「WA_Situation.html?MenuCD=110」를 읽지 못함 — 직접 확인",
-   "summary": {},
-   "alive": true
-  },
-  {
-   "id": "site:9e60b2ec0634c4d6",
-   "kind": "unspecified",
-   "region": "충남",
-   "source": "충청남도교육청",
-   "title": "수준별 이동수업 강사 채용",
-   "url": "http://www.cne.go.kr:80/boardCnts/list.do?boardID=647&m=020201&s=cne",
-   "seen": "2026-10-13",
-   "deadline": null,
-   "deadline_source": "text",
-   "note": "첨부 「WA_Situation.html?MenuCD=110」를 읽지 못함 — 직접 확인",
    "summary": {},
    "alive": true
   },
@@ -1570,6 +1540,76 @@
    },
    "deadline_source": "text",
    "alive": true
+  },
+  {
+   "id": "site:ebe7d3ca6ab2fbb1",
+   "kind": "unspecified",
+   "region": "충남",
+   "source": "충청남도교육청",
+   "title": "2026학년도 예산꿈빛학교 2학기 고교학점제 전문교과 시간제 강사 채용 공고(3차) 2026학년도 2학기 고교학점제 전문교과 시간제 강사 채용 공고(3차)입니다. 1. 채용부문: 시간제 강사(외식서비스) 2... 2026-10-13",
+   "url": "http://www.cne.go.kr:80/boardCnts/view.do?boardID=648&boardSeq=2375470&lev=0&searchType=null&statusYN=W&page=1&s=cne&m=020201&opType=N",
+   "seen": "2026-10-13",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부 「WA_Situation.html?MenuCD=110」를 읽지 못함 — 직접 확인",
+   "summary": {},
+   "alive": false
+  },
+  {
+   "id": "site:8ca2f07f0826dfe7",
+   "kind": "unspecified",
+   "region": "충남",
+   "source": "충청남도교육청",
+   "title": "계약제 교원 채용 지원 시스템 바로가기",
+   "url": "http://www.cne.go.kr:80/apply/list.do?s=cne&m=032101",
+   "seen": "2026-10-13",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부 「WA_Situation.html?MenuCD=110」를 읽지 못함 — 직접 확인",
+   "summary": {},
+   "alive": false
+  },
+  {
+   "id": "site:17c09fa4e1bac92a",
+   "kind": "unspecified",
+   "region": "충남",
+   "source": "충청남도교육청",
+   "title": "중등 기간제 교사 채용",
+   "url": "http://www.cne.go.kr:80/boardCnts/list.do?boardID=644&m=020201&s=cne",
+   "seen": "2026-10-13",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부 「WA_Situation.html?MenuCD=110」를 읽지 못함 — 직접 확인",
+   "summary": {},
+   "alive": false
+  },
+  {
+   "id": "site:0e54199dcd5bd442",
+   "kind": "unspecified",
+   "region": "충남",
+   "source": "충청남도교육청",
+   "title": "중등 특기적성 강사 채용",
+   "url": "http://www.cne.go.kr:80/boardCnts/list.do?boardID=646&m=020201&s=cne",
+   "seen": "2026-10-13",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부 「WA_Situation.html?MenuCD=110」를 읽지 못함 — 직접 확인",
+   "summary": {},
+   "alive": false
+  },
+  {
+   "id": "site:9e60b2ec0634c4d6",
+   "kind": "unspecified",
+   "region": "충남",
+   "source": "충청남도교육청",
+   "title": "수준별 이동수업 강사 채용",
+   "url": "http://www.cne.go.kr:80/boardCnts/list.do?boardID=647&m=020201&s=cne",
+   "seen": "2026-10-13",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부 「WA_Situation.html?MenuCD=110」를 읽지 못함 — 직접 확인",
+   "summary": {},
+   "alive": false
   },
   {
    "id": "site:25510b9440554c5b",
@@ -1662,7 +1702,7 @@
   "✅ 중등임용시험 게시판: 글 30건 읽음",
   "✅ 고시/공고: 글 30건 읽음",
   "✅ 교육청·교육지원청 누리집: 34곳 중 20곳 확인 (채용 메뉴 16곳)",
-  "⏭ 사립 중·고 홈페이지: 오늘 이미 확인함"
+  "✅ 사립 중·고 홈페이지: 238곳 중 171곳 확인 (채용 메뉴 11곳)"
  ],
  "fails": {
   "recruit": 0,
