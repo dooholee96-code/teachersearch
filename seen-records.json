@@ -1,6 +1,16 @@
 {
  "seen": {
   "recruit": [
+   "1205129",
+   "1205114",
+   "1205089",
+   "1205086",
+   "1205083",
+   "1205081",
+   "1205080",
+   "1205077",
+   "1205061",
+   "1205059",
    "1205009",
    "1204989",
    "1204988",
@@ -342,6 +352,7 @@
    "1182976"
   ],
   "preplan": [
+   "1205088",
    "1204940",
    "1201725",
    "1201397",
@@ -476,6 +487,7 @@
    "1012904"
   ],
   "gosi": [
+   "1205191",
    "1204732",
    "1204268",
    "1204177",
@@ -532,6 +544,9 @@
    "1175672"
   ],
   "school": [
+   "a85fb3a342fd79fe",
+   "866c552344a7dd91",
+   "2ec1f667b2b68482",
    "f4e7530eafdd2cfe",
    "b6d811c75c1d667c",
    "6ea59a2738468d4e",
@@ -1160,11 +1175,9 @@
  ],
  "office_ok": [
   "office:office.jbedu.kr/gce",
-  "office:office.jbedu.kr/jbbae",
   "office:office.jbedu.kr/jbgje",
   "office:office.jbedu.kr/jbgse",
   "office:office.jbedu.kr/jbime",
-  "office:office.jbedu.kr/jbise",
   "office:office.jbedu.kr/jbjae",
   "office:office.jbedu.kr/jbjse",
   "office:office.jbedu.kr/jbjue",
@@ -1173,21 +1186,7 @@
   "office:office.jbedu.kr/jbsce",
   "office:office.jbedu.kr/jbwje",
   "office:office.jbedu.kr/jeonjuedu",
-  "office:www.cnased.go.kr",
-  "office:www.cnbre.go.kr",
-  "office:www.cnbye.go.kr",
-  "office:www.cncae.go.kr",
-  "office:www.cncyed.go.kr",
-  "office:www.cndje.go.kr",
   "office:www.cne.go.kr",
-  "office:www.cngje.go.kr",
-  "office:www.cngse.go.kr",
-  "office:www.cnhsed.go.kr",
-  "office:www.cnnse.go.kr",
-  "office:www.cnsce.go.kr",
-  "office:www.cnssed.go.kr",
-  "office:www.cntae.go.kr",
-  "office:www.cnyse.go.kr",
   "office:www.djdbe.go.kr/home/main.do",
   "office:www.djdbe.go.kr/ssc/home/main.do",
   "office:www.dje.go.kr/main.do",
@@ -5009,6 +5008,25 @@
    "deadline_source": "text",
    "note": "확인할 글이 많아 열어 보지 못함 — 직접 확인",
    "summary": {}
+  },
+  {
+   "id": "site:2ec1f667b2b68482",
+   "kind": "match",
+   "region": "대전",
+   "source": "대전광역시교육청",
+   "title": "28 26.10 채용공고 [긴급] 대전문창초등학교 교육공무직원 기간제 영양사 채용 공고",
+   "url": "https://www.dje.go.kr/boardCnts/view.do?boardID=54&boardSeq=3365999&lev=0&s=dje&menuID=030202",
+   "seen": "2026-10-29",
+   "deadline": "2027-01-08",
+   "deadline_source": "text",
+   "note": "첨부 「대전문창초등학교 기간제 교육공무직원(영양사)채용 공고.hwpx」에 기록관리",
+   "summary": {
+    "school": "대전광역시교육청",
+    "kind": "",
+    "count": null,
+    "deadline": "2027-01-08",
+    "line": "대전광역시교육청 · ~01/08 접수"
+   }
   }
  ]
 }
