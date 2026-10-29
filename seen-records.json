@@ -1,6 +1,8 @@
 {
  "seen": {
   "recruit": [
+   "1205395",
+   "1205356",
    "1205129",
    "1205114",
    "1205089",
@@ -502,7 +504,6 @@
    "1199880",
    "1200271",
    "1200131",
-   "1189374",
    "1189758",
    "1188812",
    "1189391",
@@ -518,6 +519,7 @@
    "1183784",
    "1183257",
    "1181486",
+   "1189374",
    "1181415",
    "1189373",
    "1181023",
@@ -1175,9 +1177,11 @@
  ],
  "office_ok": [
   "office:office.jbedu.kr/gce",
+  "office:office.jbedu.kr/jbbae",
   "office:office.jbedu.kr/jbgje",
   "office:office.jbedu.kr/jbgse",
   "office:office.jbedu.kr/jbime",
+  "office:office.jbedu.kr/jbise",
   "office:office.jbedu.kr/jbjae",
   "office:office.jbedu.kr/jbjse",
   "office:office.jbedu.kr/jbjue",
