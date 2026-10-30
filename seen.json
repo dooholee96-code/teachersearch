@@ -1,6 +1,11 @@
 {
  "seen": {
   "recruit": [
+   "1205929",
+   "1205891",
+   "1205871",
+   "1205846",
+   "1205836",
    "1205700",
    "1205535",
    "1205530",
@@ -509,6 +514,7 @@
    "714558"
   ],
   "gosi": [
+   "1204974",
    "1205191",
    "1204732",
    "1204268",
@@ -566,6 +572,7 @@
    "1175672"
   ],
   "school": [
+   "ce279ceb29a394c7",
    "2591bb64bf1a380e",
    "3dd70be10558392b",
    "3c615ab2533196bd",
@@ -1128,21 +1135,7 @@
   "office:office.jbedu.kr/jbsce",
   "office:office.jbedu.kr/jbwje",
   "office:office.jbedu.kr/jeonjuedu",
-  "office:www.cnased.go.kr",
-  "office:www.cnbre.go.kr",
-  "office:www.cnbye.go.kr",
-  "office:www.cncae.go.kr",
-  "office:www.cncyed.go.kr",
-  "office:www.cndje.go.kr",
   "office:www.cne.go.kr",
-  "office:www.cngje.go.kr",
-  "office:www.cngse.go.kr",
-  "office:www.cnhsed.go.kr",
-  "office:www.cnnse.go.kr",
-  "office:www.cnsce.go.kr",
-  "office:www.cnssed.go.kr",
-  "office:www.cntae.go.kr",
-  "office:www.cnyse.go.kr",
   "office:www.djdbe.go.kr/home/main.do",
   "office:www.djdbe.go.kr/ssc/home/main.do",
   "office:www.dje.go.kr/main.do",
@@ -3029,6 +3022,25 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {}
+  },
+  {
+   "id": "site:ce279ceb29a394c7",
+   "kind": "match",
+   "region": "충남",
+   "source": "충청남도교육청",
+   "title": "충남디자인예술고등학교 충남디자인예술고등학교 2027학년도 예술 전문교과 실기강사 채용 공고(1차) 공고 제2026-18호 / 공고일: 2026년 10월... 2026-10-30",
+   "url": "http://www.cne.go.kr:80/boardCnts/view.do?boardID=648&boardSeq=2377637&lev=0&searchType=null&statusYN=W&page=1&s=cne&m=020201&opType=N",
+   "seen": "2026-10-30",
+   "deadline": "2026-11-13",
+   "deadline_source": "text",
+   "note": "본문에 미술",
+   "summary": {
+    "school": "충남디자인예술고등학교",
+    "kind": "공립",
+    "count": null,
+    "deadline": "2026-11-13",
+    "line": "충남디자인예술고등학교(공립) · ~11/13 접수"
+   }
   }
  ],
  "schools": {
