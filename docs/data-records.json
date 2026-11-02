@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-02T11:18+09:00",
+ "updated": "2026-11-03T06:13+09:00",
  "profile": "records",
  "title": "기록연구사 티오",
  "icon": "📋",
@@ -41,6 +41,26 @@
   "기록관 "
  ],
  "entries": [
+  {
+   "id": "site:db458290532685b5",
+   "kind": "match",
+   "region": "대전",
+   "source": "대전광역시교육청",
+   "title": "02 26.11 채용공고 대전용산고등학교 기간제 교육공무직원(영양사) 채용 긴급 재공고",
+   "url": "https://www.dje.go.kr/boardCnts/view.do?boardID=54&boardSeq=3366310&lev=0&s=dje&menuID=030202",
+   "seen": "2026-11-03",
+   "deadline": "2027-02-28",
+   "deadline_source": "text",
+   "note": "첨부 「대전용산고등학교 기간제 교육공무직원(영양사) 채용 재공고.hwpx」에 기록관리",
+   "summary": {
+    "school": "대전용산고등학교",
+    "kind": "공립",
+    "count": null,
+    "deadline": "2027-02-28",
+    "line": "대전용산고등학교(공립) · ~02/28 접수"
+   },
+   "alive": true
+  },
   {
    "id": "site:013e483325e6978d",
    "kind": "unspecified",
