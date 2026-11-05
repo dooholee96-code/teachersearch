@@ -1,6 +1,11 @@
 {
  "seen": {
   "recruit": [
+   "1208669",
+   "1208664",
+   "1208655",
+   "1208619",
+   "1208597",
    "1208348",
    "1208339",
    "1208319",
@@ -414,6 +419,7 @@
    "1182976"
   ],
   "preplan": [
+   "1208683",
    "1208294",
    "1208159",
    "1207162",
@@ -564,6 +570,11 @@
    "714558"
   ],
   "gosi": [
+   "1208620",
+   "1208627",
+   "1208626",
+   "1208377",
+   "1208396",
    "1208369",
    "1208204",
    "1208161",
@@ -633,6 +644,7 @@
    "1175672"
   ],
   "school": [
+   "774ffc1f2949f518",
    "f00e954a4e53f7fc",
    "12416de6668d177b",
    "27554a79c4894886",
@@ -1215,6 +1227,7 @@
  ],
  "office_ok": [
   "office:office.jbedu.kr/gce",
+  "office:office.jbedu.kr/jbbae",
   "office:office.jbedu.kr/jbgje",
   "office:office.jbedu.kr/jbgse",
   "office:office.jbedu.kr/jbime",
@@ -1227,21 +1240,7 @@
   "office:office.jbedu.kr/jbsce",
   "office:office.jbedu.kr/jbwje",
   "office:office.jbedu.kr/jeonjuedu",
-  "office:www.cnased.go.kr",
-  "office:www.cnbre.go.kr",
-  "office:www.cnbye.go.kr",
-  "office:www.cncae.go.kr",
-  "office:www.cncyed.go.kr",
-  "office:www.cndje.go.kr",
   "office:www.cne.go.kr",
-  "office:www.cngje.go.kr",
-  "office:www.cngse.go.kr",
-  "office:www.cnhsed.go.kr",
-  "office:www.cnnse.go.kr",
-  "office:www.cnsce.go.kr",
-  "office:www.cnssed.go.kr",
-  "office:www.cntae.go.kr",
-  "office:www.cnyse.go.kr",
   "office:www.djdbe.go.kr/home/main.do",
   "office:www.djdbe.go.kr/ssc/home/main.do",
   "office:www.dje.go.kr/main.do",
@@ -3541,6 +3540,19 @@
    "deadline": null,
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
+   "summary": {}
+  },
+  {
+   "id": "gosi:1208626",
+   "kind": "exam",
+   "region": "전북",
+   "source": "고시/공고",
+   "title": "[공고] 2027.3.1.자 초빙(공모)교사제 임용을 위한 응모 요강 공고",
+   "url": "https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000004&menuCd=DOM_000000103002000000&orderBy=REGISTER_DATE:DESC&paging=ok&startPage=1&searchOperation=AND&dataSid=1208626",
+   "seen": "2026-11-05",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "",
    "summary": {}
   }
  ],

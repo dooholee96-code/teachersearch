@@ -1,6 +1,11 @@
 {
  "seen": {
   "recruit": [
+   "1208669",
+   "1208664",
+   "1208655",
+   "1208619",
+   "1208597",
    "1208348",
    "1208339",
    "1208319",
@@ -414,6 +419,7 @@
    "1182976"
   ],
   "preplan": [
+   "1208683",
    "1208294",
    "1208159",
    "1207162",
@@ -552,6 +558,11 @@
    "1012904"
   ],
   "gosi": [
+   "1208620",
+   "1208627",
+   "1208626",
+   "1208377",
+   "1208396",
    "1208369",
    "1208204",
    "1208161",
@@ -621,6 +632,8 @@
    "1175672"
   ],
   "school": [
+   "260ad015e860bd9f",
+   "928107e325a5bd91",
    "f70706cc6d2ede3e",
    "729c9007a007e942",
    "ba4f14f2f279396f",
@@ -1406,21 +1419,7 @@
   "office:office.jbedu.kr/jbsce",
   "office:office.jbedu.kr/jbwje",
   "office:office.jbedu.kr/jeonjuedu",
-  "office:www.cnased.go.kr",
-  "office:www.cnbre.go.kr",
-  "office:www.cnbye.go.kr",
-  "office:www.cncae.go.kr",
-  "office:www.cncyed.go.kr",
-  "office:www.cndje.go.kr",
   "office:www.cne.go.kr",
-  "office:www.cngje.go.kr",
-  "office:www.cngse.go.kr",
-  "office:www.cnhsed.go.kr",
-  "office:www.cnnse.go.kr",
-  "office:www.cnsce.go.kr",
-  "office:www.cnssed.go.kr",
-  "office:www.cntae.go.kr",
-  "office:www.cnyse.go.kr",
   "office:www.djdbe.go.kr/home/main.do",
   "office:www.djdbe.go.kr/ssc/home/main.do",
   "office:www.dje.go.kr/main.do",
