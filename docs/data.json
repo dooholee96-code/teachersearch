@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-05T12:20+09:00",
+ "updated": "2026-11-06T04:09+09:00",
  "profile": "art",
  "title": "미술 티오",
  "icon": "🎨",
@@ -41,6 +41,68 @@
   "미술"
  ],
  "entries": [
+  {
+   "id": "site:9103b8d9216d07b7",
+   "kind": "unspecified",
+   "region": "전북",
+   "source": "군산교육지원청",
+   "title": "군산미장초, 기간제교원 채용 공고",
+   "url": "https://office.jbedu.kr/jbgse/M01040301/view/6973882.do",
+   "seen": "2026-11-06",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부에서 과목을 찾지 못함 — 직접 확인",
+   "summary": {},
+   "alive": true
+  },
+  {
+   "id": "site:956a24da9b7d820f",
+   "kind": "match",
+   "region": "전북",
+   "source": "익산교육지원청",
+   "title": "2027.3.1.자 초빙(공모)교사 임용공고(웅포중 체육1, 익산부송중 미술1, 수학1)",
+   "url": "https://office.jbedu.kr/jbise/M010501/view/6973789.do",
+   "seen": "2026-11-06",
+   "deadline": "2026-11-13",
+   "deadline_source": "text",
+   "note": "",
+   "summary": {
+    "school": "웅포중",
+    "kind": "공립",
+    "count": 1,
+    "deadline": "2026-11-13",
+    "line": "웅포중(공립) · 미술 1명 · ~11/13 접수"
+   },
+   "alive": true
+  },
+  {
+   "id": "site:90717d446e438d1c",
+   "kind": "unspecified",
+   "region": "전북",
+   "source": "완주교육지원청",
+   "title": "[공고] 2027.3.1.자 완주 관내 중학교 초빙교사 임용을 위한 응모 요강",
+   "url": "https://office.jbedu.kr/jbwje/M01040601/view/6973720.do",
+   "seen": "2026-11-06",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부에서 과목을 찾지 못함 — 직접 확인",
+   "summary": {},
+   "alive": true
+  },
+  {
+   "id": "site:1c3cf8eb6f1b5e61",
+   "kind": "unspecified",
+   "region": "충남",
+   "source": "충청남도교육청",
+   "title": "충남삼성고등학교 2026학년도 2학기 충남삼성고등학교 시간강사(출산휴가 대체) 채용을 다음과 같이 공고합니다. ㅁ 모집과목 및 인원 :... 2026-11-05",
+   "url": "http://www.cne.go.kr:80/boardCnts/view.do?boardID=648&boardSeq=2378125&lev=0&searchType=null&statusYN=W&page=1&s=cne&m=020201&opType=N",
+   "seen": "2026-11-06",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부 「WA_Situation.html?MenuCD=110」를 읽지 못함 — 직접 확인",
+   "summary": {},
+   "alive": true
+  },
   {
    "id": "site:12416de6668d177b",
    "kind": "unspecified",
@@ -2524,7 +2586,7 @@
   "✅ 중등임용시험 게시판: 글 30건 읽음",
   "✅ 고시/공고: 글 30건 읽음",
   "✅ 교육청·교육지원청 누리집: 34곳 중 20곳 확인 (채용 메뉴 16곳)",
-  "⏭ 사립 중·고 홈페이지: 오늘 이미 확인함"
+  "✅ 사립 중·고 홈페이지: 238곳 중 226곳 확인 (채용 메뉴 12곳)"
  ],
  "fails": {
   "recruit": 0,
