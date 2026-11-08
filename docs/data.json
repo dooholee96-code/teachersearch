@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-08T11:13+09:00",
+ "updated": "2026-11-09T02:18+09:00",
  "profile": "art",
  "title": "미술 티오",
  "icon": "🎨",
@@ -1840,38 +1840,6 @@
    "alive": true
   },
   {
-   "id": "exam:1183241",
-   "kind": "exam",
-   "region": "전북",
-   "source": "중등임용시험 게시판",
-   "title": "2027학년도 전북특별자치도 중등학교교사, 보건・사서・전문상담・영양・특수(중등)교사 임용후보자 선정경쟁시험 시행계획 공고",
-   "url": "https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000043&menuCd=DOM_000000103004002000&orderBy=REGISTER_DATE:DESC&paging=ok&startPage=1&searchOperation=AND&categoryCode1=BB&dataSid=1183241",
-   "seen": "2026-10-09",
-   "deadline": null,
-   "note": "",
-   "alive": true
-  },
-  {
-   "id": "site:dc85c2679269e80c",
-   "kind": "match",
-   "region": "전북",
-   "source": "부안교육지원청",
-   "title": "2026학년도 부안여자고등학교 기간제교원(미술) 채용 공고(1차)",
-   "url": "https://office.jbedu.kr/jbbae/M01070801/view/6915505.do",
-   "seen": "2026-10-09",
-   "deadline": "2026-09-23",
-   "note": "",
-   "summary": {
-    "school": "부안여자고등학교",
-    "kind": "사립",
-    "count": 1,
-    "deadline": "2026-09-23",
-    "line": "부안여자고등학교(사립) · 미술 1명 · ~09/23 접수"
-   },
-   "deadline_source": "text",
-   "alive": true
-  },
-  {
    "id": "recruit:1204651",
    "kind": "match",
    "region": "전북",
@@ -2842,6 +2810,38 @@
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
    "alive": false
+  },
+  {
+   "id": "exam:1183241",
+   "kind": "exam",
+   "region": "전북",
+   "source": "중등임용시험 게시판",
+   "title": "2027학년도 전북특별자치도 중등학교교사, 보건・사서・전문상담・영양・특수(중등)교사 임용후보자 선정경쟁시험 시행계획 공고",
+   "url": "https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000043&menuCd=DOM_000000103004002000&orderBy=REGISTER_DATE:DESC&paging=ok&startPage=1&searchOperation=AND&categoryCode1=BB&dataSid=1183241",
+   "seen": "2026-10-09",
+   "deadline": null,
+   "note": "",
+   "alive": false
+  },
+  {
+   "id": "site:dc85c2679269e80c",
+   "kind": "match",
+   "region": "전북",
+   "source": "부안교육지원청",
+   "title": "2026학년도 부안여자고등학교 기간제교원(미술) 채용 공고(1차)",
+   "url": "https://office.jbedu.kr/jbbae/M01070801/view/6915505.do",
+   "seen": "2026-10-09",
+   "deadline": "2026-09-23",
+   "note": "",
+   "summary": {
+    "school": "부안여자고등학교",
+    "kind": "사립",
+    "count": 1,
+    "deadline": "2026-09-23",
+    "line": "부안여자고등학교(사립) · 미술 1명 · ~09/23 접수"
+   },
+   "deadline_source": "text",
+   "alive": false
   }
  ],
  "status": [
@@ -2849,8 +2849,8 @@
   "✅ 채용계획 사전공개: 글 100건 읽음",
   "✅ 중등임용시험 게시판: 글 30건 읽음",
   "✅ 고시/공고: 글 30건 읽음",
-  "✅ 교육청·교육지원청 누리집: 34곳 중 14곳 확인 (채용 메뉴 14곳)",
-  "❌ 사립 중·고 홈페이지: 238곳 중 102곳 확인 (채용 메뉴 8곳) — 시간 부족으로 59곳 건너뜀"
+  "✅ 교육청·교육지원청 누리집: 34곳 중 20곳 확인 (채용 메뉴 16곳)",
+  "✅ 사립 중·고 홈페이지: 238곳 중 217곳 확인 (채용 메뉴 12곳)"
  ],
  "fails": {
   "recruit": 0,
@@ -2858,6 +2858,6 @@
   "exam": 0,
   "gosi": 0,
   "office": 0,
-  "school": 2
+  "school": 0
  }
 }
