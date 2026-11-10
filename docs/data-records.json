@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-10T13:36+09:00",
+ "updated": "2026-11-11T04:08+09:00",
  "profile": "records",
  "title": "기록연구사 티오",
  "icon": "📋",
@@ -3050,20 +3050,6 @@
    "alive": true
   },
   {
-   "id": "site:06b06eba28f4b5db",
-   "kind": "unspecified",
-   "region": "전북",
-   "source": "완주교육지원청",
-   "title": "(재공고)2026학년도 교육공무직(조리실무사) 채용 공고",
-   "url": "https://office.jbedu.kr/jbwje/M01040601/view/6958556.do",
-   "seen": "2026-10-27",
-   "deadline": null,
-   "deadline_source": "text",
-   "note": "글을 열지 못함(시간 초과) — 직접 확인",
-   "summary": {},
-   "alive": true
-  },
-  {
    "id": "site:5990e0f6bb69127a",
    "kind": "match",
    "region": "충남",
@@ -3422,6 +3408,20 @@
     "line": "충청남도교육청 · 기록연구사 1명 · ~10/23 접수"
    },
    "alive": true
+  },
+  {
+   "id": "site:06b06eba28f4b5db",
+   "kind": "unspecified",
+   "region": "전북",
+   "source": "완주교육지원청",
+   "title": "(재공고)2026학년도 교육공무직(조리실무사) 채용 공고",
+   "url": "https://office.jbedu.kr/jbwje/M01040601/view/6958556.do",
+   "seen": "2026-10-27",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "글을 열지 못함(시간 초과) — 직접 확인",
+   "summary": {},
+   "alive": false
   },
   {
    "id": "site:c6d30e6ac55105c9",

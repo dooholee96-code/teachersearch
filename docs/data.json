@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-10T13:32+09:00",
+ "updated": "2026-11-11T03:58+09:00",
  "profile": "art",
  "title": "미술 티오",
  "icon": "🎨",
@@ -41,6 +41,26 @@
   "미술"
  ],
  "entries": [
+  {
+   "id": "site:d405286ffe2d2c4a",
+   "kind": "match",
+   "region": "전북",
+   "source": "전주교육지원청",
+   "title": "2026학년도 전주해성고등학교 시간 강사(한국사) 채용 공고",
+   "url": "https://office.jbedu.kr/jeonjuedu/M01050902/view/6978594.do",
+   "seen": "2026-11-11",
+   "deadline": "2026-12-01",
+   "deadline_source": "text",
+   "note": "첨부 「시간강사 채용공고.hwpx」에 미술",
+   "summary": {
+    "school": "전주해성고등학교",
+    "kind": "사립",
+    "count": null,
+    "deadline": "2026-12-01",
+    "line": "전주해성고등학교(사립) · ~12/01 접수"
+   },
+   "alive": true
+  },
   {
    "id": "site:653ca035225bad55",
    "kind": "unspecified",
@@ -1384,34 +1404,6 @@
    "alive": true
   },
   {
-   "id": "site:1ae1ad55b358c7f3",
-   "kind": "unspecified",
-   "region": "대전",
-   "source": "대전광역시교육청",
-   "title": "26 26.10 채용공고 2026학년도(11월~) 대전둔곡중학교 스포츠강사 선발공고",
-   "url": "https://www.dje.go.kr/boardCnts/view.do?boardID=54&boardSeq=3365819&lev=0&s=dje&menuID=030202",
-   "seen": "2026-10-27",
-   "deadline": null,
-   "deadline_source": "text",
-   "note": "첨부에서 과목을 찾지 못함 — 직접 확인",
-   "summary": {},
-   "alive": true
-  },
-  {
-   "id": "site:60bce511f6970324",
-   "kind": "unspecified",
-   "region": "충남",
-   "source": "충청남도교육청",
-   "title": "충남삼성고등학교 2026학년도 2학기 충남삼성고등학교 시간강사(출산휴가 대체) 채용을 다음과 같이 공고합니다. ㅁ 모집과목 및 인원 :... 2026-10-26",
-   "url": "http://www.cne.go.kr:80/boardCnts/view.do?boardID=648&boardSeq=2376294&lev=0&searchType=null&statusYN=W&page=1&s=cne&m=020201&opType=N",
-   "seen": "2026-10-27",
-   "deadline": null,
-   "deadline_source": "text",
-   "note": "첨부 「WA_Situation.html?MenuCD=110」를 읽지 못함 — 직접 확인",
-   "summary": {},
-   "alive": true
-  },
-  {
    "id": "site:daeb7708f651e019",
    "kind": "match",
    "region": "전북",
@@ -1899,6 +1891,34 @@
     "deadline": "2027-02-28",
     "line": "전주만성중학교(공립) · 미술 1명 · ~02/28 접수"
    },
+   "alive": false
+  },
+  {
+   "id": "site:1ae1ad55b358c7f3",
+   "kind": "unspecified",
+   "region": "대전",
+   "source": "대전광역시교육청",
+   "title": "26 26.10 채용공고 2026학년도(11월~) 대전둔곡중학교 스포츠강사 선발공고",
+   "url": "https://www.dje.go.kr/boardCnts/view.do?boardID=54&boardSeq=3365819&lev=0&s=dje&menuID=030202",
+   "seen": "2026-10-27",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부에서 과목을 찾지 못함 — 직접 확인",
+   "summary": {},
+   "alive": false
+  },
+  {
+   "id": "site:60bce511f6970324",
+   "kind": "unspecified",
+   "region": "충남",
+   "source": "충청남도교육청",
+   "title": "충남삼성고등학교 2026학년도 2학기 충남삼성고등학교 시간강사(출산휴가 대체) 채용을 다음과 같이 공고합니다. ㅁ 모집과목 및 인원 :... 2026-10-26",
+   "url": "http://www.cne.go.kr:80/boardCnts/view.do?boardID=648&boardSeq=2376294&lev=0&searchType=null&statusYN=W&page=1&s=cne&m=020201&opType=N",
+   "seen": "2026-10-27",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부 「WA_Situation.html?MenuCD=110」를 읽지 못함 — 직접 확인",
+   "summary": {},
    "alive": false
   },
   {
@@ -3024,7 +3044,7 @@
   "✅ 중등임용시험 게시판: 글 30건 읽음",
   "✅ 고시/공고: 글 30건 읽음",
   "✅ 교육청·교육지원청 누리집: 34곳 중 20곳 확인 (채용 메뉴 16곳)",
-  "⏭ 사립 중·고 홈페이지: 오늘 이미 확인함"
+  "✅ 사립 중·고 홈페이지: 238곳 중 226곳 확인 (채용 메뉴 14곳)"
  ],
  "fails": {
   "recruit": 0,
