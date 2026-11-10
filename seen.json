@@ -1,6 +1,16 @@
 {
  "seen": {
   "recruit": [
+   "1210757",
+   "1210738",
+   "1210734",
+   "1210711",
+   "1210707",
+   "1210705",
+   "1210689",
+   "1210680",
+   "1210677",
+   "1210676",
    "1210395",
    "1210387",
    "1210367",
@@ -609,8 +619,10 @@
    "714558"
   ],
   "gosi": [
+   "1210709",
    "1210330",
    "1208864",
+   "1210741",
    "1208620",
    "1208627",
    "1208626",
@@ -686,6 +698,7 @@
    "1175672"
   ],
   "school": [
+   "fca352986749b886",
    "653ca035225bad55",
    "c1d47d2bff2f21ea",
    "fd797793253d61b2",
@@ -1319,21 +1332,7 @@
   "office:office.jbedu.kr/jbsce",
   "office:office.jbedu.kr/jbwje",
   "office:office.jbedu.kr/jeonjuedu",
-  "office:www.cnased.go.kr",
-  "office:www.cnbre.go.kr",
-  "office:www.cnbye.go.kr",
-  "office:www.cncae.go.kr",
-  "office:www.cncyed.go.kr",
-  "office:www.cndje.go.kr",
   "office:www.cne.go.kr",
-  "office:www.cngje.go.kr",
-  "office:www.cngse.go.kr",
-  "office:www.cnhsed.go.kr",
-  "office:www.cnnse.go.kr",
-  "office:www.cnsce.go.kr",
-  "office:www.cnssed.go.kr",
-  "office:www.cntae.go.kr",
-  "office:www.cnyse.go.kr",
   "office:www.djdbe.go.kr/home/main.do",
   "office:www.djdbe.go.kr/ssc/home/main.do",
   "office:www.dje.go.kr/main.do",
@@ -4080,6 +4079,38 @@
    "deadline": null,
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
+   "summary": {}
+  },
+  {
+   "id": "recruit:1210689",
+   "kind": "match",
+   "region": "전북",
+   "source": "기간제 채용공고",
+   "title": "부용초등학교 · 초등전담(미술·체육·과학)",
+   "url": "https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000130&menuCd=DOM_000001601002000000&paging=ok&startPage=1&searchOperation=AND&dataSid=1210689",
+   "seen": "2026-11-10",
+   "deadline": "2026-11-16",
+   "deadline_source": "list",
+   "note": "",
+   "summary": {
+    "school": "하였고",
+    "kind": "공립",
+    "count": 1,
+    "deadline": "2026-12-24",
+    "line": "하였고(공립) · 미술 1명 · ~12/24 접수"
+   }
+  },
+  {
+   "id": "site:fca352986749b886",
+   "kind": "unspecified",
+   "region": "대전",
+   "source": "대전광역시교육청",
+   "title": "10 26.11 채용공고 2026학년도 대전갑천중학교 기간제 당직실무사 채용 공고",
+   "url": "https://www.dje.go.kr/boardCnts/view.do?boardID=54&boardSeq=3367093&lev=0&s=dje&menuID=030202",
+   "seen": "2026-11-10",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부에서 과목을 찾지 못함 — 직접 확인",
    "summary": {}
   }
  ],

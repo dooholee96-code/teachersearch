@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-10T06:41+09:00",
+ "updated": "2026-11-10T13:32+09:00",
  "profile": "art",
  "title": "미술 티오",
  "icon": "🎨",
@@ -178,6 +178,40 @@
    "deadline": null,
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
+   "summary": {},
+   "alive": true
+  },
+  {
+   "id": "recruit:1210689",
+   "kind": "match",
+   "region": "전북",
+   "source": "기간제 채용공고",
+   "title": "부용초등학교 · 초등전담(미술·체육·과학)",
+   "url": "https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000130&menuCd=DOM_000001601002000000&paging=ok&startPage=1&searchOperation=AND&dataSid=1210689",
+   "seen": "2026-11-10",
+   "deadline": "2026-11-16",
+   "deadline_source": "list",
+   "note": "",
+   "summary": {
+    "school": "하였고",
+    "kind": "공립",
+    "count": 1,
+    "deadline": "2026-12-24",
+    "line": "하였고(공립) · 미술 1명 · ~12/24 접수"
+   },
+   "alive": true
+  },
+  {
+   "id": "site:fca352986749b886",
+   "kind": "unspecified",
+   "region": "대전",
+   "source": "대전광역시교육청",
+   "title": "10 26.11 채용공고 2026학년도 대전갑천중학교 기간제 당직실무사 채용 공고",
+   "url": "https://www.dje.go.kr/boardCnts/view.do?boardID=54&boardSeq=3367093&lev=0&s=dje&menuID=030202",
+   "seen": "2026-11-10",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부에서 과목을 찾지 못함 — 직접 확인",
    "summary": {},
    "alive": true
   },
@@ -2989,8 +3023,8 @@
   "✅ 채용계획 사전공개: 글 100건 읽음",
   "✅ 중등임용시험 게시판: 글 30건 읽음",
   "✅ 고시/공고: 글 30건 읽음",
-  "✅ 교육청·교육지원청 누리집: 34곳 중 34곳 확인 (채용 메뉴 23곳)",
-  "✅ 사립 중·고 홈페이지: 238곳 중 220곳 확인 (채용 메뉴 12곳)"
+  "✅ 교육청·교육지원청 누리집: 34곳 중 20곳 확인 (채용 메뉴 16곳)",
+  "⏭ 사립 중·고 홈페이지: 오늘 이미 확인함"
  ],
  "fails": {
   "recruit": 0,
