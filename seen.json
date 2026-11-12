@@ -1,6 +1,9 @@
 {
  "seen": {
   "recruit": [
+   "1211640",
+   "1211620",
+   "1211615",
    "1211315",
    "1211243",
    "1211124",
@@ -632,6 +635,7 @@
    "714558"
   ],
   "gosi": [
+   "1211565",
    "1210709",
    "1210330",
    "1208864",
@@ -1333,6 +1337,7 @@
   "office:www.djsbe.go.kr/ssc/home/main.do"
  ],
  "office_ok": [
+  "office:office.jbedu.kr/gce",
   "office:office.jbedu.kr/jbbae",
   "office:office.jbedu.kr/jbgje",
   "office:office.jbedu.kr/jbgse",
