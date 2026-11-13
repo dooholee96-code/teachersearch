@@ -1,6 +1,11 @@
 {
  "seen": {
   "recruit": [
+   "1212038",
+   "1212017",
+   "1212001",
+   "1212000",
+   "1211997",
    "1211810",
    "1211740",
    "1211713",
@@ -641,6 +646,7 @@
    "714558"
   ],
   "gosi": [
+   "1212039",
    "1211768",
    "1211565",
    "1210709",
@@ -722,6 +728,8 @@
    "1175672"
   ],
   "school": [
+   "40e9b5e9d588a172",
+   "eb2a34ee62f3a695",
    "812c258f4809968e",
    "b9e9f39679daaae3",
    "01666a2d9347e13a",
@@ -1370,23 +1378,10 @@
   "office:office.jbedu.kr/jbjue",
   "office:office.jbedu.kr/jbmje",
   "office:office.jbedu.kr/jbnwe",
+  "office:office.jbedu.kr/jbsce",
   "office:office.jbedu.kr/jbwje",
   "office:office.jbedu.kr/jeonjuedu",
-  "office:www.cnased.go.kr",
-  "office:www.cnbre.go.kr",
-  "office:www.cnbye.go.kr",
-  "office:www.cncae.go.kr",
-  "office:www.cncyed.go.kr",
-  "office:www.cndje.go.kr",
   "office:www.cne.go.kr",
-  "office:www.cngje.go.kr",
-  "office:www.cngse.go.kr",
-  "office:www.cnhsed.go.kr",
-  "office:www.cnnse.go.kr",
-  "office:www.cnsce.go.kr",
-  "office:www.cnssed.go.kr",
-  "office:www.cntae.go.kr",
-  "office:www.cnyse.go.kr",
   "office:www.djdbe.go.kr/home/main.do",
   "office:www.djdbe.go.kr/ssc/home/main.do",
   "office:www.dje.go.kr/main.do",
@@ -4385,6 +4380,32 @@
    "deadline": null,
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
+   "summary": {}
+  },
+  {
+   "id": "site:40e9b5e9d588a172",
+   "kind": "unspecified",
+   "region": "대전",
+   "source": "대전광역시교육청",
+   "title": "13 26.11 채용공고 2026학년도(2026년 12월~2027년 1월) 유성중학교 스포츠강사 채용 공고",
+   "url": "https://www.dje.go.kr/boardCnts/view.do?boardID=54&boardSeq=3367322&lev=0&s=dje&menuID=030202",
+   "seen": "2026-11-13",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부에서 과목을 찾지 못함 — 직접 확인",
+   "summary": {}
+  },
+  {
+   "id": "site:eb2a34ee62f3a695",
+   "kind": "exam",
+   "region": "대전",
+   "source": "대전광역시교육청",
+   "title": "2027학년도 대전광역시 중등학교 교사 임용후보자 선정경쟁시험 ...",
+   "url": "https://www.dje.go.kr/boardCnts/list.do?boardID=64&m=031701&s=dje",
+   "seen": "2026-11-13",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "",
    "summary": {}
   }
  ],

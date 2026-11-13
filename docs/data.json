@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-13T04:14+09:00",
+ "updated": "2026-11-13T12:19+09:00",
  "profile": "art",
  "title": "미술 티오",
  "icon": "🎨",
@@ -240,6 +240,34 @@
    "deadline": null,
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
+   "summary": {},
+   "alive": true
+  },
+  {
+   "id": "site:40e9b5e9d588a172",
+   "kind": "unspecified",
+   "region": "대전",
+   "source": "대전광역시교육청",
+   "title": "13 26.11 채용공고 2026학년도(2026년 12월~2027년 1월) 유성중학교 스포츠강사 채용 공고",
+   "url": "https://www.dje.go.kr/boardCnts/view.do?boardID=54&boardSeq=3367322&lev=0&s=dje&menuID=030202",
+   "seen": "2026-11-13",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부에서 과목을 찾지 못함 — 직접 확인",
+   "summary": {},
+   "alive": true
+  },
+  {
+   "id": "site:eb2a34ee62f3a695",
+   "kind": "exam",
+   "region": "대전",
+   "source": "대전광역시교육청",
+   "title": "2027학년도 대전광역시 중등학교 교사 임용후보자 선정경쟁시험 ...",
+   "url": "https://www.dje.go.kr/boardCnts/list.do?boardID=64&m=031701&s=dje",
+   "seen": "2026-11-13",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "",
    "summary": {},
    "alive": true
   },
@@ -3259,8 +3287,8 @@
   "✅ 채용계획 사전공개: 글 100건 읽음",
   "✅ 중등임용시험 게시판: 글 30건 읽음",
   "✅ 고시/공고: 글 30건 읽음",
-  "✅ 교육청·교육지원청 누리집: 34곳 중 33곳 확인 (채용 메뉴 22곳)",
-  "✅ 사립 중·고 홈페이지: 238곳 중 214곳 확인 (채용 메뉴 12곳)"
+  "✅ 교육청·교육지원청 누리집: 34곳 중 20곳 확인 (채용 메뉴 16곳)",
+  "⏭ 사립 중·고 홈페이지: 오늘 이미 확인함"
  ],
  "fails": {
   "recruit": 0,
