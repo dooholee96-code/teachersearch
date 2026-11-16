@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-16T11:42+09:00",
+ "updated": "2026-11-17T06:30+09:00",
  "profile": "records",
  "title": "기록연구사 티오",
  "icon": "📋",
@@ -3272,66 +3272,6 @@
    "alive": true
   },
   {
-   "id": "site:32e6ae73265348da",
-   "kind": "match",
-   "region": "충남",
-   "source": "충청남도교육청",
-   "title": "부석고등학교 부석고등학교 교육공무직원(전문상담사) 결원대체인력 채용계획을 다음과 같이 공고합니다. 1. 구분: 전문상담사 2. ... 2026-10-16",
-   "url": "http://www.cne.go.kr:80/boardCnts/view.do?boardID=704&boardSeq=2375768&lev=0&searchType=null&statusYN=W&page=1&s=cne&m=020201&opType=N",
-   "seen": "2026-10-17",
-   "deadline": "2026-10-28",
-   "deadline_source": "text",
-   "note": "첨부 「2026년 부석고등학교 교육공무직(전문상담사) 결원대체인력 채용공고.hwp」에 기록관리",
-   "summary": {
-    "school": "부석고등학교",
-    "kind": "공립",
-    "count": null,
-    "deadline": "2026-10-28",
-    "line": "부석고등학교(공립) · ~10/28 접수"
-   },
-   "alive": true
-  },
-  {
-   "id": "site:dcdcc13ee730bed8",
-   "kind": "match",
-   "region": "충남",
-   "source": "천안교육지원청",
-   "title": "계약제 채용공고 [긴급] 천안용곡중학교 교육공무직원(조리실무사) 대체인력 채용 공고 2026-10-16",
-   "url": "https://www.cncae.go.kr/main/board/view.do?baNo=2&boNo=63000536",
-   "seen": "2026-10-17",
-   "deadline": "2026-10-21",
-   "deadline_source": "text",
-   "note": "첨부 「2026년 교육공무직원(조리실무사) 결원대체 기간제 인력 채용 공고.hwp」에 기록물 관리",
-   "summary": {
-    "school": "천안용곡중학교",
-    "kind": "공립",
-    "count": null,
-    "deadline": "2026-10-21",
-    "line": "천안용곡중학교(공립) · ~10/21 접수"
-   },
-   "alive": true
-  },
-  {
-   "id": "site:99719b53024dcc34",
-   "kind": "match",
-   "region": "충남",
-   "source": "천안교육지원청",
-   "title": "[긴급] 천안용곡중학교 교육공무직원(조리실무사) 대체인력 채용 공고 N",
-   "url": "https://www.cncae.go.kr/main/board/view.do?boNo=63000536&baNo=2",
-   "seen": "2026-10-17",
-   "deadline": "2026-10-21",
-   "deadline_source": "text",
-   "note": "첨부 「2026년 교육공무직원(조리실무사) 결원대체 기간제 인력 채용 공고.hwp」에 기록물 관리",
-   "summary": {
-    "school": "천안용곡중학교",
-    "kind": "공립",
-    "count": null,
-    "deadline": "2026-10-21",
-    "line": "천안용곡중학교(공립) · ~10/21 접수"
-   },
-   "alive": true
-  },
-  {
    "id": "site:013e483325e6978d",
    "kind": "unspecified",
    "region": "충남",
@@ -6241,6 +6181,66 @@
    "deadline_source": "text",
    "note": "확인할 글이 많아 열어 보지 못함 — 직접 확인",
    "summary": {},
+   "alive": false
+  },
+  {
+   "id": "site:32e6ae73265348da",
+   "kind": "match",
+   "region": "충남",
+   "source": "충청남도교육청",
+   "title": "부석고등학교 부석고등학교 교육공무직원(전문상담사) 결원대체인력 채용계획을 다음과 같이 공고합니다. 1. 구분: 전문상담사 2. ... 2026-10-16",
+   "url": "http://www.cne.go.kr:80/boardCnts/view.do?boardID=704&boardSeq=2375768&lev=0&searchType=null&statusYN=W&page=1&s=cne&m=020201&opType=N",
+   "seen": "2026-10-17",
+   "deadline": "2026-10-28",
+   "deadline_source": "text",
+   "note": "첨부 「2026년 부석고등학교 교육공무직(전문상담사) 결원대체인력 채용공고.hwp」에 기록관리",
+   "summary": {
+    "school": "부석고등학교",
+    "kind": "공립",
+    "count": null,
+    "deadline": "2026-10-28",
+    "line": "부석고등학교(공립) · ~10/28 접수"
+   },
+   "alive": false
+  },
+  {
+   "id": "site:dcdcc13ee730bed8",
+   "kind": "match",
+   "region": "충남",
+   "source": "천안교육지원청",
+   "title": "계약제 채용공고 [긴급] 천안용곡중학교 교육공무직원(조리실무사) 대체인력 채용 공고 2026-10-16",
+   "url": "https://www.cncae.go.kr/main/board/view.do?baNo=2&boNo=63000536",
+   "seen": "2026-10-17",
+   "deadline": "2026-10-21",
+   "deadline_source": "text",
+   "note": "첨부 「2026년 교육공무직원(조리실무사) 결원대체 기간제 인력 채용 공고.hwp」에 기록물 관리",
+   "summary": {
+    "school": "천안용곡중학교",
+    "kind": "공립",
+    "count": null,
+    "deadline": "2026-10-21",
+    "line": "천안용곡중학교(공립) · ~10/21 접수"
+   },
+   "alive": false
+  },
+  {
+   "id": "site:99719b53024dcc34",
+   "kind": "match",
+   "region": "충남",
+   "source": "천안교육지원청",
+   "title": "[긴급] 천안용곡중학교 교육공무직원(조리실무사) 대체인력 채용 공고 N",
+   "url": "https://www.cncae.go.kr/main/board/view.do?boNo=63000536&baNo=2",
+   "seen": "2026-10-17",
+   "deadline": "2026-10-21",
+   "deadline_source": "text",
+   "note": "첨부 「2026년 교육공무직원(조리실무사) 결원대체 기간제 인력 채용 공고.hwp」에 기록물 관리",
+   "summary": {
+    "school": "천안용곡중학교",
+    "kind": "공립",
+    "count": null,
+    "deadline": "2026-10-21",
+    "line": "천안용곡중학교(공립) · ~10/21 접수"
+   },
    "alive": false
   },
   {

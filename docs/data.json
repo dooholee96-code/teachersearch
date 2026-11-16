@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-16T11:39+09:00",
+ "updated": "2026-11-17T06:20+09:00",
  "profile": "art",
  "title": "미술 티오",
  "icon": "🎨",
@@ -751,26 +751,6 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
-   "alive": true
-  },
-  {
-   "id": "recruit:1210689",
-   "kind": "match",
-   "region": "전북",
-   "source": "기간제 채용공고",
-   "title": "부용초등학교 · 초등전담(미술·체육·과학)",
-   "url": "https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000130&menuCd=DOM_000001601002000000&paging=ok&startPage=1&searchOperation=AND&dataSid=1210689",
-   "seen": "2026-11-10",
-   "deadline": "2026-11-16",
-   "deadline_source": "list",
-   "note": "",
-   "summary": {
-    "school": "하였고",
-    "kind": "공립",
-    "count": 1,
-    "deadline": "2026-12-24",
-    "line": "하였고(공립) · 미술 1명 · ~12/24 접수"
-   },
    "alive": true
   },
   {
@@ -1594,74 +1574,24 @@
    "alive": true
   },
   {
-   "id": "exam:1200338",
-   "kind": "exam",
+   "id": "recruit:1210689",
+   "kind": "match",
    "region": "전북",
-   "source": "중등임용시험 게시판",
-   "title": "2027학년도 전북특별자치도 중등학교교사 등 임용후보자 선정경쟁시험 장애인 구분 모집 선발 분야 원서접수 현황 안내",
-   "url": "https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000043&menuCd=DOM_000000103004002000&orderBy=REGISTER_DATE:DESC&paging=ok&startPage=1&searchOperation=AND&categoryCode1=BB&dataSid=1200338",
-   "seen": "2026-10-17",
-   "deadline": null,
-   "deadline_source": "text",
+   "source": "기간제 채용공고",
+   "title": "부용초등학교 · 초등전담(미술·체육·과학)",
+   "url": "https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000130&menuCd=DOM_000001601002000000&paging=ok&startPage=1&searchOperation=AND&dataSid=1210689",
+   "seen": "2026-11-10",
+   "deadline": "2026-11-16",
+   "deadline_source": "list",
    "note": "",
-   "summary": {},
-   "alive": true
-  },
-  {
-   "id": "site:152905d13362aa34",
-   "kind": "exam",
-   "region": "대전",
-   "source": "대전광역시교육청",
-   "title": "17 26.10 임용시험 [장애분야 원서접수 현황] 2027학년도 중등교사 임용시험 장애분야 응시원서 접수현황",
-   "url": "https://www.dje.go.kr/boardCnts/view.do?boardID=64&boardSeq=3365535&lev=0&s=dje&menuID=031701",
-   "seen": "2026-10-17",
-   "deadline": null,
-   "deadline_source": "text",
-   "note": "",
-   "summary": {},
-   "alive": true
-  },
-  {
-   "id": "site:096a2cd88be5c4f5",
-   "kind": "exam",
-   "region": "대전",
-   "source": "대전광역시교육청",
-   "title": "[장애분야 원서접수 현황] 2027학년도 중등교사 임용시험 장애분...",
-   "url": "https://www.dje.go.kr/boardCnts/list.do?boardID=64&m=031701&s=dje",
-   "seen": "2026-10-17",
-   "deadline": null,
-   "deadline_source": "text",
-   "note": "",
-   "summary": {},
-   "alive": true
-  },
-  {
-   "id": "site:039d6218962d3309",
-   "kind": "exam",
-   "region": "충남",
-   "source": "충청남도교육청",
-   "title": "2027학년도 충청남도 중등학교교사,특수(중등),보건·사서·전문상담·영양교사(국·사립위탁 ... 2027학년도 충청남도 중등학교교사,특수(중등),보건·사서·전문상담·영양교사(국·사립위탁 포함) 임용시험 장애인 ... 2026-10-17",
-   "url": "http://www.cne.go.kr:80/boardCnts/view.do?boardID=47&boardSeq=2375772&lev=0&searchType=null&statusYN=W&page=1&s=cne&m=021201&opType=N",
-   "seen": "2026-10-17",
-   "deadline": null,
-   "deadline_source": "text",
-   "note": "",
-   "summary": {},
-   "alive": true
-  },
-  {
-   "id": "site:669503e9327ab829",
-   "kind": "exam",
-   "region": "충남",
-   "source": "충청남도교육청",
-   "title": "2027학년도 충청남도 중등학교교사,특수(중등),보건·사서·전문상담·영양교사(국·사립위탁 ... 2027학년도 충청남도 중등학교교사,특수(중등),보건·사서·전문상담·영양교사(국·사립위탁 포함) 임용시험 장애인 ... 2026-10-17",
-   "url": "http://www.cne.go.kr:80/boardCnts/view.do?boardID=47&boardSeq=2375772&lev=0&searchType=null&statusYN=W&page=1&s=cne&m=021202&opType=N",
-   "seen": "2026-10-17",
-   "deadline": null,
-   "deadline_source": "text",
-   "note": "",
-   "summary": {},
-   "alive": true
+   "summary": {
+    "school": "하였고",
+    "kind": "공립",
+    "count": 1,
+    "deadline": "2026-12-24",
+    "line": "하였고(공립) · 미술 1명 · ~12/24 접수"
+   },
+   "alive": false
   },
   {
    "id": "site:674250987ee2bbe7",
@@ -2846,6 +2776,76 @@
    "alive": false
   },
   {
+   "id": "exam:1200338",
+   "kind": "exam",
+   "region": "전북",
+   "source": "중등임용시험 게시판",
+   "title": "2027학년도 전북특별자치도 중등학교교사 등 임용후보자 선정경쟁시험 장애인 구분 모집 선발 분야 원서접수 현황 안내",
+   "url": "https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000043&menuCd=DOM_000000103004002000&orderBy=REGISTER_DATE:DESC&paging=ok&startPage=1&searchOperation=AND&categoryCode1=BB&dataSid=1200338",
+   "seen": "2026-10-17",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "",
+   "summary": {},
+   "alive": false
+  },
+  {
+   "id": "site:152905d13362aa34",
+   "kind": "exam",
+   "region": "대전",
+   "source": "대전광역시교육청",
+   "title": "17 26.10 임용시험 [장애분야 원서접수 현황] 2027학년도 중등교사 임용시험 장애분야 응시원서 접수현황",
+   "url": "https://www.dje.go.kr/boardCnts/view.do?boardID=64&boardSeq=3365535&lev=0&s=dje&menuID=031701",
+   "seen": "2026-10-17",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "",
+   "summary": {},
+   "alive": false
+  },
+  {
+   "id": "site:096a2cd88be5c4f5",
+   "kind": "exam",
+   "region": "대전",
+   "source": "대전광역시교육청",
+   "title": "[장애분야 원서접수 현황] 2027학년도 중등교사 임용시험 장애분...",
+   "url": "https://www.dje.go.kr/boardCnts/list.do?boardID=64&m=031701&s=dje",
+   "seen": "2026-10-17",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "",
+   "summary": {},
+   "alive": false
+  },
+  {
+   "id": "site:039d6218962d3309",
+   "kind": "exam",
+   "region": "충남",
+   "source": "충청남도교육청",
+   "title": "2027학년도 충청남도 중등학교교사,특수(중등),보건·사서·전문상담·영양교사(국·사립위탁 ... 2027학년도 충청남도 중등학교교사,특수(중등),보건·사서·전문상담·영양교사(국·사립위탁 포함) 임용시험 장애인 ... 2026-10-17",
+   "url": "http://www.cne.go.kr:80/boardCnts/view.do?boardID=47&boardSeq=2375772&lev=0&searchType=null&statusYN=W&page=1&s=cne&m=021201&opType=N",
+   "seen": "2026-10-17",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "",
+   "summary": {},
+   "alive": false
+  },
+  {
+   "id": "site:669503e9327ab829",
+   "kind": "exam",
+   "region": "충남",
+   "source": "충청남도교육청",
+   "title": "2027학년도 충청남도 중등학교교사,특수(중등),보건·사서·전문상담·영양교사(국·사립위탁 ... 2027학년도 충청남도 중등학교교사,특수(중등),보건·사서·전문상담·영양교사(국·사립위탁 포함) 임용시험 장애인 ... 2026-10-17",
+   "url": "http://www.cne.go.kr:80/boardCnts/view.do?boardID=47&boardSeq=2375772&lev=0&searchType=null&statusYN=W&page=1&s=cne&m=021202&opType=N",
+   "seen": "2026-10-17",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "",
+   "summary": {},
+   "alive": false
+  },
+  {
    "id": "exam:1199948",
    "kind": "exam",
    "region": "전북",
@@ -3596,7 +3596,7 @@
   "✅ 중등임용시험 게시판: 글 30건 읽음",
   "✅ 고시/공고: 글 30건 읽음",
   "✅ 교육청·교육지원청 누리집: 34곳 중 20곳 확인 (채용 메뉴 16곳)",
-  "⏭ 사립 중·고 홈페이지: 오늘 이미 확인함"
+  "✅ 사립 중·고 홈페이지: 238곳 중 224곳 확인 (채용 메뉴 15곳)"
  ],
  "fails": {
   "recruit": 0,
