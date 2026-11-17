@@ -1,6 +1,18 @@
 {
  "seen": {
   "recruit": [
+   "1213674",
+   "1213673",
+   "1213657",
+   "1213637",
+   "1213618",
+   "1213611",
+   "1213587",
+   "1213586",
+   "1213584",
+   "1213582",
+   "1213576",
+   "1213575",
    "1213313",
    "1213311",
    "1213296",
@@ -758,6 +770,7 @@
    "1175672"
   ],
   "school": [
+   "bb85af089fa3dc1e",
    "1e6397f4c35902a1",
    "c5136128e45df983",
    "be42027923124b4f",
@@ -1433,7 +1446,6 @@
   "office:office.jbedu.kr/jbsce",
   "office:office.jbedu.kr/jbwje",
   "office:office.jbedu.kr/jeonjuedu",
-  "office:www.cne.go.kr",
   "office:www.djdbe.go.kr/home/main.do",
   "office:www.djdbe.go.kr/ssc/home/main.do",
   "office:www.dje.go.kr/main.do",
@@ -4745,6 +4757,25 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {}
+  },
+  {
+   "id": "site:bb85af089fa3dc1e",
+   "kind": "match",
+   "region": "전북",
+   "source": "군산교육지원청",
+   "title": "군산수송초 기간제교원 채용 공고",
+   "url": "https://office.jbedu.kr/jbgse/M01040301/view/6984642.do",
+   "seen": "2026-11-17",
+   "deadline": "2026-11-19",
+   "deadline_source": "text",
+   "note": "첨부 「2026 계약제교원(기간제교사) 채용공고(1차).hwpx」에 미술",
+   "summary": {
+    "school": "하였고",
+    "kind": "공립",
+    "count": null,
+    "deadline": "2026-11-19",
+    "line": "하였고(공립) · ~11/19 접수"
+   }
   }
  ],
  "schools": {
