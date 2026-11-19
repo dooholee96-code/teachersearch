@@ -1,6 +1,12 @@
 {
  "seen": {
   "recruit": [
+   "1214474",
+   "1214455",
+   "1214442",
+   "1214415",
+   "1214399",
+   "1214393",
    "1214149",
    "1214131",
    "1214127",
@@ -789,6 +795,11 @@
    "1175672"
   ],
   "school": [
+   "0801e7e2384e09ae",
+   "b8e3367e9142c17e",
+   "0fee4ed140c7c42a",
+   "1667ef3f40e03d23",
+   "be6acb868a3c0160",
    "bb85af089fa3dc1e",
    "1e6397f4c35902a1",
    "c5136128e45df983",
@@ -1452,6 +1463,7 @@
  ],
  "office_ok": [
   "office:office.jbedu.kr/gce",
+  "office:office.jbedu.kr/jbbae",
   "office:office.jbedu.kr/jbgje",
   "office:office.jbedu.kr/jbgse",
   "office:office.jbedu.kr/jbime",
@@ -1464,7 +1476,19 @@
   "office:office.jbedu.kr/jbsce",
   "office:office.jbedu.kr/jbwje",
   "office:office.jbedu.kr/jeonjuedu",
+  "office:www.cnased.go.kr",
+  "office:www.cnbre.go.kr",
+  "office:www.cncae.go.kr",
+  "office:www.cncyed.go.kr",
+  "office:www.cndje.go.kr",
   "office:www.cne.go.kr",
+  "office:www.cngje.go.kr",
+  "office:www.cngse.go.kr",
+  "office:www.cnhsed.go.kr",
+  "office:www.cnnse.go.kr",
+  "office:www.cnsce.go.kr",
+  "office:www.cntae.go.kr",
+  "office:www.cnyse.go.kr",
   "office:www.djdbe.go.kr/home/main.do",
   "office:www.djdbe.go.kr/ssc/home/main.do",
   "office:www.dje.go.kr/main.do",
@@ -4795,6 +4819,71 @@
     "deadline": "2026-11-19",
     "line": "하였고(공립) · ~11/19 접수"
    }
+  },
+  {
+   "id": "site:0801e7e2384e09ae",
+   "kind": "unspecified",
+   "region": "충남",
+   "source": "당진교육지원청",
+   "title": "2026학년도 협력강사 위촉 공고.hwp 다운로드",
+   "url": "https://www.cndje.go.kr/board/dl.action/3a242f7fa9d7751e0096f26e5d7c0daa/2026%ED%95%99%EB%85%84%EB%8F%84 %ED%98%91%EB%A0%A5%EA%B0%95%EC%82%AC %EC%9C%84%EC%B4%89 %EA%B3%B5%EA%B3%A0.hwp?q=ca0ee3443a573ad632a5f75b29d8821223b5d29d2dbe9ee91a4c4bfdfc7cbbb060efbb010c5572314d6c7baca137877afae5d9489f672547d5c80f3a27fe7bac",
+   "seen": "2026-11-19",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "글을 열지 못함(HTTP 404) — 직접 확인",
+   "summary": {}
+  },
+  {
+   "id": "site:b8e3367e9142c17e",
+   "kind": "unspecified",
+   "region": "충남",
+   "source": "당진교육지원청",
+   "title": "당진꿈나래학교 스포츠강사 대체인력 채용 공고(1차).hwp 다운로드",
+   "url": "https://www.cndje.go.kr/board/dl.action/3a242f7fa9d7751e0096f26e5d7c0daa/%EB%8B%B9%EC%A7%84%EA%BF%88%EB%82%98%EB%9E%98%ED%95%99%EA%B5%90 %EC%8A%A4%ED%8F%AC%EC%B8%A0%EA%B0%95%EC%82%AC %EB%8C%80%EC%B2%B4%EC%9D%B8%EB%A0%A5 %EC%B1%84%EC%9A%A9 %EA%B3%B5%EA%B3%A0%281%EC%B0%A8%29.hwp?q=ca0ee3443a573ad632a5f75b29d8821223b5d29d2dbe9ee91a4c4bfdfc7cbbb0cce1d0931198adb5c23da3d19fd826736749ab85c33c7d3a2250024113231242",
+   "seen": "2026-11-19",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "글을 열지 못함(HTTP 404) — 직접 확인",
+   "summary": {}
+  },
+  {
+   "id": "site:0fee4ed140c7c42a",
+   "kind": "unspecified",
+   "region": "충남",
+   "source": "태안교육지원청",
+   "title": "★2026학년도 기간제교원 위탁채용 공고문.hwp 다운로드",
+   "url": "https://www.cntae.go.kr/board/dl.action/cba2951fd3810edbbc620f05a6503d6f/%E2%98%852026%ED%95%99%EB%85%84%EB%8F%84 %EA%B8%B0%EA%B0%84%EC%A0%9C%EA%B5%90%EC%9B%90 %EC%9C%84%ED%83%81%EC%B1%84%EC%9A%A9 %EA%B3%B5%EA%B3%A0%EB%AC%B8.hwp?q=142bc42c2df6dd5fedc39fed3b28250440bd4e9062f4fdf4b53193c7b2f3adc6e9300dee6b84c1e51a04252676164da1b2b16500b73fd0e914604c2b14da4699",
+   "seen": "2026-11-19",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "글을 열지 못함(HTTP 404) — 직접 확인",
+   "summary": {}
+  },
+  {
+   "id": "site:1667ef3f40e03d23",
+   "kind": "unspecified",
+   "region": "충남",
+   "source": "태안교육지원청",
+   "title": "★기간제교원 위탁채용 최종 합격자 공고문외(1건).zip 다운로드",
+   "url": "https://www.cntae.go.kr/board/dl.action/cba2951fd3810edbbc620f05a6503d6f/%E2%98%85%EA%B8%B0%EA%B0%84%EC%A0%9C%EA%B5%90%EC%9B%90 %EC%9C%84%ED%83%81%EC%B1%84%EC%9A%A9 %EC%B5%9C%EC%A2%85 %ED%95%A9%EA%B2%A9%EC%9E%90 %EA%B3%B5%EA%B3%A0%EB%AC%B8%EC%99%B8%281%EA%B1%B4%29.zip?q=142bc42c2df6dd5fedc39fed3b28250440bd4e9062f4fdf4b53193c7b2f3adc652cc0fc333ecd2a4b573303882f3449c9aad8c74171c372d934423f68dabea58",
+   "seen": "2026-11-19",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "글을 열지 못함(HTTP 404) — 직접 확인",
+   "summary": {}
+  },
+  {
+   "id": "site:be6acb868a3c0160",
+   "kind": "unspecified",
+   "region": "충남",
+   "source": "태안교육지원청",
+   "title": "★2026학년도 2차 기간제교원 위탁채용 재공고문.hwp 다운로드",
+   "url": "https://www.cntae.go.kr/board/dl.action/cba2951fd3810edbbc620f05a6503d6f/%E2%98%852026%ED%95%99%EB%85%84%EB%8F%84 2%EC%B0%A8 %EA%B8%B0%EA%B0%84%EC%A0%9C%EA%B5%90%EC%9B%90 %EC%9C%84%ED%83%81%EC%B1%84%EC%9A%A9 %EC%9E%AC%EA%B3%B5%EA%B3%A0%EB%AC%B8.hwp?q=142bc42c2df6dd5fedc39fed3b28250440bd4e9062f4fdf4b53193c7b2f3adc6ba299a202a0ed473a234d37c58dbb405bd590377e384a49cd61a5481b1715871",
+   "seen": "2026-11-19",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "글을 열지 못함(HTTP 404) — 직접 확인",
+   "summary": {}
   }
  ],
  "schools": {
