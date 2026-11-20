@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-20T04:40+09:00",
+ "updated": "2026-11-20T12:55+09:00",
  "profile": "art",
  "title": "미술 티오",
  "icon": "🎨",
@@ -113,6 +113,62 @@
     "deadline": "2026-11-23",
     "line": "학산중학교(사립) · 미술 1명 · ~11/23 접수"
    },
+   "alive": true
+  },
+  {
+   "id": "exam:1213697",
+   "kind": "exam",
+   "region": "전북",
+   "source": "중등임용시험 게시판",
+   "title": "2027학년도 전북특별자치도 중등학교교사 등 신규임용시험 한국사능력검정시험 인증서 소명 대상자 공지",
+   "url": "https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000043&menuCd=DOM_000000103004002000&orderBy=REGISTER_DATE:DESC&paging=ok&startPage=1&searchOperation=AND&categoryCode1=BB&dataSid=1213697",
+   "seen": "2026-11-20",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "",
+   "summary": {},
+   "alive": true
+  },
+  {
+   "id": "exam:1213703",
+   "kind": "exam",
+   "region": "전북",
+   "source": "중등임용시험 게시판",
+   "title": "2027학년도 전북특별자치도 중등학교교사, 보건･사서･전문상담·영양·특수(중등)교사 임용후보자 선정경쟁시험 제1차 시험 장소 및 유의사항 공고",
+   "url": "https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000043&menuCd=DOM_000000103004002000&orderBy=REGISTER_DATE:DESC&paging=ok&startPage=1&searchOperation=AND&categoryCode1=BB&dataSid=1213703",
+   "seen": "2026-11-20",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "",
+   "summary": {},
+   "alive": true
+  },
+  {
+   "id": "site:036dfadaf7e4cf62",
+   "kind": "exam",
+   "region": "충남",
+   "source": "충청남도교육청",
+   "title": "2027학년도 충청남도 중등학교교사, 특수(중등)·보건·사서·전문상담·영양교사 임용후보자 ... 충청남도교육청 공고 제2026-189호 2027학년도 충청남도 중등학교교사, 특수(중등)·보건·사서·전문상담·영양교사 ... 2026-11-20",
+   "url": "https://www.cne.go.kr/boardCnts/view.do?boardID=47&boardSeq=2378998&lev=0&searchType=null&statusYN=W&page=1&s=cne&m=021201&opType=N",
+   "seen": "2026-11-20",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "",
+   "summary": {},
+   "alive": true
+  },
+  {
+   "id": "site:0eb70aa395694668",
+   "kind": "exam",
+   "region": "충남",
+   "source": "충청남도교육청",
+   "title": "2027학년도 충청남도 중등학교교사, 특수(중등)·보건·사서·전문상담·영양교사 임용후보자 ... 충청남도교육청 공고 제2026-189호 2027학년도 충청남도 중등학교교사, 특수(중등)·보건·사서·전문상담·영양교사 ... 2026-11-20",
+   "url": "https://www.cne.go.kr/boardCnts/view.do?boardID=47&boardSeq=2378998&lev=0&searchType=null&statusYN=W&page=1&s=cne&m=021202&opType=N",
+   "seen": "2026-11-20",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "",
+   "summary": {},
    "alive": true
   },
   {
@@ -3760,7 +3816,7 @@
   "✅ 중등임용시험 게시판: 글 30건 읽음",
   "✅ 고시/공고: 글 30건 읽음",
   "✅ 교육청·교육지원청 누리집: 34곳 중 20곳 확인 (채용 메뉴 16곳)",
-  "✅ 사립 중·고 홈페이지: 238곳 중 217곳 확인 (채용 메뉴 14곳)"
+  "⏭ 사립 중·고 홈페이지: 오늘 이미 확인함"
  ],
  "fails": {
   "recruit": 0,
