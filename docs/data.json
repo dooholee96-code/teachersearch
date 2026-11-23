@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-23T12:37+09:00",
+ "updated": "2026-11-24T07:58+09:00",
  "profile": "art",
  "title": "미술 티오",
  "icon": "🎨",
@@ -41,6 +41,82 @@
   "미술"
  ],
  "entries": [
+  {
+   "id": "site:75af61a8bb30a77e",
+   "kind": "exam",
+   "region": "충남",
+   "source": "충청남도교육청",
+   "title": "충남교육청, 중등교사 임용시험(제1차) 시험 장소 및 유의 사항 공고 2026.11.23",
+   "url": "http://news.cne.go.kr/news/view.do?s=news&m=0103&bbs_id=S2N1&bbs_seq=829828",
+   "seen": "2026-11-24",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "",
+   "summary": {},
+   "alive": true
+  },
+  {
+   "id": "site:a73446f8f58c18a6",
+   "kind": "unspecified",
+   "region": "충남",
+   "source": "태안교육지원청",
+   "title": "★2026학년도 기간제교원 위탁채용 공고문.hwp 다운로드",
+   "url": "https://www.cntae.go.kr/board/dl.action/eabfe143adebe134bfe89259158af862/%E2%98%852026%ED%95%99%EB%85%84%EB%8F%84 %EA%B8%B0%EA%B0%84%EC%A0%9C%EA%B5%90%EC%9B%90 %EC%9C%84%ED%83%81%EC%B1%84%EC%9A%A9 %EA%B3%B5%EA%B3%A0%EB%AC%B8.hwp?q=142bc42c2df6dd5fedc39fed3b28250440bd4e9062f4fdf4b53193c7b2f3adc6e9300dee6b84c1e51a04252676164da1b2b16500b73fd0e914604c2b14da4699",
+   "seen": "2026-11-24",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "글을 열지 못함(HTTP 404) — 직접 확인",
+   "summary": {},
+   "alive": true
+  },
+  {
+   "id": "site:ad531487d8f668a6",
+   "kind": "unspecified",
+   "region": "충남",
+   "source": "태안교육지원청",
+   "title": "★기간제교원 위탁채용 최종 합격자 공고문외(1건).zip 다운로드",
+   "url": "https://www.cntae.go.kr/board/dl.action/eabfe143adebe134bfe89259158af862/%E2%98%85%EA%B8%B0%EA%B0%84%EC%A0%9C%EA%B5%90%EC%9B%90 %EC%9C%84%ED%83%81%EC%B1%84%EC%9A%A9 %EC%B5%9C%EC%A2%85 %ED%95%A9%EA%B2%A9%EC%9E%90 %EA%B3%B5%EA%B3%A0%EB%AC%B8%EC%99%B8%281%EA%B1%B4%29.zip?q=142bc42c2df6dd5fedc39fed3b28250440bd4e9062f4fdf4b53193c7b2f3adc652cc0fc333ecd2a4b573303882f3449c9aad8c74171c372d934423f68dabea58",
+   "seen": "2026-11-24",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "글을 열지 못함(HTTP 404) — 직접 확인",
+   "summary": {},
+   "alive": true
+  },
+  {
+   "id": "site:32a343326be97460",
+   "kind": "unspecified",
+   "region": "충남",
+   "source": "태안교육지원청",
+   "title": "★2026학년도 2차 기간제교원 위탁채용 재공고문.hwp 다운로드",
+   "url": "https://www.cntae.go.kr/board/dl.action/eabfe143adebe134bfe89259158af862/%E2%98%852026%ED%95%99%EB%85%84%EB%8F%84 2%EC%B0%A8 %EA%B8%B0%EA%B0%84%EC%A0%9C%EA%B5%90%EC%9B%90 %EC%9C%84%ED%83%81%EC%B1%84%EC%9A%A9 %EC%9E%AC%EA%B3%B5%EA%B3%A0%EB%AC%B8.hwp?q=142bc42c2df6dd5fedc39fed3b28250440bd4e9062f4fdf4b53193c7b2f3adc6ba299a202a0ed473a234d37c58dbb405bd590377e384a49cd61a5481b1715871",
+   "seen": "2026-11-24",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "글을 열지 못함(HTTP 404) — 직접 확인",
+   "summary": {},
+   "alive": true
+  },
+  {
+   "id": "site:79682b6cf00ac35c",
+   "kind": "match",
+   "region": "전북",
+   "source": "학산중학교",
+   "title": "2026학년도 기간제교원(수학,미술) 서류전형 합격자 발표 및 면접장소 공고",
+   "url": "https://school.jbedu.kr/haksan/M010301/view/6991607.do",
+   "seen": "2026-11-24",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "",
+   "summary": {
+    "school": "학산중학교",
+    "kind": "사립",
+    "count": 1,
+    "deadline": null,
+    "line": "학산중학교(사립) · 미술 1명"
+   },
+   "alive": true
+  },
   {
    "id": "site:10bccb089d0bff09",
    "kind": "unspecified",
@@ -179,26 +255,6 @@
    "deadline_source": "text",
    "note": "첨부에서 과목을 찾지 못함 — 직접 확인",
    "summary": {},
-   "alive": true
-  },
-  {
-   "id": "recruit:1214579",
-   "kind": "match",
-   "region": "전북",
-   "source": "기간제 채용공고",
-   "title": "학산중학교 · 기간제교원(수학 1명, 미술 1명)",
-   "url": "https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000130&menuCd=DOM_000001601002000000&paging=ok&startPage=1&searchOperation=AND&dataSid=1214579",
-   "seen": "2026-11-20",
-   "deadline": "2026-11-23",
-   "deadline_source": "list",
-   "note": "",
-   "summary": {
-    "school": "학산중학교",
-    "kind": "사립",
-    "count": 1,
-    "deadline": "2026-11-23",
-    "line": "학산중학교(사립) · 미술 1명 · ~11/23 접수"
-   },
    "alive": true
   },
   {
@@ -1302,24 +1358,24 @@
    "alive": true
   },
   {
-   "id": "site:daeb7708f651e019",
+   "id": "recruit:1214579",
    "kind": "match",
    "region": "전북",
-   "source": "장수교육지원청",
-   "title": "2026년 한국마사고등학교 기간제교사(승마) 채용공고",
-   "url": "https://office.jbedu.kr/jbjse/M010405/view/6956570.do",
-   "seen": "2026-10-24",
-   "deadline": "2026-10-26",
-   "deadline_source": "text",
-   "note": "첨부 「2026학년도 기간제교원(승마)교과 채용 공고(5차).hwpx」에 미술",
+   "source": "기간제 채용공고",
+   "title": "학산중학교 · 기간제교원(수학 1명, 미술 1명)",
+   "url": "https://www.jbe.go.kr/board/view.jbe?boardId=BBS_0000130&menuCd=DOM_000001601002000000&paging=ok&startPage=1&searchOperation=AND&dataSid=1214579",
+   "seen": "2026-11-20",
+   "deadline": "2026-11-23",
+   "deadline_source": "list",
+   "note": "",
    "summary": {
-    "school": "한국마사고등학교",
+    "school": "학산중학교",
     "kind": "사립",
-    "count": null,
-    "deadline": "2026-10-26",
-    "line": "한국마사고등학교(사립) · ~10/26 접수"
+    "count": 1,
+    "deadline": "2026-11-23",
+    "line": "학산중학교(사립) · 미술 1명 · ~11/23 접수"
    },
-   "alive": true
+   "alive": false
   },
   {
    "id": "recruit:1210689",
@@ -2493,6 +2549,26 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {},
+   "alive": false
+  },
+  {
+   "id": "site:daeb7708f651e019",
+   "kind": "match",
+   "region": "전북",
+   "source": "장수교육지원청",
+   "title": "2026년 한국마사고등학교 기간제교사(승마) 채용공고",
+   "url": "https://office.jbedu.kr/jbjse/M010405/view/6956570.do",
+   "seen": "2026-10-24",
+   "deadline": "2026-10-26",
+   "deadline_source": "text",
+   "note": "첨부 「2026학년도 기간제교원(승마)교과 채용 공고(5차).hwpx」에 미술",
+   "summary": {
+    "school": "한국마사고등학교",
+    "kind": "사립",
+    "count": null,
+    "deadline": "2026-10-26",
+    "line": "한국마사고등학교(사립) · ~10/26 접수"
+   },
    "alive": false
   },
   {
@@ -3955,8 +4031,8 @@
   "✅ 채용계획 사전공개: 글 100건 읽음",
   "✅ 중등임용시험 게시판: 글 30건 읽음",
   "✅ 고시/공고: 글 30건 읽음",
-  "✅ 교육청·교육지원청 누리집: 34곳 중 20곳 확인 (채용 메뉴 16곳)",
-  "⏭ 사립 중·고 홈페이지: 오늘 이미 확인함"
+  "✅ 교육청·교육지원청 누리집: 34곳 중 27곳 확인 (채용 메뉴 20곳)",
+  "✅ 사립 중·고 홈페이지: 238곳 중 224곳 확인 (채용 메뉴 15곳)"
  ],
  "fails": {
   "recruit": 0,
