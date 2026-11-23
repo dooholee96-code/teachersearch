@@ -1,6 +1,14 @@
 {
  "seen": {
   "recruit": [
+   "1216018",
+   "1215978",
+   "1215966",
+   "1215965",
+   "1215957",
+   "1215956",
+   "1215941",
+   "1215938",
    "1215054",
    "1215053",
    "1215008",
@@ -729,6 +737,7 @@
    "714558"
   ],
   "gosi": [
+   "1216002",
    "1213699",
    "1214845",
    "1214565",
@@ -752,13 +761,13 @@
    "1208204",
    "1208161",
    "1208158",
-   "1207286",
    "1207189",
    "1207158",
    "1206389",
    "1206123",
    "1206047",
    "1204974",
+   "1207286",
    "1208377",
    "1209573",
    "1205191",
@@ -819,6 +828,8 @@
    "1175672"
   ],
   "school": [
+   "2b385e89d40204cb",
+   "a64d2453dfec20be",
    "10bccb089d0bff09",
    "c89d7818fdfa134e",
    "15233cb0ecc295bf",
@@ -1514,15 +1525,7 @@
   "office:office.jbedu.kr/jbsce",
   "office:office.jbedu.kr/jbwje",
   "office:office.jbedu.kr/jeonjuedu",
-  "office:www.cnased.go.kr",
-  "office:www.cnbre.go.kr",
-  "office:www.cncae.go.kr",
-  "office:www.cncyed.go.kr",
   "office:www.cne.go.kr",
-  "office:www.cnhsed.go.kr",
-  "office:www.cnnse.go.kr",
-  "office:www.cnsce.go.kr",
-  "office:www.cntae.go.kr",
   "office:www.djdbe.go.kr/home/main.do",
   "office:www.djdbe.go.kr/ssc/home/main.do",
   "office:www.dje.go.kr/main.do",
@@ -5143,6 +5146,32 @@
    "deadline": null,
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
+   "summary": {}
+  },
+  {
+   "id": "site:2b385e89d40204cb",
+   "kind": "unspecified",
+   "region": "전북",
+   "source": "정읍교육지원청",
+   "title": "2027학년도 4차산업체험문화공간 시간제강사 모집 공고",
+   "url": "https://office.jbedu.kr/jbjue/M010701/view/6990365.do",
+   "seen": "2026-11-23",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부에서 과목을 찾지 못함 — 직접 확인",
+   "summary": {}
+  },
+  {
+   "id": "site:a64d2453dfec20be",
+   "kind": "unspecified",
+   "region": "대전",
+   "source": "대전광역시교육청",
+   "title": "23 26.11 채용공고 2026학년도 동명중학교 학생 맞춤형 악기활용 예술교육 강사 채용 공고",
+   "url": "https://www.dje.go.kr/boardCnts/view.do?boardID=54&boardSeq=3367721&lev=0&s=dje&menuID=030202",
+   "seen": "2026-11-23",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부에서 과목을 찾지 못함 — 직접 확인",
    "summary": {}
   }
  ],

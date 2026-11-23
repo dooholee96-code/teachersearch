@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-23T03:45+09:00",
+ "updated": "2026-11-23T12:37+09:00",
  "profile": "art",
  "title": "미술 티오",
  "icon": "🎨",
@@ -80,6 +80,34 @@
    "deadline": null,
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
+   "summary": {},
+   "alive": true
+  },
+  {
+   "id": "site:2b385e89d40204cb",
+   "kind": "unspecified",
+   "region": "전북",
+   "source": "정읍교육지원청",
+   "title": "2027학년도 4차산업체험문화공간 시간제강사 모집 공고",
+   "url": "https://office.jbedu.kr/jbjue/M010701/view/6990365.do",
+   "seen": "2026-11-23",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부에서 과목을 찾지 못함 — 직접 확인",
+   "summary": {},
+   "alive": true
+  },
+  {
+   "id": "site:a64d2453dfec20be",
+   "kind": "unspecified",
+   "region": "대전",
+   "source": "대전광역시교육청",
+   "title": "23 26.11 채용공고 2026학년도 동명중학교 학생 맞춤형 악기활용 예술교육 강사 채용 공고",
+   "url": "https://www.dje.go.kr/boardCnts/view.do?boardID=54&boardSeq=3367721&lev=0&s=dje&menuID=030202",
+   "seen": "2026-11-23",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부에서 과목을 찾지 못함 — 직접 확인",
    "summary": {},
    "alive": true
   },
@@ -3927,8 +3955,8 @@
   "✅ 채용계획 사전공개: 글 100건 읽음",
   "✅ 중등임용시험 게시판: 글 30건 읽음",
   "✅ 고시/공고: 글 30건 읽음",
-  "✅ 교육청·교육지원청 누리집: 34곳 중 28곳 확인 (채용 메뉴 21곳)",
-  "✅ 사립 중·고 홈페이지: 238곳 중 229곳 확인 (채용 메뉴 15곳)"
+  "✅ 교육청·교육지원청 누리집: 34곳 중 20곳 확인 (채용 메뉴 16곳)",
+  "⏭ 사립 중·고 홈페이지: 오늘 이미 확인함"
  ],
  "fails": {
   "recruit": 0,
