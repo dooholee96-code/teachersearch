@@ -1,6 +1,13 @@
 {
  "seen": {
   "recruit": [
+   "1216664",
+   "1216659",
+   "1216580",
+   "1216566",
+   "1216556",
+   "1216459",
+   "1216382",
    "1216162",
    "1216146",
    "1216141",
@@ -730,6 +737,8 @@
    "1012904"
   ],
   "gosi": [
+   "1216631",
+   "1216142",
    "1216002",
    "1213699",
    "1214845",
@@ -821,6 +830,8 @@
    "1175672"
   ],
   "school": [
+   "51a57ccf10862551",
+   "a0ef6d03bc132400",
    "ecaf4131741644be",
    "3db5cfa188497877",
    "49e2d3751d9cbfad",
@@ -1910,14 +1921,7 @@
   "office:office.jbedu.kr/jbsce",
   "office:office.jbedu.kr/jbwje",
   "office:office.jbedu.kr/jeonjuedu",
-  "office:www.cnased.go.kr",
-  "office:www.cnbre.go.kr",
-  "office:www.cncae.go.kr",
   "office:www.cne.go.kr",
-  "office:www.cnhsed.go.kr",
-  "office:www.cnnse.go.kr",
-  "office:www.cnsce.go.kr",
-  "office:www.cntae.go.kr",
   "office:www.djdbe.go.kr/home/main.do",
   "office:www.djdbe.go.kr/ssc/home/main.do",
   "office:www.dje.go.kr/main.do",
