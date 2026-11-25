@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-25T06:37+09:00",
+ "updated": "2026-11-25T14:19+09:00",
  "profile": "art",
  "title": "미술 티오",
  "icon": "🎨",
@@ -41,6 +41,20 @@
   "미술"
  ],
  "entries": [
+  {
+   "id": "site:83be7e7eb0deb5bb",
+   "kind": "unspecified",
+   "region": "대전",
+   "source": "대전광역시교육청",
+   "title": "25 26.11 채용공고 2027학년도 사물놀이부 강사 채용 계획 및 공고(대전가장초) 2027학년도 사물놀이부 강사 채용 계획 및 공고(대전가장초)",
+   "url": "https://www.dje.go.kr/boardCnts/view.do?boardID=54&boardSeq=3367929&lev=0&s=dje&menuID=030202",
+   "seen": "2026-11-25",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부에서 과목을 찾지 못함 — 직접 확인",
+   "summary": {},
+   "alive": true
+  },
   {
    "id": "site:75af61a8bb30a77e",
    "kind": "exam",
@@ -4066,7 +4080,7 @@
   "✅ 중등임용시험 게시판: 글 30건 읽음",
   "✅ 고시/공고: 글 30건 읽음",
   "✅ 교육청·교육지원청 누리집: 34곳 중 20곳 확인 (채용 메뉴 16곳)",
-  "✅ 사립 중·고 홈페이지: 238곳 중 237곳 확인 (채용 메뉴 15곳)"
+  "⏭ 사립 중·고 홈페이지: 오늘 이미 확인함"
  ],
  "fails": {
   "recruit": 0,

@@ -1,6 +1,13 @@
 {
  "seen": {
   "recruit": [
+   "1217053",
+   "1217052",
+   "1217044",
+   "1216985",
+   "1216978",
+   "1216940",
+   "1216914",
    "1216664",
    "1216659",
    "1216580",
@@ -595,6 +602,7 @@
    "1182976"
   ],
   "preplan": [
+   "1217072",
    "1213224",
    "1212091",
    "1210364",
@@ -737,6 +745,7 @@
    "1012904"
   ],
   "gosi": [
+   "1217046",
    "1216631",
    "1216142",
    "1216002",
@@ -830,6 +839,9 @@
    "1175672"
   ],
   "school": [
+   "ef81109632eaad0a",
+   "907a57107e3be936",
+   "fa0712ae1366845f",
    "51a57ccf10862551",
    "a0ef6d03bc132400",
    "ecaf4131741644be",
@@ -1931,19 +1943,6 @@
  "office_summary_sent": "2026-10-09",
  "started": "2026-10-09T11:33:24.687747+09:00",
  "found": [
-  {
-   "id": "site:49359ff9a9d0abba",
-   "kind": "unspecified",
-   "region": "충남",
-   "source": "청양교육지원청",
-   "title": "2026년 남양초등학교 교육공무직원(통학차량지도원) 채용 재공고 다운로드",
-   "url": "https://www.cncyed.go.kr/board/dl.action/6d2a7719a8c9e135c903e4872f153319/%EB%82%A8%EC%96%91%EC%B4%88%EB%93%B1%ED%95%99%EA%B5%90 %EA%B5%90%EC%9C%A1%EA%B3%B5%EB%AC%B4%EC%A7%81%EC%9B%90%28%ED%86%B5%ED%95%99%EC%B0%A8%EB%9F%89%EC%A7%80%EB%8F%84%EC%9B%90%29 %EC%B1%84%EC%9A%A9 %EC%9E%AC%EA%B3%B5%EA%B3%A0.hwp?q=db4a68aea5250468aa4812ff846f2636ab9b4f32b5103fc5d2136175d9582b98d80921f918e8cf4f749868195f49c7cbd1972c5ccb43b5660782e2d02192800e",
-   "seen": "2026-10-17",
-   "deadline": null,
-   "deadline_source": "text",
-   "note": "글을 열지 못함(HTTP 404) — 직접 확인",
-   "summary": {}
-  },
   {
    "id": "site:3fe92d8426b144a6",
    "kind": "unspecified",
@@ -8538,6 +8537,25 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(HTTP 404) — 직접 확인",
    "summary": {}
+  },
+  {
+   "id": "site:fa0712ae1366845f",
+   "kind": "match",
+   "region": "충남",
+   "source": "충청남도교육청",
+   "title": "공주교육지원청(유구초등학교-상서초등학교) 교육공무직원(늘봄실무사) 대체인력(기간제) 채용 공고를 다음과 같이 안내합니다. 1. 직종: 늘봄실무사 대체인력(기... 2026-11-25",
+   "url": "https://www.cne.go.kr/boardCnts/view.do?boardID=704&boardSeq=2379200&lev=0&searchType=null&statusYN=W&page=1&s=cne&m=020201&opType=N",
+   "seen": "2026-11-25",
+   "deadline": "2026-12-04",
+   "deadline_source": "text",
+   "note": "첨부 「늘봄실무사 대체인력 채용 공고.hwp」에 기록물관리",
+   "summary": {
+    "school": "공주교육지원청",
+    "kind": "",
+    "count": null,
+    "deadline": "2026-12-04",
+    "line": "공주교육지원청 · ~12/04 접수"
+   }
   }
  ]
 }
