@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-25T14:23+09:00",
+ "updated": "2026-11-26T05:57+09:00",
  "profile": "records",
  "title": "기록연구사 티오",
  "icon": "📋",
@@ -2204,46 +2204,6 @@
     "count": null,
     "deadline": "2027-01-08",
     "line": "대전광역시교육청 · ~01/08 접수"
-   },
-   "alive": true
-  },
-  {
-   "id": "site:5990e0f6bb69127a",
-   "kind": "match",
-   "region": "충남",
-   "source": "천안교육지원청",
-   "title": "계약제 채용공고 천안가온초등학교 교육공무직원(당직전담인력) 채용 공고 2026-10-26",
-   "url": "https://www.cncae.go.kr/main/board/view.do?baNo=2&boNo=63000602",
-   "seen": "2026-10-26",
-   "deadline": "2026-11-11",
-   "deadline_source": "text",
-   "note": "첨부 「2. 천안가온초등학교 교육공무직원(당직전담인력) 채용 공고문.hwp」에 기록물 관리",
-   "summary": {
-    "school": "충청남도교육청",
-    "kind": "",
-    "count": null,
-    "deadline": "2026-11-11",
-    "line": "충청남도교육청 · ~11/11 접수"
-   },
-   "alive": true
-  },
-  {
-   "id": "site:dba67bd6de2f9f90",
-   "kind": "match",
-   "region": "충남",
-   "source": "천안교육지원청",
-   "title": "천안가온초등학교 교육공무직원(당직전담인력) 채용 공고 N",
-   "url": "https://www.cncae.go.kr/main/board/view.do?boNo=63000602&baNo=2",
-   "seen": "2026-10-26",
-   "deadline": "2026-11-11",
-   "deadline_source": "text",
-   "note": "첨부 「2. 천안가온초등학교 교육공무직원(당직전담인력) 채용 공고문.hwp」에 기록물 관리",
-   "summary": {
-    "school": "충청남도교육청",
-    "kind": "",
-    "count": null,
-    "deadline": "2026-11-11",
-    "line": "충청남도교육청 · ~11/11 접수"
    },
    "alive": true
   },
@@ -5087,6 +5047,46 @@
    "deadline_source": "text",
    "note": "글을 열지 못함(시간 초과) — 직접 확인",
    "summary": {},
+   "alive": false
+  },
+  {
+   "id": "site:5990e0f6bb69127a",
+   "kind": "match",
+   "region": "충남",
+   "source": "천안교육지원청",
+   "title": "계약제 채용공고 천안가온초등학교 교육공무직원(당직전담인력) 채용 공고 2026-10-26",
+   "url": "https://www.cncae.go.kr/main/board/view.do?baNo=2&boNo=63000602",
+   "seen": "2026-10-26",
+   "deadline": "2026-11-11",
+   "deadline_source": "text",
+   "note": "첨부 「2. 천안가온초등학교 교육공무직원(당직전담인력) 채용 공고문.hwp」에 기록물 관리",
+   "summary": {
+    "school": "충청남도교육청",
+    "kind": "",
+    "count": null,
+    "deadline": "2026-11-11",
+    "line": "충청남도교육청 · ~11/11 접수"
+   },
+   "alive": false
+  },
+  {
+   "id": "site:dba67bd6de2f9f90",
+   "kind": "match",
+   "region": "충남",
+   "source": "천안교육지원청",
+   "title": "천안가온초등학교 교육공무직원(당직전담인력) 채용 공고 N",
+   "url": "https://www.cncae.go.kr/main/board/view.do?boNo=63000602&baNo=2",
+   "seen": "2026-10-26",
+   "deadline": "2026-11-11",
+   "deadline_source": "text",
+   "note": "첨부 「2. 천안가온초등학교 교육공무직원(당직전담인력) 채용 공고문.hwp」에 기록물 관리",
+   "summary": {
+    "school": "충청남도교육청",
+    "kind": "",
+    "count": null,
+    "deadline": "2026-11-11",
+    "line": "충청남도교육청 · ~11/11 접수"
+   },
    "alive": false
   },
   {

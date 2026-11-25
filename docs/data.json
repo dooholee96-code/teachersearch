@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-25T14:19+09:00",
+ "updated": "2026-11-26T05:45+09:00",
  "profile": "art",
  "title": "미술 티오",
  "icon": "🎨",
@@ -41,6 +41,20 @@
   "미술"
  ],
  "entries": [
+  {
+   "id": "site:bd37bbb079c2627f",
+   "kind": "unspecified",
+   "region": "전북",
+   "source": "남원교육지원청",
+   "title": "2026년 전북특별자치도교육청남원학생교육문화관 수영장 수영강사 신규채용 공고",
+   "url": "https://office.jbedu.kr/jbnwe/M010504/view/6995044.do",
+   "seen": "2026-11-26",
+   "deadline": null,
+   "deadline_source": "text",
+   "note": "첨부에서 과목을 찾지 못함 — 직접 확인",
+   "summary": {},
+   "alive": true
+  },
   {
    "id": "site:83be7e7eb0deb5bb",
    "kind": "unspecified",
@@ -4080,7 +4094,7 @@
   "✅ 중등임용시험 게시판: 글 30건 읽음",
   "✅ 고시/공고: 글 30건 읽음",
   "✅ 교육청·교육지원청 누리집: 34곳 중 20곳 확인 (채용 메뉴 16곳)",
-  "⏭ 사립 중·고 홈페이지: 오늘 이미 확인함"
+  "✅ 사립 중·고 홈페이지: 238곳 중 218곳 확인 (채용 메뉴 14곳)"
  ],
  "fails": {
   "recruit": 0,
