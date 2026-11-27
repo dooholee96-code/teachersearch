@@ -1,6 +1,9 @@
 {
  "seen": {
   "recruit": [
+   "1217991",
+   "1217946",
+   "1217897",
    "1217637",
    "1217634",
    "1217591",
@@ -1944,6 +1947,7 @@
   "office:www.djsbe.go.kr/ssc/home/main.do"
  ],
  "office_ok": [
+  "office:office.jbedu.kr/gce",
   "office:office.jbedu.kr/jbbae",
   "office:office.jbedu.kr/jbgje",
   "office:office.jbedu.kr/jbgse",
@@ -1957,14 +1961,7 @@
   "office:office.jbedu.kr/jbsce",
   "office:office.jbedu.kr/jbwje",
   "office:office.jbedu.kr/jeonjuedu",
-  "office:www.cnased.go.kr",
-  "office:www.cnbre.go.kr",
-  "office:www.cncae.go.kr",
   "office:www.cne.go.kr",
-  "office:www.cnhsed.go.kr",
-  "office:www.cnnse.go.kr",
-  "office:www.cnsce.go.kr",
-  "office:www.cntae.go.kr",
   "office:www.djdbe.go.kr/home/main.do",
   "office:www.djdbe.go.kr/ssc/home/main.do",
   "office:www.dje.go.kr/main.do",
